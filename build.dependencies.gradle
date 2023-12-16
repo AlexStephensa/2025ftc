@@ -25,6 +25,5 @@ dependencies {
     implementation 'com.acmerobotics.roadrunner:core:0.5.2'
     implementation 'org.openftc:rev-extensions-2:1.2'
     implementation 'org.openftc:easyopencv:1.5.2'
-    implementation 'org.firstinspires.ftc:gameAssets-PowerPlay:1.0.0'
 }
 
