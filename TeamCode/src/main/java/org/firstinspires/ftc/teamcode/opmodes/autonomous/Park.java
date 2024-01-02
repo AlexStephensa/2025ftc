@@ -17,8 +17,6 @@ public class Park extends LiveAutoBase {
             pattern = robot.phone_camera.get_randomization_pattern();
         }
         robot.phone_camera.stop_streaming();
-
-        robot.lift.close_claw();
     }
 
     @Override

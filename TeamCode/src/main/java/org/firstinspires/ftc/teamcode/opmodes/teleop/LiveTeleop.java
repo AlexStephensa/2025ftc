@@ -57,10 +57,6 @@ public class LiveTeleop extends LiveTeleopBase {
                 robot.lift.elevate_to(prepared_level);
             }
 
-            if(gamepad2.right_bumper) {
-                robot.lift.cone_level(prepared_cone);
-            }
-
             if(gamepad2.dpad_up && !dpad_up_pressed) {
                 prepared_level = Range.clip(prepared_level + 1, 0, robot.lift.max_level);
                 dpad_up_pressed = true;
@@ -75,26 +71,9 @@ public class LiveTeleop extends LiveTeleopBase {
                 dpad_down_pressed = false;
             }
 
-            if(gamepad2.dpad_right && !dpad_right_pressed) {
-                prepared_cone = Range.clip(prepared_cone + 1, 0, robot.lift.max_cone);
-                dpad_right_pressed = true;
-            } else if (!gamepad2.dpad_right) {
-                dpad_right_pressed = false;
-            }
-
-            if(gamepad2.dpad_left && !dpad_left_pressed) {
-                prepared_cone = Range.clip(prepared_cone - 1, 0, robot.lift.max_cone);
-                dpad_left_pressed = true;
-            } else if (!gamepad2.dpad_left) {
-                dpad_left_pressed = false;
-            }
-
             robot.lift.tweak(- gamepad2.left_trigger);
             robot.lift.tweak(gamepad2.right_trigger);
         }
-
-
-
 
         // Nothing to see here
         if ((gamepad1.back && gamepad1.a) && !gp1_a_pressed) {
@@ -120,33 +99,38 @@ public class LiveTeleop extends LiveTeleopBase {
             gp1_y_pressed = false;
         }
 
-        if (gamepad2.a) {
-            robot.lift.open_claw();
-        } else if (gamepad2.b) {
-            robot.lift.close_claw();
-        }
-
-        if (gamepad1.a) {
-            robot.lift.open_claw();
-        } else if (gamepad1.b) {
-            robot.lift.close_claw();
-        }
-
-
         /// DRIVE CONTROLS ///
-        double speed_mod = 0.7;
+        double speed_mod = 1;
 
         if(gamepad1.left_bumper) {
-            speed_mod = 0.28;
+            speed_mod = 0.5;
         } else if(gamepad1.right_bumper) {
-            speed_mod = 1;
+            speed_mod = 0.25;
         }
 
-        robot.drive_train.omni_drive(
-            (gamepad1.left_stick_x+gamepad2.left_stick_x) * speed_mod * drive_mul,
+        robot.drive_train.mecanum_drive(
+            -(gamepad1.left_stick_x+gamepad2.left_stick_x) * speed_mod * drive_mul,
             (gamepad1.left_stick_y+gamepad2.left_stick_y) * speed_mod * drive_mul,
-            (gamepad1.right_stick_x+gamepad2.right_stick_x) * speed_mod
+            -(gamepad1.right_stick_x+gamepad2.right_stick_x) * speed_mod
         );
+
+        robot.intake.spin(gamepad1.right_trigger-gamepad1.left_trigger);
+
+        if(gamepad1.dpad_left) {
+            robot.intake.drop();
+        }
+
+        if(gamepad1.dpad_right) {
+            robot.intake.undrop();
+        }
+
+        if(gamepad2.left_stick_button) {
+            robot.crossbow.unshoot();
+        }
+
+        if(gamepad2.right_stick_button) {
+            robot.crossbow.shoot();
+        }
     }
 
     @Override

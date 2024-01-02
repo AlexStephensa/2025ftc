@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.robots;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.components.live.Crossbow;
 import org.firstinspires.ftc.teamcode.components.live.DriveTrain;
+import org.firstinspires.ftc.teamcode.components.live.Intake;
 import org.firstinspires.ftc.teamcode.components.live.Lift;
 import org.firstinspires.ftc.teamcode.components.live.OCVPhoneCamera;
 import org.firstinspires.ftc.teamcode.components.live.SoundPlayer;
@@ -17,6 +19,8 @@ public class LiveRobot extends Robot {
     public OCVPhoneCamera   phone_camera;
     public Lift             lift;
     public SoundPlayer      sound_player;
+    public Intake           intake;
+    public Crossbow         crossbow;
 
     FtcDashboard            dashboard;
 
@@ -33,6 +37,8 @@ public class LiveRobot extends Robot {
         phone_camera    = new OCVPhoneCamera(this);
         lift            = new Lift(this);
         sound_player    = new SoundPlayer(this);
+        intake          = new Intake(this);
+        crossbow        = new Crossbow(this);
 
         dashboard = FtcDashboard.getInstance();
     }
