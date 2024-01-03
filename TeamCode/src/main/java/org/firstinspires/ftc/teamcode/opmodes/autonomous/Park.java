@@ -14,7 +14,7 @@ public class Park extends LiveAutoBase {
     public void on_init() {
         robot.phone_camera.start_streaming();
         while (!isStarted() && !isStopRequested()) {
-            pattern = robot.phone_camera.get_randomization_pattern();
+            pattern = robot.phone_camera.get_pattern();
         }
         robot.phone_camera.stop_streaming();
     }

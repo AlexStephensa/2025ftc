@@ -71,6 +71,36 @@ public class LiveTeleop extends LiveTeleopBase {
                 dpad_down_pressed = false;
             }
 
+            if(gamepad2.b) {
+                robot.claw.close_left();
+            }
+
+            if(gamepad2.a) {
+                robot.claw.close_right();
+            }
+
+            if(gamepad2.y) {
+                robot.claw.open_left();
+                robot.claw.open_right();
+            }
+            else {
+                if (robot.claw.left_detected()) {
+                    robot.claw.close_left();
+                }
+
+                if (robot.claw.right_detected()) {
+                    robot.claw.close_right();
+                }
+            }
+
+            if(gamepad2.left_stick_button) {
+                robot.claw.pitch_up();
+            }
+
+            if(gamepad2.right_stick_button) {
+                robot.claw.pitch_down();
+            }
+
             robot.lift.tweak(- gamepad2.left_trigger);
             robot.lift.tweak(gamepad2.right_trigger);
         }
@@ -109,9 +139,9 @@ public class LiveTeleop extends LiveTeleopBase {
         }
 
         robot.drive_train.mecanum_drive(
-            -(gamepad1.left_stick_x+gamepad2.left_stick_x) * speed_mod * drive_mul,
-            (gamepad1.left_stick_y+gamepad2.left_stick_y) * speed_mod * drive_mul,
-            -(gamepad1.right_stick_x+gamepad2.right_stick_x) * speed_mod
+            -(gamepad1.left_stick_x) * speed_mod * drive_mul,
+            (gamepad1.left_stick_y) * speed_mod * drive_mul,
+            -(gamepad1.right_stick_x) * speed_mod
         );
 
         robot.intake.spin(gamepad1.right_trigger-gamepad1.left_trigger);
@@ -124,11 +154,11 @@ public class LiveTeleop extends LiveTeleopBase {
             robot.intake.undrop();
         }
 
-        if(gamepad2.left_stick_button) {
+        if(gamepad1.left_stick_button) {
             robot.crossbow.unshoot();
         }
 
-        if(gamepad2.right_stick_button) {
+        if(gamepad1.right_stick_button) {
             robot.crossbow.shoot();
         }
     }

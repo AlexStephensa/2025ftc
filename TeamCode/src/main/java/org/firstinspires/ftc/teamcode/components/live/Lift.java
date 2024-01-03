@@ -102,7 +102,7 @@ public class Lift extends Component {
 
         if (starting_move) {
             if (level == 0) {
-                if(limit_switch.getState()) {
+                if(!limit_switch.getState()) {
                     lift_l.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     lift_r.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     set_power(-1);
@@ -119,7 +119,7 @@ public class Lift extends Component {
         }
 
         if (level == 0 && (lift_l.getPower() == -1 || lift_r.getPower() == -1)) {
-            if ((limit_switch.getState()) && (lift_l.getPower() != 0) && (lift_r.getPower() != 0)) {
+            if ((!limit_switch.getState()) && (lift_l.getPower() != 0) && (lift_r.getPower() != 0)) {
                 lift_l_offset = lift_l.getCurrentPosition();
                 lift_l.setPower(0);
                 lift_r_offset = lift_r.getCurrentPosition();
@@ -158,7 +158,7 @@ public class Lift extends Component {
         lift_l.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pid_coeffs);
         lift_r.setPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pid_coeffs);
 
-        lift_r.setDirection(DcMotorSimple.Direction.REVERSE);
+        lift_l.setDirection(DcMotorSimple.Direction.REVERSE);
 
         lift_l.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift_r.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -192,7 +192,7 @@ public class Lift extends Component {
 
         telemetry.addData("LEVEL", level);
 
-        telemetry.addData("LIM", limit_switch.getState());
+        telemetry.addData("LIM", !limit_switch.getState());
 
     }
 

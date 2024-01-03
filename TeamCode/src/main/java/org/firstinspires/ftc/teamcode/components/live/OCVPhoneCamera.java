@@ -32,11 +32,9 @@ import static org.opencv.core.CvType.CV_8UC1;
 
 @Config
 class OCVPhoneCameraConfig {
-    // Normalized offset of center rect x from left of image
     public static double rect_offset_x = 0.50;
-    // Normalized offset of center rect y from top of image
     public static double rect_offset_y = 0.50;
-    // Width of all rects
+    public static double rect_separation = 0.25;
     public static double rect_size = 0.05;
 }
 
@@ -58,7 +56,6 @@ public class OCVPhoneCamera extends Component {
 
     @Override
     public void registerHardware(HardwareMap hwmap) {
-        // Load and get an instance of the phone camera from the hardware map
         int cameraMonitorViewId = hwmap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwmap.appContext.getPackageName());
         phone_camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
     }
@@ -69,20 +66,23 @@ public class OCVPhoneCamera extends Component {
 
         phone_camera.openCameraDevice();
 
-        // Instantiate all possible pipelines
         capstone_pipline = new CapstonePipline();
 
-        // Load the default pipeline
         set_pipeline(capstone_pipline);
     }
-
-    //fuck java
 
     @Override
     public void updateTelemetry(Telemetry telemetry) {
         super.updateTelemetry(telemetry);
         telemetry.addData("FRAME", phone_camera.getFrameCount());
         telemetry.addData("FPS", String.format("%.2f", phone_camera.getFps()));
+
+        if (get_pattern() != 0) {
+            telemetry.addData("L SAT", (int)capstone_pipline.means[0].val[0]+" "+(int)capstone_pipline.means[0].val[1]+" "+(int)capstone_pipline.means[0].val[2]+" "+(int)capstone_pipline.means[0].val[3]);
+            telemetry.addData("M SAT", (int)capstone_pipline.means[1].val[0]+" "+(int)capstone_pipline.means[1].val[1]+" "+(int)capstone_pipline.means[1].val[2]+" "+(int)capstone_pipline.means[1].val[3]);
+            telemetry.addData("R SAT", (int)capstone_pipline.means[2].val[0]+" "+(int)capstone_pipline.means[2].val[1]+" "+(int)capstone_pipline.means[2].val[2]+" "+(int)capstone_pipline.means[2].val[3]);
+        }
+
         telemetry.addData("PATTERN", capstone_pipline.pattern);
     }
 
@@ -91,34 +91,23 @@ public class OCVPhoneCamera extends Component {
     }
 
     public void start_streaming() {
-        /**
-         * Start the camera device and display the output of the camera to the robot controller phone
-         */
         if (!streaming) {
-            phone_camera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+            phone_camera.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_LEFT);
             streaming = true;
         }
     }
 
-    public int get_randomization_pattern() {
-        /**
-         * Get the current pattern from the team marker pipeline
-         */
+    public int get_pattern() {
         return capstone_pipline.pattern;
     }
 
     public void stop_streaming() {
-        /**
-         * Close the camera device, stop sending output through the pipeline
-         */
         phone_camera.stopStreaming();
         streaming = false;
     }
 
     class CapstonePipline extends OpenCvPipeline {
-        /**
-         * Pipeline for recognizing position of team marker on the 3 pieces of tape, using the color saturation
-         */
+        Scalar[] means = new Scalar[3];
 
         int pattern;
 
@@ -128,41 +117,45 @@ public class OCVPhoneCamera extends Component {
 
             input.convertTo(input, CV_8UC1, 1, 10);
 
-            // Denormalize positions and sizes of the 3 rects
-            int[] rect = {
+            int[] l_rect = {
+                    (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x - OCVPhoneCameraConfig.rect_separation - OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y - OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x - OCVPhoneCameraConfig.rect_separation + OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y + OCVPhoneCameraConfig.rect_size/2))
+            };
+
+            int[] m_rect = {
                     (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x - OCVPhoneCameraConfig.rect_size/2)),
                     (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y - OCVPhoneCameraConfig.rect_size/2)),
                     (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x + OCVPhoneCameraConfig.rect_size/2)),
                     (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y + OCVPhoneCameraConfig.rect_size/2))
             };
 
+            int[] r_rect = {
+                    (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x + OCVPhoneCameraConfig.rect_separation - OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y - OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x + OCVPhoneCameraConfig.rect_separation + OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y + OCVPhoneCameraConfig.rect_size/2))
+            };
 
+            Mat l_mat = input.submat(l_rect[1], l_rect[3], l_rect[0], l_rect[2]);
+            Mat m_mat = input.submat(m_rect[1], m_rect[3], m_rect[0], m_rect[2]);
+            Mat r_mat = input.submat(r_rect[1], r_rect[3], r_rect[0], r_rect[2]);
 
-            // Load the rects into matrices
-            Mat mat = input.submat(rect[1], rect[3], rect[0], rect[2]);
+            means[0] = Core.mean(l_mat);
+            means[1] = Core.mean(m_mat);
+            means[2] = Core.mean(r_mat);
 
-            // Get the average color of each rect
-            Scalar mean = Core.mean(mat);
-
-            // This determines the pattern based on what color is most prevalent
-            // if Red is most common
-            if (mean.val[0] >= mean.val[1] && mean.val[0] >= mean.val[2]) {
-                pattern = 1;
-            }
-            // if Green is most common
-            else if (mean.val[1] >= mean.val[0] && mean.val[1] >= mean.val[2]) {
-                pattern = 3;
-            }
-            // if Blue is most common
-            else if (mean.val[2] >= mean.val[0] && mean.val[2] >= mean.val[1]) {
-                pattern = 2;
-            }
-            else {
-                pattern = 0;
+            int maximum_index = 0;
+            for (int i = 0; i < 3; i++) {
+                maximum_index = (means[i].val[0] + means[i].val[2] - means[i].val[1]) > (means[maximum_index].val[0] + means[maximum_index].val[2] - means[maximum_index].val[1]) ? i : maximum_index;
             }
 
-            // Draw the rects on he image for visualization and lineup purposess
-            Imgproc.rectangle(input, new Point(rect[0], rect[1]), new Point(rect[2], rect[3]), new Scalar(0, 0, 255), 1);
+            pattern = maximum_index + 1; // Pattern should not be 0 index, 0 is reserved for a "null"
+
+            Imgproc.rectangle(input, new Point(l_rect[0], l_rect[1]), new Point(l_rect[2], l_rect[3]), new Scalar(0, 0, 255), 1);
+            Imgproc.rectangle(input, new Point(m_rect[0], m_rect[1]), new Point(m_rect[2], m_rect[3]), new Scalar(0, 0, 255), 1);
+            Imgproc.rectangle(input, new Point(r_rect[0], r_rect[1]), new Point(r_rect[2], r_rect[3]), new Scalar(0, 0, 255), 1);
 
             return input;
         }
