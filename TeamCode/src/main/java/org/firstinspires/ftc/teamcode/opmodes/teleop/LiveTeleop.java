@@ -39,7 +39,7 @@ public class LiveTeleop extends LiveTeleopBase {
 
     @Override
     public void on_loop() {
-        if (robot.claw.left_detected() && robot.claw.right_detected()) {
+        if (!robot.claw.left_claw_open && !robot.claw.right_claw_open) {
             gamepad1.setLedColor(0, 1, 0, LED_DURATION_CONTINUOUS);
             gamepad2.setLedColor(0, 1, 0, LED_DURATION_CONTINUOUS);
         }
@@ -104,7 +104,7 @@ public class LiveTeleop extends LiveTeleopBase {
                     if (robot.claw.right_claw_open) {
                         gamepad1.rumble(200);
                     }
-                    gamepad1.rumble(200);
+                    robot.claw.close_right();
                 }
             }
 

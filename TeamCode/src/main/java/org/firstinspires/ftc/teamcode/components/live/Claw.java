@@ -20,7 +20,7 @@ class ClawConfig {
     public static double CLAW_R_CLOSE = 0.51;
     public static double CLAW_PITCH_UP = 0.6;
     public static double CLAW_PITCH_DOWN = 0.345;
-    public static double MIN_DISTANCE = 10; //mm
+    public static double MIN_DISTANCE = 25; //mm
 }
 
 public class Claw extends Component {
