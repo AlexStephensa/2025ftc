@@ -42,7 +42,7 @@ public class OCVPhoneCamera extends Component {
 
     OpenCvCamera phone_camera;
 
-    public CapstonePipline capstone_pipline;
+    public CapstonePipline capstone_pipeline;
 
     private boolean streaming;
 
@@ -66,9 +66,9 @@ public class OCVPhoneCamera extends Component {
 
         phone_camera.openCameraDevice();
 
-        capstone_pipline = new CapstonePipline();
+        capstone_pipeline = new CapstonePipline();
 
-        set_pipeline(capstone_pipline);
+        set_pipeline(capstone_pipeline);
     }
 
     @Override
@@ -78,12 +78,12 @@ public class OCVPhoneCamera extends Component {
         telemetry.addData("FPS", String.format("%.2f", phone_camera.getFps()));
 
         if (get_pattern() != 0) {
-            telemetry.addData("L SAT", (int)capstone_pipline.means[0].val[0]+" "+(int)capstone_pipline.means[0].val[1]+" "+(int)capstone_pipline.means[0].val[2]+" "+(int)capstone_pipline.means[0].val[3]);
-            telemetry.addData("M SAT", (int)capstone_pipline.means[1].val[0]+" "+(int)capstone_pipline.means[1].val[1]+" "+(int)capstone_pipline.means[1].val[2]+" "+(int)capstone_pipline.means[1].val[3]);
-            telemetry.addData("R SAT", (int)capstone_pipline.means[2].val[0]+" "+(int)capstone_pipline.means[2].val[1]+" "+(int)capstone_pipline.means[2].val[2]+" "+(int)capstone_pipline.means[2].val[3]);
+            telemetry.addData("L SAT", (int)capstone_pipeline.means[0].val[0]+" "+(int)capstone_pipeline.means[0].val[1]+" "+(int)capstone_pipeline.means[0].val[2]+" "+(int)capstone_pipeline.means[0].val[3]);
+            telemetry.addData("M SAT", (int)capstone_pipeline.means[1].val[0]+" "+(int)capstone_pipeline.means[1].val[1]+" "+(int)capstone_pipeline.means[1].val[2]+" "+(int)capstone_pipeline.means[1].val[3]);
+            telemetry.addData("R SAT", (int)capstone_pipeline.means[2].val[0]+" "+(int)capstone_pipeline.means[2].val[1]+" "+(int)capstone_pipeline.means[2].val[2]+" "+(int)capstone_pipeline.means[2].val[3]);
         }
 
-        telemetry.addData("PATTERN", capstone_pipline.pattern);
+        telemetry.addData("PATTERN", capstone_pipeline.pattern);
     }
 
     public void set_pipeline(OpenCvPipeline pl) {
@@ -98,7 +98,7 @@ public class OCVPhoneCamera extends Component {
     }
 
     public int get_pattern() {
-        return capstone_pipline.pattern;
+        return capstone_pipeline.pattern;
     }
 
     public void stop_streaming() {
