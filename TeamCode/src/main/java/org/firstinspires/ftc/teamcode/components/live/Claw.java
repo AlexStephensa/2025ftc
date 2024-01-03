@@ -34,6 +34,9 @@ public class Claw extends Component {
     public double left_distance = 1000;
     public double right_distance = 1000;
 
+    public boolean left_claw_open = false;
+    public boolean right_claw_open = false;
+
     {
         name = "Claw";
     }
@@ -61,8 +64,11 @@ public class Claw extends Component {
         claw_l.update();
         claw_r.update();
 
-        if (robot.cycle % 5 == 0) {
+        if (robot.cycle % 10 == 0) {
             left_distance = left_ds.getDistance(DistanceUnit.MM);
+        }
+
+        if (robot.cycle % 10 == 5) {
             right_distance = right_ds.getDistance(DistanceUnit.MM);
         }
     }
@@ -86,21 +92,33 @@ public class Claw extends Component {
 
     public void close_left() {
         claw_l.queue_position(ClawConfig.CLAW_L_CLOSE);
+        left_claw_open = false;
     }
 
     public void close_right() {
         claw_r.queue_position(ClawConfig.CLAW_R_CLOSE);
+        right_claw_open = false;
     }
 
     public void open_left() {
         claw_l.queue_position(ClawConfig.CLAW_L_OPEN);
+        left_claw_open = true;
     }
+
     public void open_right() {
         claw_r.queue_position(ClawConfig.CLAW_R_OPEN);
+        right_claw_open = true;
     }
+
+    public void open() {
+        open_left();
+        open_right();
+    }
+
     public void pitch_up() {
         claw_pitch.queue_position(ClawConfig.CLAW_PITCH_UP);
     }
+
     public void pitch_down() {
         claw_pitch.queue_position(ClawConfig.CLAW_PITCH_DOWN);
     }

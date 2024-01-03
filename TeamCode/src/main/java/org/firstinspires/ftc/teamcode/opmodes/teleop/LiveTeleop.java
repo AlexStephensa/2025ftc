@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 
 import static android.graphics.Typeface.NORMAL;
+import static com.qualcomm.robotcore.hardware.Gamepad.LED_DURATION_CONTINUOUS;
 
 @TeleOp(name="Teleop Live", group="driver control")
 //@Disabled
@@ -38,6 +39,14 @@ public class LiveTeleop extends LiveTeleopBase {
 
     @Override
     public void on_loop() {
+        if (robot.claw.left_detected() && robot.claw.right_detected()) {
+            gamepad1.setLedColor(0, 1, 0, LED_DURATION_CONTINUOUS);
+            gamepad2.setLedColor(0, 1, 0, LED_DURATION_CONTINUOUS);
+        }
+        else {
+            gamepad1.setLedColor(1, 0, 0, LED_DURATION_CONTINUOUS);
+            gamepad2.setLedColor(1, 0, 0, LED_DURATION_CONTINUOUS);
+        }
 
         /// GAMEPAD TWO BACK HOTKEYS ///
         if(gamepad2.back) {
@@ -80,16 +89,22 @@ public class LiveTeleop extends LiveTeleopBase {
             }
 
             if(gamepad2.y) {
-                robot.claw.open_left();
-                robot.claw.open_right();
+                robot.claw.open();
             }
             else {
                 if (robot.claw.left_detected()) {
+                    if (robot.claw.left_claw_open) {
+                        gamepad1.rumble(200);
+                    }
                     robot.claw.close_left();
+
                 }
 
                 if (robot.claw.right_detected()) {
-                    robot.claw.close_right();
+                    if (robot.claw.right_claw_open) {
+                        gamepad1.rumble(200);
+                    }
+                    gamepad1.rumble(200);
                 }
             }
 
