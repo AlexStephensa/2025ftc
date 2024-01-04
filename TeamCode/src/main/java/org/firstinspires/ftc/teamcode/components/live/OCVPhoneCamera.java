@@ -32,8 +32,9 @@ import static org.opencv.core.CvType.CV_8UC1;
 
 @Config
 class OCVPhoneCameraConfig {
-    public static double rect_offset_x = 0.50;
-    public static double rect_offset_y = 0.50;
+    public static double center_rect_offset_y = 0.5;
+    public static double rects_offset_x = 0.50;
+    public static double lr_rects_offset_y = 0.50;
     public static double rect_separation = 0.25;
     public static double rect_size = 0.05;
 }
@@ -118,24 +119,24 @@ public class OCVPhoneCamera extends Component {
             input.convertTo(input, CV_8UC1, 1, 10);
 
             int[] l_rect = {
-                    (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x - OCVPhoneCameraConfig.rect_separation - OCVPhoneCameraConfig.rect_size/2)),
-                    (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y - OCVPhoneCameraConfig.rect_size/2)),
-                    (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x - OCVPhoneCameraConfig.rect_separation + OCVPhoneCameraConfig.rect_size/2)),
-                    (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y + OCVPhoneCameraConfig.rect_size/2))
+                    (int) (input.cols() * (OCVPhoneCameraConfig.rects_offset_x - OCVPhoneCameraConfig.rect_separation - OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.rows() * (OCVPhoneCameraConfig.lr_rects_offset_y - OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.cols() * (OCVPhoneCameraConfig.rects_offset_x - OCVPhoneCameraConfig.rect_separation + OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.rows() * (OCVPhoneCameraConfig.lr_rects_offset_y + OCVPhoneCameraConfig.rect_size/2))
             };
 
             int[] m_rect = {
-                    (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x - OCVPhoneCameraConfig.rect_size/2)),
-                    (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y - OCVPhoneCameraConfig.rect_size/2)),
-                    (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x + OCVPhoneCameraConfig.rect_size/2)),
-                    (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y + OCVPhoneCameraConfig.rect_size/2))
+                    (int) (input.cols() * (OCVPhoneCameraConfig.rects_offset_x - OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.rows() * (OCVPhoneCameraConfig.center_rect_offset_y - OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.cols() * (OCVPhoneCameraConfig.rects_offset_x + OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.rows() * (OCVPhoneCameraConfig.center_rect_offset_y + OCVPhoneCameraConfig.rect_size/2))
             };
 
             int[] r_rect = {
-                    (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x + OCVPhoneCameraConfig.rect_separation - OCVPhoneCameraConfig.rect_size/2)),
-                    (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y - OCVPhoneCameraConfig.rect_size/2)),
-                    (int) (input.cols() * (OCVPhoneCameraConfig.rect_offset_x + OCVPhoneCameraConfig.rect_separation + OCVPhoneCameraConfig.rect_size/2)),
-                    (int) (input.rows() * (OCVPhoneCameraConfig.rect_offset_y + OCVPhoneCameraConfig.rect_size/2))
+                    (int) (input.cols() * (OCVPhoneCameraConfig.rects_offset_x + OCVPhoneCameraConfig.rect_separation - OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.rows() * (OCVPhoneCameraConfig.lr_rects_offset_y - OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.cols() * (OCVPhoneCameraConfig.rects_offset_x + OCVPhoneCameraConfig.rect_separation + OCVPhoneCameraConfig.rect_size/2)),
+                    (int) (input.rows() * (OCVPhoneCameraConfig.lr_rects_offset_y + OCVPhoneCameraConfig.rect_size/2))
             };
 
             Mat l_mat = input.submat(l_rect[1], l_rect[3], l_rect[0], l_rect[2]);
