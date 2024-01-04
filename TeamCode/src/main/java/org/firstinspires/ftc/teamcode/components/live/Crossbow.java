@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
 @Config
 class CrossbowConfig {
-    public static double CROSSBOW_UNSHOT = 0.76f;
-    public static double CROSSBOW_SHOT = 0.84f;
+    public static double CROSSBOW_UNSHOT = 0.84f;
+    public static double CROSSBOW_SHOT = 0.76f;
 }
 
 public class Crossbow extends Component {
