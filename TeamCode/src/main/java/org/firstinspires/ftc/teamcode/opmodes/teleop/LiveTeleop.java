@@ -53,17 +53,23 @@ public class LiveTeleop extends LiveTeleopBase {
             if(gamepad2.dpad_up) {
                 robot.lift.max_lift();
             }
-            else {
+            else if (gamepad2.dpad_down){
                 robot.lift.min_lift();
             }
 
             if (gamepad2.y) {
-                robot.lift.elevate_to(-1);
+                robot.claw.pitch_up();
+                //robot.lift.elevate_to(-1);
             }
 
         } else {
-            if(gamepad2.left_bumper) {
-                robot.lift.elevate_to(prepared_level);
+            if (gamepad2.left_bumper) {
+                robot.claw.close_left();
+              //  robot.lift.elevate_to(prepared_level);
+            }
+
+            if (gamepad2.right_bumper){
+                robot.claw.close_right();
             }
 
             if(gamepad2.dpad_up && !dpad_up_pressed) {
@@ -81,15 +87,18 @@ public class LiveTeleop extends LiveTeleopBase {
             }
 
             if(gamepad2.b) {
-                robot.claw.close_left();
+                robot.claw.open_right();
+                robot.claw.open_left();
             }
 
             if(gamepad2.a) {
-                robot.claw.close_right();
+                robot.claw.pitch_down();
+               // robot.claw.close_right();
             }
 
             if(gamepad2.y) {
-                robot.claw.open();
+                robot.claw.pitch_up();
+              //  robot.claw.open();
             }
             else {
                 if (robot.claw.left_detected()) {
