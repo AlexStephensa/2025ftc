@@ -233,7 +233,6 @@ public class Lift extends Component {
         set_target_position((level * BLOCK_HEIGHT) + LIFT_OFFSET);
         starting_move = true;
     }
-
     public void tweak(double tweak) {
         this.tweak = tweak;
     }
