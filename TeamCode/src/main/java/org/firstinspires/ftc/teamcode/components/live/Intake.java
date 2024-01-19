@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
 @Config
 class IntakeConfig {
-    public static double DROPPER_CLOSED = 0.76f;
-    public static double DROPPER_OPEN = 0.84f;
+    public static double DROPPER_CLOSED = 0.84f;
+    public static double DROPPER_OPEN = 0.76f;
 }
 
 public class Intake extends Component {

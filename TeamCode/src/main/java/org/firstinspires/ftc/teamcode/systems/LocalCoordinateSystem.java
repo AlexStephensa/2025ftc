@@ -7,12 +7,12 @@ import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 @Config
 class LCSConfig {
     public static double ENCODER_CPR          = 8192;    // Counts per full rotation of an encoder
-    public static double ROBOT_DIAMETER       = 10.29537653;    // Distance between the left and right encoder (diameter) in inches
-    public static double CENTER_WHEEL_OFFSET  = 7.731883711;    //Distance of the center encoder to the line made between the left and right encoders (radius) in inches
+    public static double ROBOT_DIAMETER       = 14.26720745;    // Distance between the left and right encoder (diameter) in inches
+    public static double CENTER_WHEEL_OFFSET  = -7.259972862;    //Distance of the center encoder to the line made between the left and right encoders (radius) in inches
 
-    public static double WHEEL_DIAMETER_L     = 1.86428759;
-    public static double WHEEL_DIAMETER_R     = 1.87644544;
-    public static double WHEEL_DIAMETER_C     = -1.8821358;
+    public static double WHEEL_DIAMETER_L     = 1.860684727;
+    public static double WHEEL_DIAMETER_R     = 1.876201667;
+    public static double WHEEL_DIAMETER_C     = -1.881626498;
 
 }
 
@@ -49,7 +49,7 @@ public class LocalCoordinateSystem {
         double sc = (cd * INCHES_PER_COUNT_C) + (ph * LCSConfig.CENTER_WHEEL_OFFSET);
 
         // Calculate the new angle of the robot using the difference between the left and right encoder
-        a += (rd * INCHES_PER_COUNT_R - ld * INCHES_PER_COUNT_L) / LCSConfig.ROBOT_DIAMETER;
+        a -= (rd * INCHES_PER_COUNT_R) / LCSConfig.ROBOT_DIAMETER - (ld * INCHES_PER_COUNT_L) / LCSConfig.ROBOT_DIAMETER; //added negative as angle was backwards
 
         // Calculate the new position of the robot by adding the arc vector to the absolute pos
         double sinph = Math.sin(ph);

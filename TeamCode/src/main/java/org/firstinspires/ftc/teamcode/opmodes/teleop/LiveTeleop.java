@@ -50,19 +50,33 @@ public class LiveTeleop extends LiveTeleopBase {
 
         /// GAMEPAD TWO BACK HOTKEYS ///
         if(gamepad2.back) {
-            if(gamepad2.dpad_up) {
-                robot.lift.max_lift();
+            /*if(gamepad2.dpad_up) {
+
+                //robot.lift.max_lift();
             }
-            else if (gamepad2.dpad_down){
-                robot.lift.min_lift();
+            else {
+                robot.linearLift.lift_down();
+                //robot.lift.min_lift();
+            }
+
+            if (gamepad2.y) {
+
+                //robot.lift.elevate_to(-1);
+            }*/
+
+        } else {
+            if(gamepad2.dpad_up) {
+                robot.linearLift.lift_up();
+            }else if (gamepad2.dpad_down) {
+                robot.linearLift.lift_down();
+            }else {
+                robot.linearLift.lift_power_zero();
             }
 
             if (gamepad2.y) {
                 robot.claw.pitch_up();
-                //robot.lift.elevate_to(-1);
             }
 
-        } else {
             if (gamepad2.left_bumper) {
                 robot.claw.close_left();
               //  robot.lift.elevate_to(prepared_level);
@@ -72,7 +86,7 @@ public class LiveTeleop extends LiveTeleopBase {
                 robot.claw.close_right();
             }
 
-            if(gamepad2.dpad_up && !dpad_up_pressed) {
+        /*    if(gamepad2.dpad_up && !dpad_up_pressed) {
                 prepared_level = Range.clip(prepared_level + 1, 0, robot.lift.max_level);
                 dpad_up_pressed = true;
             } else if (!gamepad2.dpad_up) {
@@ -84,11 +98,10 @@ public class LiveTeleop extends LiveTeleopBase {
                 dpad_down_pressed = true;
             } else if (!gamepad2.dpad_down) {
                 dpad_down_pressed = false;
-            }
+            }*/
 
             if(gamepad2.b) {
-                robot.claw.open_right();
-                robot.claw.open_left();
+                robot.claw.open();
             }
 
             if(gamepad2.a) {
@@ -125,8 +138,8 @@ public class LiveTeleop extends LiveTeleopBase {
                 robot.claw.pitch_down();
             }
 
-            robot.lift.tweak(- gamepad2.left_trigger);
-            robot.lift.tweak(gamepad2.right_trigger);
+            //robot.lift.tweak(- gamepad2.left_trigger);
+            //robot.lift.tweak(gamepad2.right_trigger);
         }
 
         // Nothing to see here
@@ -188,7 +201,7 @@ public class LiveTeleop extends LiveTeleopBase {
     }
 
     @Override
-    public void on_stop() {
+    public void on_stop(){
 
     }
 }

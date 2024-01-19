@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.components.live;
+/*package org.firstinspires.ftc.teamcode.components.live;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevTouchSensor;
@@ -99,6 +99,9 @@ public class Lift extends Component {
     @Override
     public void update(OpMode opmode) {
         super.update(opmode);
+
+
+
 
         if (starting_move) {
             if (level == 0) {
@@ -236,4 +239,4 @@ public class Lift extends Component {
     public void tweak(double tweak) {
         this.tweak = tweak;
     }
-}
+}*/
