@@ -75,11 +75,11 @@ public class LinearLift extends Component {
     public void updateTelemetry(Telemetry telemetry) {
         super.updateTelemetry(telemetry);
 
-        telemetry.addData("LL TURNS",TELEMETRY_DECIMAL.format(lift_l.getCurrentPosition()));
-        telemetry.addData("RL TURNS",TELEMETRY_DECIMAL.format(lift_r.getCurrentPosition()));
+        //telemetry.addData("LL TURNS",TELEMETRY_DECIMAL.format(lift_l.getCurrentPosition()));
+        //telemetry.addData("RL TURNS",TELEMETRY_DECIMAL.format(lift_r.getCurrentPosition()));
 
-        telemetry.addData("LIFT BUSY",lift_l.isBusy()+" "+lift_r.isBusy());
+        //telemetry.addData("LIFT BUSY",lift_l.isBusy()+" "+lift_r.isBusy());
 
-        telemetry.addData("LIM", !limit_switch.getState());
+        //telemetry.addData("LIM", !limit_switch.getState());
     }
 }
