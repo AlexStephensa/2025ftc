@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -12,10 +12,10 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.util.qus.DcMotorQUS;
 import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
-@Config
+//@Config
 class CrossbowConfig {
     public static double CROSSBOW_UNSHOT = 0.84f;
-    public static double CROSSBOW_SHOT = 0.76f;
+    public static double CROSSBOW_SHOT = 1f;
 }
 
 public class Crossbow extends Component {

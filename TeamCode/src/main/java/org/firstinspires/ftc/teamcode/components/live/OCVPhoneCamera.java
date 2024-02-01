@@ -5,7 +5,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
 
 import static org.opencv.core.CvType.CV_8UC1;
 
-@Config
+//@Config
 class OCVPhoneCameraConfig {
     public static double center_rect_offset_y = 0.5;
     public static double rects_offset_x = 0.50;

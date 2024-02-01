@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -13,10 +12,10 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.util.qus.DcMotorQUS;
 import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
-@Config
+//@Config
 class IntakeConfig {
-    public static double DROPPER_CLOSED = 0.84f;
-    public static double DROPPER_OPEN = 0.76f;
+    public static double DROPPER_CLOSED = 0.75f;
+    public static double DROPPER_OPEN = 1.0;
 }
 
 public class Intake extends Component {

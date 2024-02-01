@@ -21,7 +21,13 @@ public class Forward extends LiveAutoBase {
 
     @Override
     public void on_start(){
-    robot.drive_train.odo_move(0,-30,0,0.4);
+        // robot.drive_train.odo_move(0,-30,0,0.4);
+        // robot.drive_train.odo_move(30,0,0,0.4);
+        robot.drive_train.odo_move(30,0,0,0.4);
+        robot.drive_train.odo_move(0,-25,0,0.4);
+        //  robot.claw.pitch_up();-[
+        //  robot.claw.open();
+
    }
 
     @Override

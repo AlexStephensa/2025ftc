@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.robots;
 
-import com.acmerobotics.dashboard.FtcDashboard;
+//import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.components.live.Claw;
@@ -29,7 +29,7 @@ public class LiveRobot extends Robot {
     //public LinearLift     linearLift;
 
 
-    FtcDashboard            dashboard;
+    //FtcDashboard            dashboard;
 
     ArrayList<Point> robot_movement = new ArrayList<Point>();
 
@@ -49,7 +49,7 @@ public class LiveRobot extends Robot {
         claw            = new Claw(this);
         //linearLift      = new LinearLift((this));
 
-        dashboard = FtcDashboard.getInstance();
+        //dashboard = FtcDashboard.getInstance();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.util.qus.DcMotorQUS;
 import static org.firstinspires.ftc.teamcode.constants.AutonomousConst.RED;
 import static org.firstinspires.ftc.teamcode.util.MathUtil.angle_difference;
 
-@Config
+//@Config
 class DriveTrainConfig {
     public static int GYRO_READ_INTERVAL = 200;
 }

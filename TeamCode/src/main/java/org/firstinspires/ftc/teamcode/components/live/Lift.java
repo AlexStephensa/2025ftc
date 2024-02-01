@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -22,7 +22,8 @@ import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.*;
 // Extender extends over the tower, and the grabber releases the stone
 
 
-@Config
+//@Config
+
 class LiftConfig {
     public static int BLOCK_HEIGHT = 240; //In encoder counts
     public static int LIFT_OFFSET = 0;
@@ -72,7 +73,6 @@ public class Lift extends Component {
 
     static double tweak = 0;
     static double tweak_cache = 0;
-
     public static int max_level = MAX_LEVEL;
 
     {
@@ -100,12 +100,9 @@ public class Lift extends Component {
     public void update(OpMode opmode) {
         super.update(opmode);
 
-
-
-
         if (starting_move) {
-            if (level == 0) {
-                if(!limit_switch.getState()) {
+            if ((level == 0) || (level == -1)) {
+                if(limit_switch.getState()) {
                     lift_l.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     lift_r.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     set_power(-1);
@@ -121,8 +118,8 @@ public class Lift extends Component {
             starting_move = false;
         }
 
-        if (level == 0 && (lift_l.getPower() == -1 || lift_r.getPower() == -1)) {
-            if ((!limit_switch.getState()) && (lift_l.getPower() != 0) && (lift_r.getPower() != 0)) {
+        if (((level == 0) || (level == -1)) && (lift_l.getPower() == -1 || lift_r.getPower() == -1)) {
+            if ((limit_switch.getState()) && (lift_l.getPower() != 0) && (lift_r.getPower() != 0)) {
                 lift_l_offset = lift_l.getCurrentPosition();
                 lift_l.setPower(0);
                 lift_r_offset = lift_r.getCurrentPosition();

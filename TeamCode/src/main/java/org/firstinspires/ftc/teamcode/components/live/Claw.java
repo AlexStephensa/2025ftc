@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -12,14 +12,14 @@ import org.firstinspires.ftc.teamcode.components.Component;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
-@Config
+//@Config
 class ClawConfig {
     public static double CLAW_L_OPEN = 0.39;
     public static double CLAW_R_OPEN = 0.45;
     public static double CLAW_L_CLOSE = 0.33;
     public static double CLAW_R_CLOSE = 0.51;
     public static double CLAW_PITCH_UP = 0.6;
-    public static double CLAW_PITCH_DOWN = 0.345;
+    public static double CLAW_PITCH_DOWN = 0.37;
     public static double MIN_DISTANCE = 25; //mm
 }
 
