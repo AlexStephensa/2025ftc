@@ -23,7 +23,6 @@ public class LiveRobot extends Robot {
     public Lift             lift;
     public SoundPlayer      sound_player;
     public Intake           intake;
-    public Crossbow         crossbow;
     public Claw             claw;
 
     //public LinearLift     linearLift;
@@ -45,7 +44,6 @@ public class LiveRobot extends Robot {
         lift            = new Lift(this);
         sound_player    = new SoundPlayer(this);
         intake          = new Intake(this);
-        crossbow        = new Crossbow(this);
         claw            = new Claw(this);
         //linearLift      = new LinearLift((this));
 

@@ -194,13 +194,6 @@ public class LiveTeleop extends LiveTeleopBase {
             robot.intake.undrop();
         }
 
-        if(gamepad1.left_stick_button) {
-            robot.crossbow.unshoot();
-        }
-
-        if(gamepad1.right_stick_button) {
-            robot.crossbow.shoot();
-        }
     }
 
     @Override
