@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.components.live;
+/*package org.firstinspires.ftc.teamcode.components.live;
 
 //import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -74,3 +74,4 @@ public class Intake extends Component {
         telemetry.addData("SPEED", TELEMETRY_DECIMAL.format(intake.motor.getPower()));
     }
 }
+*/
