@@ -184,7 +184,7 @@ public class LiveTeleop extends LiveTeleopBase {
             -(gamepad1.right_stick_x) * speed_mod
         );
 
-        robot.intake.spin(gamepad1.right_trigger-gamepad1.left_trigger);
+        /*robot.intake.spin(gamepad1.right_trigger-gamepad1.left_trigger);
 
         if(gamepad1.dpad_left) {
             robot.intake.drop();
@@ -192,7 +192,7 @@ public class LiveTeleop extends LiveTeleopBase {
 
         if(gamepad1.dpad_right) {
             robot.intake.undrop();
-        }
+        }*/
 
     }
 
