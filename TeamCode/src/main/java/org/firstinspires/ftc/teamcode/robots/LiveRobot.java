@@ -4,9 +4,9 @@ package org.firstinspires.ftc.teamcode.robots;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.components.live.Claw;
-//import org.firstinspires.ftc.teamcode.components.live.Crossbow;
 import org.firstinspires.ftc.teamcode.components.live.DriveTrain;
 //import org.firstinspires.ftc.teamcode.components.live.Intake;
+import org.firstinspires.ftc.teamcode.components.live.HoriSlides;
 import org.firstinspires.ftc.teamcode.components.live.Lift;
 //import org.firstinspires.ftc.teamcode.components.live.Lift;
 //import org.firstinspires.ftc.teamcode.components.live.LinearLift;
@@ -21,6 +21,7 @@ public class LiveRobot extends Robot {
     public DriveTrain       drive_train;
     public OCVPhoneCamera   phone_camera;
     public Lift             lift;
+    public HoriSlides       HoriSlides;
     public SoundPlayer      sound_player;
     //public Intake           intake;
     public Claw             claw;
@@ -41,6 +42,7 @@ public class LiveRobot extends Robot {
 
         drive_train     = new DriveTrain(this);
         phone_camera    = new OCVPhoneCamera(this);
+        HoriSlides      = new HoriSlides(this);
         lift            = new Lift(this);
         sound_player    = new SoundPlayer(this);
         //intake          = new Intake(this);
