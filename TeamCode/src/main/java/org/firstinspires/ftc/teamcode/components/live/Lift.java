@@ -1,7 +1,16 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
 //import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.rev.RevTouchSensor;
+
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.BLOCK_HEIGHT;
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.LIFT_OFFSET;
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MAX_LEVEL;
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MIN_LEVEL;
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_D;
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_I;
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_P;
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.TWEAK_MAX_ADD;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -9,14 +18,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.components.Component;
-
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.*;
+import org.firstinspires.ftc.teamcode.robots.Robot;
 
 // Elevator lifts the stone and extender up
 // Extender extends over the tower, and the grabber releases the stone
@@ -47,7 +53,7 @@ public class Lift extends Component {
     public DcMotorEx lift_r;
 
     //// SENSORS ////
-    public DigitalChannel limit_switch;
+    public DigitalChannel limit_switchv;
 
     public int level;
 
@@ -93,7 +99,7 @@ public class Lift extends Component {
         lift_l     = hwmap.get(DcMotorEx.class, "lift_l");
         lift_r     = hwmap.get(DcMotorEx.class, "lift_r");
 
-        limit_switch = hwmap.get(DigitalChannel.class, "limit_switch");
+        limit_switchv = hwmap.get(DigitalChannel.class, "limit_switchv");
     }
 
     @Override
@@ -102,7 +108,7 @@ public class Lift extends Component {
 
         if (starting_move) {
             if ((level == 0) || (level == -1)) {
-                if(limit_switch.getState()) {
+                if(limit_switchv.getState()) {
                     lift_l.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     lift_r.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     set_power(-1);
@@ -119,7 +125,7 @@ public class Lift extends Component {
         }
 
         if (((level == 0) || (level == -1)) && (lift_l.getPower() == -1 || lift_r.getPower() == -1)) {
-            if ((limit_switch.getState()) && (lift_l.getPower() != 0) && (lift_r.getPower() != 0)) {
+            if ((limit_switchv.getState()) && (lift_l.getPower() != 0) && (lift_r.getPower() != 0)) {
                 lift_l_offset = lift_l.getCurrentPosition();
                 lift_l.setPower(0);
                 lift_r_offset = lift_r.getCurrentPosition();
@@ -192,7 +198,7 @@ public class Lift extends Component {
 
         telemetry.addData("LEVEL", level);
 
-        telemetry.addData("LIM", !limit_switch.getState());
+        telemetry.addData("LIM", !limit_switchv.getState());
 
     }
 
