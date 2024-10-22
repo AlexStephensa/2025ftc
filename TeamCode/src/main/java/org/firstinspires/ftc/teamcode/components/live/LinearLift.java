@@ -26,7 +26,7 @@ public class LinearLift extends Component {
     public DcMotorEx lift_r;
 
     //Sensors//
-    public DigitalChannel limit_switchv;
+    public DigitalChannel limit_switchV;
 
     {
         name = "LinearLift";
@@ -50,7 +50,7 @@ public class LinearLift extends Component {
     public void lift_down() {
         lift_l.setPower(1);
         lift_r.setPower(-1);
-       if (limit_switchv.getState()){
+       if (limit_switchV.getState()){
            lift_l.setPower(0);
            lift_r.setPower(0);
        }
@@ -80,6 +80,6 @@ public class LinearLift extends Component {
 
         //telemetry.addData("LIFT BUSY",lift_l.isBusy()+" "+lift_r.isBusy());
 
-        //telemetry.addData("LIM", !limit_switchv.getState());
+        //telemetry.addData("LIM", !limit_switchV.getState());
     }
 }*/

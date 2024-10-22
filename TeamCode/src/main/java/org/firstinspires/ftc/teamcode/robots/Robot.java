@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode.robots;
 
+import static org.firstinspires.ftc.teamcode.robots.RobotConfig.BULK_READ_1_CYCLE;
+import static org.firstinspires.ftc.teamcode.robots.RobotConfig.BULK_READ_2_CYCLE;
+import static org.firstinspires.ftc.teamcode.robots.RobotConfig.COMPONENT_UPDATE_CYCLE;
+import static org.firstinspires.ftc.teamcode.robots.RobotConfig.FREQ_CHECK_CYCLE;
+import static org.firstinspires.ftc.teamcode.robots.RobotConfig.TELEMETRY_CYCLE;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -11,8 +16,6 @@ import org.firstinspires.ftc.teamcode.components.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.firstinspires.ftc.teamcode.robots.RobotConfig.*;
 
 @Config
 class RobotConfig {

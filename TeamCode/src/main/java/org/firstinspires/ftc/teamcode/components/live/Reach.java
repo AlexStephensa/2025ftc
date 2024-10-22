@@ -1,24 +1,21 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
 //import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.rev.RevTouchSensor;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+//import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.UNIT_LENGTH;
+//import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MAX_LENGTH;
+//import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MIN_LENGTH;
+
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robots.Robot;
-import org.firstinspires.ftc.teamcode.components.Component;
 import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
-
-import static org.firstinspires.ftc.teamcode.components.live.HoriSlides.*;
 
 //@Config
 
-class HoriSlideConfig {
+class ReachConfig {
     public static int UNIT_LENGTH = 240; //In encoder counts
     public static int MAX_LENGTH = 12;
     public static int MIN_LENGTH = 0;
@@ -30,35 +27,31 @@ class HoriSlideConfig {
 
 }
 
-public class HoriSlides {
-
+public class Reach {
     //// SERVOS ////
     public ServoQUS horiServL;
     public ServoQUS horiServR;
 
     //// SENSORS ////
-    public DigitalChannel limit_switchh;
+    public DigitalChannel limit_switchH;
 
-    public int Length;
+    public double Length;
+    public double MAX_REACH; //Double distance in inch that reach can extend to
+    public double MIN_REACH; //Double distance in inch that reach can contract to
 
+    protected String name = "Reach";
+
+    public Reach(Robot robot)
     {
-        name = "HoriSlides";
+        super();
     }
 
-    public HoriSlides(Robot robot)
-    {
-        super(robot);
-    }
-
-    @Override
-    public void registerHardware (HardwareMap hwmap)
-    {
-        super.registerHardware(hwmap);
-
+    //@Override
+    public void registerHardware (HardwareMap hwmap) {
         //// SERVOS ////
         horiServL     = new ServoQUS(hwmap.get(Servo.class, "horiServL"));
         horiServR     = new ServoQUS(hwmap.get(Servo.class, "horiServR"));
 
-        limit_switchh = hwmap.get(DigitalChannel.class, "limit_switchv");
+        limit_switchH = hwmap.get(DigitalChannel.class, "limit_switchV");
     }
 }

@@ -53,7 +53,7 @@ public class Lift extends Component {
     public DcMotorEx lift_r;
 
     //// SENSORS ////
-    public DigitalChannel limit_switchv;
+    public DigitalChannel limit_switchV;
 
     public int level;
 
@@ -99,7 +99,7 @@ public class Lift extends Component {
         lift_l     = hwmap.get(DcMotorEx.class, "lift_l");
         lift_r     = hwmap.get(DcMotorEx.class, "lift_r");
 
-        limit_switchv = hwmap.get(DigitalChannel.class, "limit_switchv");
+        limit_switchV = hwmap.get(DigitalChannel.class, "limit_switchV");
     }
 
     @Override
@@ -108,7 +108,7 @@ public class Lift extends Component {
 
         if (starting_move) {
             if ((level == 0) || (level == -1)) {
-                if(limit_switchv.getState()) {
+                if(limit_switchV.getState()) {
                     lift_l.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     lift_r.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     set_power(-1);
@@ -125,7 +125,7 @@ public class Lift extends Component {
         }
 
         if (((level == 0) || (level == -1)) && (lift_l.getPower() == -1 || lift_r.getPower() == -1)) {
-            if ((limit_switchv.getState()) && (lift_l.getPower() != 0) && (lift_r.getPower() != 0)) {
+            if ((limit_switchV.getState()) && (lift_l.getPower() != 0) && (lift_r.getPower() != 0)) {
                 lift_l_offset = lift_l.getCurrentPosition();
                 lift_l.setPower(0);
                 lift_r_offset = lift_r.getCurrentPosition();
@@ -198,7 +198,7 @@ public class Lift extends Component {
 
         telemetry.addData("LEVEL", level);
 
-        telemetry.addData("LIM", !limit_switchv.getState());
+        telemetry.addData("LIM", !limit_switchV.getState());
 
     }
 
