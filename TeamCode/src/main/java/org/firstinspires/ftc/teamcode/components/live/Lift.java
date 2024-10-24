@@ -96,10 +96,10 @@ public class Lift extends Component {
         super.registerHardware(hwmap);
 
         //// MOTORS ////
-        lift_l     = hwmap.get(DcMotorEx.class, "lift_l");
-        lift_r     = hwmap.get(DcMotorEx.class, "lift_r");
+        lift_l     = hwmap.get(DcMotorEx.class, "liftF");
+        lift_r     = hwmap.get(DcMotorEx.class, "liftB");
 
-        limit_switchV = hwmap.get(DigitalChannel.class, "limit_switchV");
+        limit_switchV = hwmap.get(DigitalChannel.class, "vLimSwitch");
     }
 
     @Override

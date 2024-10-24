@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.robots;
 //import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.components.live.Claw;
+//import org.firstinspires.ftc.teamcode.components.live.Claw;
 import org.firstinspires.ftc.teamcode.components.live.DriveTrain;
 //import org.firstinspires.ftc.teamcode.components.live.Intake;
 import org.firstinspires.ftc.teamcode.components.live.Reach;
@@ -24,7 +24,7 @@ public class LiveRobot extends Robot {
     public Reach            Reach;
     public SoundPlayer      sound_player;
     //public Intake           intake;
-    public Claw             claw;
+    //public Claw             claw;
 
     //public LinearLift     linearLift;
 
@@ -46,7 +46,7 @@ public class LiveRobot extends Robot {
         lift            = new Lift(this);
         sound_player    = new SoundPlayer(this);
         //intake          = new Intake(this);
-        claw            = new Claw(this);
+        //claw            = new Claw(this);
         //linearLift      = new LinearLift((this));
 
         //dashboard = FtcDashboard.getInstance();

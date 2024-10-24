@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
 //import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.control.PIDFController;
+
+import static org.firstinspires.ftc.teamcode.util.MathUtil.angle_difference;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,11 +18,7 @@ import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.coyote.path.Path;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.systems.LocalCoordinateSystem;
-import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.qus.DcMotorQUS;
-
-import static org.firstinspires.ftc.teamcode.constants.AutonomousConst.RED;
-import static org.firstinspires.ftc.teamcode.util.MathUtil.angle_difference;
 
 //@Config
 class DriveTrainConfig {
