@@ -173,10 +173,10 @@ public class LiveTeleop extends LiveTeleopBase {
         } else if(gamepad1.right_bumper) {
             speed_mod = 0.25;
         }
-            // Change this for motor directions
+            // Change +\- here for motor directions
         robot.drive_train.mecanum_drive(
             (gamepad1.left_stick_x) * speed_mod * drive_mul,
-            (gamepad1.left_stick_y) * speed_mod * drive_mul,
+            -(gamepad1.left_stick_y) * speed_mod * drive_mul,
             (gamepad1.right_stick_x) * speed_mod
         );
 
