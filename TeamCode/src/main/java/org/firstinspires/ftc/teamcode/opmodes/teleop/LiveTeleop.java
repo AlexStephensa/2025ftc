@@ -177,8 +177,8 @@ public class LiveTeleop extends LiveTeleopBase {
         robot.drive_train.mecanum_drive(
             (gamepad1.left_stick_x) * speed_mod * drive_mul,
             -(gamepad1.left_stick_y) * speed_mod * drive_mul,
-            (gamepad1.right_stick_x) * speed_mod
-        );
+            (gamepad1.right_stick_x) * speed_mod * 0.75
+        );                      // Turn speed modifier ^^
 
         /*robot.intake.spin(gamepad1.right_trigger-gamepad1.left_trigger);
 
