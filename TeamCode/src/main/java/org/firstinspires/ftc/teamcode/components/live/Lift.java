@@ -33,7 +33,7 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 class LiftConfig {
     public static int BLOCK_HEIGHT = 240; //In encoder counts
     public static int LIFT_OFFSET = 0;
-    public static int MAX_LEVEL = 12;
+    public static int MAX_LEVEL = 12; //highest level the virtual robot can extend
     public static int MIN_LEVEL = 0;
 
     public static double PID_P = 15;
