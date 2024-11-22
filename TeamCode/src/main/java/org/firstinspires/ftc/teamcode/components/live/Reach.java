@@ -68,9 +68,11 @@ public class Reach extends Component {
             if (position == 0) {
                 reach_l.queue_position(Math.toDegrees(reach_angle(MIN_LENGTH)));
                 reach_r.queue_position(Math.toDegrees(reach_angle(MIN_LENGTH)));
+                update_reach();
             } else {
                 reach_l.queue_position(Math.toDegrees(reach_angle(reach_l_target)));
                 reach_r.queue_position(Math.toDegrees(reach_angle(reach_r_target)));
+                update_reach();
             }
             starting_move = false;
         }
@@ -112,13 +114,14 @@ public class Reach extends Component {
     private double reach_angle(double dis) {
         return Math.acos((dis / SECTION) / SECT_LENGTH);
     }
-    private void set_target_position(int pos) {
-        reach_l_target = pos;
-        reach_r_target = pos;
+    private void update_reach() {
+        reach_l.update();
+        reach_r.update();
     }
     public void extend_to(int target) {
         position = Range.clip(target, MAX_LENGTH, MIN_LENGTH);
-        set_target_position((position * UNIT_LENGTH) + REACH_OFFSET);
+        reach_l_target = ((position) + REACH_OFFSET);
+        reach_r_target = ((position) + REACH_OFFSET);
         starting_move = true;
     }
     public void min_reach() {

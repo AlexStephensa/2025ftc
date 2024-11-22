@@ -47,11 +47,10 @@ public class LiveTeleop extends LiveTeleopBase {
         /// GAMEPAD TWO BACK HOTKEYS ///
         if(gamepad2.back) {
             if(gamepad2.y) {
-                robot.lift.max_lift();
+                robot.Reach.max_reach();
             }
             else {
-                //robot.linearLift.lift_down();
-                robot.lift.min_lift();
+                robot.Reach.min_reach();
             }
 
             if (gamepad2.a) {
