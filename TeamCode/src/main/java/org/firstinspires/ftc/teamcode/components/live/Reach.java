@@ -57,8 +57,8 @@ public class Reach extends Component {
     //@Override
     public void registerHardware (HardwareMap hwmap) {
         //// SERVOS ////
-        reach_l     = new ServoQUS(hwmap.get(Servo.class, "ReachL"));
-        reach_r     = new ServoQUS(hwmap.get(Servo.class, "ReachR"));
+        reach_l     = new ServoQUS(hwmap.get(Servo.class, "reachL"));
+        reach_r     = new ServoQUS(hwmap.get(Servo.class, "reachR"));
 
     }
     //@Override
