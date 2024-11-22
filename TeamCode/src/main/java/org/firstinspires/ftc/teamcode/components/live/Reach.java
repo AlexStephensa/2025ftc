@@ -6,12 +6,11 @@ import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.UNIT_LE
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.REACH_OFFSET;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MAX_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MIN_LENGTH;
+import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.TWEAK_MAX_ADD;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.SECTION;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.SECT_LENGTH;
-import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.TWEAK_MAX_ADD;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-//import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -67,11 +66,11 @@ public class Reach extends Component {
         super.update(opmode);
         if (starting_move) {
             if (position == 0) {
-                reach_l.queue_position(reach_angle(MIN_LENGTH));
-                reach_r.queue_position(reach_angle(MIN_LENGTH));
+                reach_l.queue_position(Math.toDegrees(reach_angle(MIN_LENGTH)));
+                reach_r.queue_position(Math.toDegrees(reach_angle(MIN_LENGTH)));
             } else {
-                reach_l.queue_position(reach_angle(reach_l_target));
-                reach_r.queue_position(reach_angle(reach_r_target));
+                reach_l.queue_position(Math.toDegrees(reach_angle(reach_l_target)));
+                reach_r.queue_position(Math.toDegrees(reach_angle(reach_r_target)));
             }
             starting_move = false;
         }
@@ -89,7 +88,7 @@ public class Reach extends Component {
                     reach_angle(Range.clip(
                             reach_r_target + (int) (tweak * UNIT_LENGTH),
                             MIN_LENGTH,
-                            MAX_LENGTH
+                            MAX_LENGTH + TWEAK_MAX_ADD
                     ))
             );
         }
