@@ -21,12 +21,12 @@ public class ServoQUS extends QUS {
         this(servo, true);
     }
 
-    public void queue_position(double speed) {
-        if (do_cache && speed == queued_position && first_cache) {
+    public void queue_position(double pos) {
+        if (do_cache && pos == queued_position && first_cache) {
             return;
         }
 
-        queued_position = speed;
+        queued_position = pos;
         needs_write = true;
         first_cache = true;
     }

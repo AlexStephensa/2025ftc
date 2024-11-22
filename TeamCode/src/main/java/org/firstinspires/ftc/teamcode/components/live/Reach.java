@@ -2,14 +2,16 @@ package org.firstinspires.ftc.teamcode.components.live;
 
 //import com.acmerobotics.dashboard.config.Config;
 
+import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.UNIT_LENGTH;
+import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.REACH_OFFSET;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MAX_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MIN_LENGTH;
-import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.REACH_OFFSET;
+import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.SECTION;
+import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.SECT_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.TWEAK_MAX_ADD;
-import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.UNIT_LENGTH;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
+//import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -20,19 +22,14 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
 //@Config
-
 class ReachConfig {
-    public static int UNIT_LENGTH = 10;     // mm
-    public static int REACH_OFFSET = 1;     // amount of slack alowed in code, in mm
-    public static int MAX_LENGTH = 600;     // mm
-    public static int MIN_LENGTH = 150;     // mm
-    public static int TWEAK_MAX_ADD = 20;   // mm    
-    /*
-    public static double PID_P = 15;
-    public static double PID_I = 0.1;
-    public static double PID_D = 4;
-    */
-
+    public static final int UNIT_LENGTH = 10;     // mm
+    public static final int REACH_OFFSET = 1;     // amount of slack allowed in code, in mm
+    public static final int MAX_LENGTH = 600;     // mm
+    public static final int MIN_LENGTH = 150;     // mm
+    public static final int TWEAK_MAX_ADD = 20;   // mm
+    public static final int SECTION = 6;          // number of scissor sections
+    public static final int SECT_LENGTH = 112;    // length of section-arms in mm (from end to end)
 
 }
 
@@ -41,23 +38,16 @@ public class Reach extends Component {
     public ServoQUS reach_l;
     public ServoQUS reach_r;
 
-    //// SENSORS ////
-    public DigitalChannel limit_switchH;
-
-    //// VARIABELS ////
+    //// VARIABLES ////
     public int position;    // position stored in levels
     private boolean starting_move = false;
     public int reach_l_target = 0;
     public int reach_r_target = 0;
-
-    public int reach_l_offset = REACH_OFFSET;
-    public int reach_r_offset = REACH_OFFSET;
-    public int MAX_REACH = MAX_LENGTH / UNIT_LENGTH; // Double distance in levels that reach can extend to
-    public int MIN_REACH = MIN_LENGTH / UNIT_LENGTH; // Double distance in levels that reach can contract to
+    public double reach_l_angle = reach_angle(MIN_LENGTH);
+    public double reach_r_angle = reach_angle(MIN_LENGTH);
 
     static double tweak = 0;
     static double tweak_cache = 0;
-    public static int max_position = MAX_LENGTH / UNIT_LENGTH;
 
     {
         name = "Reach";
@@ -68,23 +58,20 @@ public class Reach extends Component {
     //@Override
     public void registerHardware (HardwareMap hwmap) {
         //// SERVOS ////
-        reach_l     = new ServoQUS(hwmap.get(Servo.class, "horiServL"));
-        reach_r     = new ServoQUS(hwmap.get(Servo.class, "horiServR"));
+        reach_l     = new ServoQUS(hwmap.get(Servo.class, "ReachL"));
+        reach_r     = new ServoQUS(hwmap.get(Servo.class, "ReachR"));
 
-        limit_switchH = hwmap.get(DigitalChannel.class, "limit_switchV");
     }
     //@Override
     public void update(OpMode opmode) {
         super.update(opmode);
         if (starting_move) {
-            if ((position == 0) || (position == -1)) {
-                if(limit_switchH.getState()) {
-                    reach_l.queue_position(0);
-                    reach_r.queue_position(0);
-                }
+            if (position == 0) {
+                reach_l.queue_position(reach_angle(MIN_LENGTH));
+                reach_r.queue_position(reach_angle(MIN_LENGTH));
             } else {
-                reach_l.queue_position(reach_l_target+reach_l_offset);
-                reach_r.queue_position(reach_r_target+reach_r_offset);
+                reach_l.queue_position(reach_angle(reach_l_target));
+                reach_r.queue_position(reach_angle(reach_r_target));
             }
             starting_move = false;
         }
@@ -92,18 +79,18 @@ public class Reach extends Component {
         if (tweak != tweak_cache) {
             tweak_cache = tweak;
             reach_l.queue_position(
-                    Range.clip(
-                            reach_l_target + reach_l_offset + (int) (tweak * UNIT_LENGTH / 2),
-                            MIN_LENGTH * UNIT_LENGTH,
-                            MAX_LENGTH * UNIT_LENGTH + TWEAK_MAX_ADD
-                    )
+                    reach_angle(Range.clip(
+                            reach_l_target + (int) (tweak * UNIT_LENGTH / 2),
+                            MIN_LENGTH,
+                            MAX_LENGTH
+                    ))
             );
             reach_r.queue_position(
-                    Range.clip(
-                            reach_r_target + reach_r_offset + (int) (tweak * UNIT_LENGTH),
-                            MIN_LENGTH * UNIT_LENGTH,
-                            MAX_LENGTH * UNIT_LENGTH
-                    )
+                    reach_angle(Range.clip(
+                            reach_r_target + (int) (tweak * UNIT_LENGTH),
+                            MIN_LENGTH,
+                            MAX_LENGTH
+                    ))
             );
         }
     }
@@ -119,35 +106,29 @@ public class Reach extends Component {
         super.updateTelemetry(telemetry);
         telemetry.addData("LR TARGET",TELEMETRY_DECIMAL.format(reach_l_target));
         telemetry.addData("RR TARGET",TELEMETRY_DECIMAL.format(reach_r_target));
-        telemetry.addData("LR OFFSET", TELEMETRY_DECIMAL.format(reach_l_offset));
-        telemetry.addData("RR OFFSET", TELEMETRY_DECIMAL.format(reach_r_offset));
-        telemetry.addData("LIM", !limit_switchH.getState());
+        telemetry.addData("LR ANGLE", TELEMETRY_DECIMAL.format(reach_l_angle));
+        telemetry.addData("RR ANGLE", TELEMETRY_DECIMAL.format(reach_r_angle));
     }
 
+    private double reach_angle(double dis) {
+        return Math.acos((dis / SECTION) / SECT_LENGTH);
+    }
     private void set_target_position(int pos) {
         reach_l_target = pos;
         reach_r_target = pos;
     }
-    public void extend(int amt) {
-        elevate_to(position + amt);
-    }
-    public void elevate_to(int target) {
-        position = Math.max(Math.min(target, MAX_REACH), MIN_LENGTH);
+    public void extend_to(int target) {
+        position = Range.clip(target, MAX_LENGTH, MIN_LENGTH);
         set_target_position((position * UNIT_LENGTH) + REACH_OFFSET);
         starting_move = true;
     }
-    public void min_lift() {
-        extend(MIN_REACH - position);
+    public void min_reach() {
+        extend_to(MIN_LENGTH);
     }
-    public void max_lift() {
-        extend(MAX_REACH - position);
-    }
-    public void elevate_without_stops(int amt) {
-        position = position + amt;
-        set_target_position((position * UNIT_LENGTH) + REACH_OFFSET);
-        starting_move = true;
+    public void max_reach() {
+        extend_to(MAX_LENGTH);
     }
     public void tweak(double tweak) {
-        this.tweak = tweak;
+        Reach.tweak = tweak;
     }
 }
