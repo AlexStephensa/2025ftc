@@ -40,8 +40,8 @@ public class Reach extends Component {
     private boolean starting_move = false;
     public int reach_l_target = 0;
     public int reach_r_target = 0;
-    public double reach_l_angle = reach_angle(MIN_LENGTH);
-    public double reach_r_angle = reach_angle(MIN_LENGTH);
+    public double reach_l_angle = 0; //reach_angle(MIN_LENGTH)
+    public double reach_r_angle = 0; //reach_angle(MIN_LENGTH)
 
     static double tweak = 0;
     static double tweak_cache = 0;
@@ -77,8 +77,8 @@ public class Reach extends Component {
 
          */
         //testing outside if statement
-        reach_l.queue_position(Math.toDegrees(reach_angle(reach_l_target)));
-        reach_r.queue_position(Math.toDegrees(reach_angle(reach_r_target)));
+        reach_l.queue_position((Math.toDegrees(reach_l_angle) + 0) / 360);
+        reach_r.queue_position((Math.toDegrees(reach_r_angle) + 0) / 360);
         update_reach();
         if (tweak != tweak_cache) {
             tweak_cache = tweak;
@@ -110,8 +110,10 @@ public class Reach extends Component {
         super.updateTelemetry(telemetry);
         telemetry.addData("LR TARGET",TELEMETRY_DECIMAL.format(reach_l_target));
         telemetry.addData("RR TARGET",TELEMETRY_DECIMAL.format(reach_r_target));
-        telemetry.addData("LR ANGLE", TELEMETRY_DECIMAL.format(reach_l_angle));
-        telemetry.addData("RR ANGLE", TELEMETRY_DECIMAL.format(reach_r_angle));
+        telemetry.addData("LR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_l_angle));
+        telemetry.addData("RR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_r_angle));
+        telemetry.addData("LR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle) / 360));
+        telemetry.addData("RR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_r_angle) / 360));
         telemetry.addData("REACH MOVING", starting_move);
         //telemetry.addData("REACH", TELEMETRY_DECIMAL.format());
     }
@@ -127,6 +129,8 @@ public class Reach extends Component {
         position = Range.clip(target, MAX_LENGTH, MIN_LENGTH);
         reach_l_target = (position);
         reach_r_target = (position);
+        reach_l_angle = reach_angle(reach_l_target);
+        reach_r_angle = reach_angle(reach_r_target);
         starting_move = true;
     }
     public void min_reach() {

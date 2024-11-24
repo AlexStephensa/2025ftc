@@ -9,10 +9,10 @@ import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 //@Disabled
 public class LiveTeleop extends LiveTeleopBase {
 
-    boolean dpad_up_pressed = false;
-    boolean dpad_down_pressed = false;
-    boolean dpad_left_pressed = false;
-    boolean dpad_right_pressed = false;
+    boolean dpad1_up_pressed = false;
+    boolean dpad1_down_pressed = false;
+    boolean dpad1_left_pressed = false;
+    boolean dpad1_right_pressed = false;
 
     boolean gp1_a_pressed = false;
     boolean gp1_b_pressed = false;
@@ -84,18 +84,18 @@ public class LiveTeleop extends LiveTeleopBase {
                 robot.claw.close_right();
             }*/
 
-            if(gamepad2.dpad_up && !dpad_up_pressed) {
+            if(gamepad2.dpad_up && !dpad1_up_pressed) {
                 prepared_level = Range.clip(prepared_level + 1, 0, robot.lift.max_level);
-                dpad_up_pressed = true;
+                dpad1_up_pressed = true;
             } else if (!gamepad2.dpad_up) {
-                dpad_up_pressed = false;
+                dpad1_up_pressed = false;
             }
 
-            if(gamepad2.dpad_down && !dpad_down_pressed) {
+            if(gamepad2.dpad_down && !dpad1_down_pressed) {
                 prepared_level = Range.clip(prepared_level - 1, 0, robot.lift.max_level);
-                dpad_down_pressed = true;
+                dpad1_down_pressed = true;
             } else if (!gamepad2.dpad_down) {
-                dpad_down_pressed = false;
+                dpad1_down_pressed = false;
             }
 
             /*if(gamepad2.b) {
