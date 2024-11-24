@@ -77,8 +77,8 @@ public class Reach extends Component {
 
          */
         //testing outside if statement
-        reach_l.queue_position((Math.toDegrees(reach_l_angle) + 0) / 360);
-        reach_r.queue_position((Math.toDegrees(reach_r_angle) + 0) / 360);
+        reach_l.queue_position((Math.toDegrees(reach_l_angle)) / 360);
+        reach_r.queue_position((Math.toDegrees(reach_r_angle)) / 360);
         update_reach();
         if (tweak != tweak_cache) {
             tweak_cache = tweak;
