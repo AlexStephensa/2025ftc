@@ -62,7 +62,7 @@ public class Reach extends Component {
     //@Override
     public void update(OpMode opmode) {
         super.update(opmode);
-        if (starting_move) {
+        /*if (starting_move) {
             if (position == 0) {
                 reach_l.queue_position(Math.toDegrees(reach_angle(MIN_LENGTH)));
                 reach_r.queue_position(Math.toDegrees(reach_angle(MIN_LENGTH)));
@@ -75,6 +75,11 @@ public class Reach extends Component {
             starting_move = false;
         }
 
+         */
+        //testing outside if statement
+        reach_l.queue_position(Math.toDegrees(reach_angle(reach_l_target)));
+        reach_r.queue_position(Math.toDegrees(reach_angle(reach_r_target)));
+        update_reach();
         if (tweak != tweak_cache) {
             tweak_cache = tweak;
             reach_l.queue_position(
