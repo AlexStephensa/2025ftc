@@ -107,6 +107,8 @@ public class Reach extends Component {
         telemetry.addData("RR TARGET",TELEMETRY_DECIMAL.format(reach_r_target));
         telemetry.addData("LR ANGLE", TELEMETRY_DECIMAL.format(reach_l_angle));
         telemetry.addData("RR ANGLE", TELEMETRY_DECIMAL.format(reach_r_angle));
+        telemetry.addData("REACH MOVING", starting_move);
+        //telemetry.addData("REACH", TELEMETRY_DECIMAL.format());
     }
 
     private double reach_angle(double dis) {
