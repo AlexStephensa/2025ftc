@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.components.live;
 //import com.acmerobotics.dashboard.config.Config;
 
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.UNIT_LENGTH;
-import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.REACH_OFFSET;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MAX_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MIN_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.TWEAK_MAX_ADD;
@@ -23,7 +22,6 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 //@Config
 class ReachConfig {
     public static final int UNIT_LENGTH = 10;     // mm
-    public static final int REACH_OFFSET = 1;     // amount of slack allowed in code, in mm
     public static final int MAX_LENGTH = 600;     // mm
     public static final int MIN_LENGTH = 150;     // mm
     public static final int TWEAK_MAX_ADD = 20;   // mm
@@ -120,8 +118,8 @@ public class Reach extends Component {
     }
     public void extend_to(int target) {
         position = Range.clip(target, MAX_LENGTH, MIN_LENGTH);
-        reach_l_target = ((position) + REACH_OFFSET);
-        reach_r_target = ((position) + REACH_OFFSET);
+        reach_l_target = (position);
+        reach_r_target = (position);
         starting_move = true;
     }
     public void min_reach() {
