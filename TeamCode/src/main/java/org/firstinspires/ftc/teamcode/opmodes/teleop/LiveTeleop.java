@@ -21,8 +21,6 @@ public class LiveTeleop extends LiveTeleopBase {
     int prepared_level = 1;
     int prepared_cone = 4;
 
-    int drive_mul = -1;
-
 
     @Override
     public void on_init() {
@@ -174,8 +172,8 @@ public class LiveTeleop extends LiveTeleopBase {
         }
             // Change +\- here for motor directions
         robot.drive_train.mecanum_drive(
-            (gamepad1.left_stick_x) * speed_mod * drive_mul,
-            -(gamepad1.left_stick_y) * speed_mod * drive_mul,
+            (gamepad1.left_stick_x) * speed_mod,
+            (gamepad1.left_stick_y) * speed_mod,
             (gamepad1.right_stick_x) * speed_mod * 0.85
         );                      // Turn speed modifier ^^
 
