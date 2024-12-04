@@ -1,14 +1,19 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.components.Component;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.util.qus.CRServoQUS;
 import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
-//@Config
+@Config
 class IntakeConfig {
     // Servo Positions for Initialization
     public static double pitchL_init = 0;
@@ -39,7 +44,7 @@ public class Intake extends Component {
     public CRServoQUS intake;
 
     //// SENSORS ////
-    public ColorRangeSensor color_sensor;
+    public ColorRangeSensor intakeColor;
     public boolean color_sensor_enabled = false;
     public double last_distance = 0;
 
@@ -50,16 +55,43 @@ public class Intake extends Component {
         super(robot);
     }
 
-    //@Override
+    @Override
     public void registerHardware (HardwareMap hwmap)
     {
         super.registerHardware(hwmap);
 
         //// SERVOS ////
-        //grabber = new ServoQUS(hwmap.get(Servo.class, "grabber"));
-        //cradle = new ServoQUS(hwmap.get(Servo.class, "cradle"));
+        pitchL = new ServoQUS(hwmap.get(Servo.class, "pitchL"));
+        pitchR = new ServoQUS(hwmap.get(Servo.class, "pitchR"));
+
+        intake = new CRServoQUS(hwmap.get(CRServo.class, "intake"));
 
         //// SENSORS ////
-        //color_sensor = hwmap.get(ColorRangeSensor.class, "color_sensor");
+        intakeColor = hwmap.get(ColorRangeSensor.class, "intakeColor");
+
+    }
+
+    //@Override
+    public void intakeUpdate(OpMode opmode) {
+        super.update(opmode);
+        pitchL.update();
+        pitchR.update();
+        intake.update();
+    }
+
+    @Override
+    public void startup() {
+        super.startup();
+        intakeRun(0);
+        intakeRest();
+    }
+
+    public void intakeRun(double speed) {
+        intake.queue_power(speed);
+    }
+
+    public void intakeRest() {
+        pitchL.queue_position(IntakeConfig.pitchL_init);
+        pitchR.queue_position(IntakeConfig.pitchR_init);
     }
 }

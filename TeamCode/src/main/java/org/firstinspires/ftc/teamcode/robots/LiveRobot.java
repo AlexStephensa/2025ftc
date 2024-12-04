@@ -1,16 +1,13 @@
 package org.firstinspires.ftc.teamcode.robots;
 
-//import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-//import org.firstinspires.ftc.teamcode.components.live.Claw;
 import org.firstinspires.ftc.teamcode.components.live.DriveTrain;
-//import org.firstinspires.ftc.teamcode.components.live.Intake;
-import org.firstinspires.ftc.teamcode.components.live.Reach;
+import org.firstinspires.ftc.teamcode.components.live.Intake;
 import org.firstinspires.ftc.teamcode.components.live.Lift;
-//import org.firstinspires.ftc.teamcode.components.live.Lift;
-//import org.firstinspires.ftc.teamcode.components.live.LinearLift;
 import org.firstinspires.ftc.teamcode.components.live.OCVPhoneCamera;
+import org.firstinspires.ftc.teamcode.components.live.Reach;
 import org.firstinspires.ftc.teamcode.components.live.SoundPlayer;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Point;
 
@@ -23,13 +20,13 @@ public class LiveRobot extends Robot {
     public Lift             lift;
     public Reach            Reach;
     public SoundPlayer      sound_player;
-    //public Intake           intake;
+    public Intake           intake;
     //public Claw             claw;
 
     //public LinearLift     linearLift;
 
 
-    //FtcDashboard            dashboard;
+    FtcDashboard            dashboard;
 
     ArrayList<Point> robot_movement = new ArrayList<Point>();
 
@@ -45,7 +42,7 @@ public class LiveRobot extends Robot {
         Reach           = new Reach(this);
         lift            = new Lift(this);
         sound_player    = new SoundPlayer(this);
-        //intake          = new Intake(this);
+        intake          = new Intake(this);
         //claw            = new Claw(this);
         //linearLift      = new LinearLift((this));
 
