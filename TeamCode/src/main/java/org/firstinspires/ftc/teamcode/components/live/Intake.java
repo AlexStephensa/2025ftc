@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -24,14 +25,13 @@ class IntakeConfig {
     public static double pitchR_tran = 0;
 
     // Servo Positions for Reach Movement
-    public static double pitchL_move = 0;
-    public static double pitchR_move = 0;
+    public static double pitchL_cradel = 0;
+    public static double pitchR_cradel = 0.57;
 
     // Servo Positions for Intake from Field
     public static double pitchL_intake = 0;
     public static double pitchR_intake = 0;
 
-    public static double intake_speed = 0;
 
     public static int COLOR_UPDATE = 5; // Color Sensor update interval
     public static int COLOR_DISTANCE = 75; // Cut off distance of color sensor in mm
@@ -63,8 +63,10 @@ public class Intake extends Component {
         //// SERVOS ////
         pitchL = new ServoQUS(hwmap.get(Servo.class, "pitchL"));
         pitchR = new ServoQUS(hwmap.get(Servo.class, "pitchR"));
+        pitchR.servo.setDirection(Servo.Direction.REVERSE); // come back to this
 
         intake = new CRServoQUS(hwmap.get(CRServo.class, "intake"));
+        intake.servo.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //// SENSORS ////
         intakeColor = hwmap.get(ColorRangeSensor.class, "intakeColor");
@@ -72,8 +74,13 @@ public class Intake extends Component {
     }
 
     //@Override
-    public void intakeUpdate(OpMode opmode) {
+    public void update(OpMode opmode) {
         super.update(opmode);
+
+        intakeUpdate();
+    }
+
+    public void intakeUpdate() {
         pitchL.update();
         pitchR.update();
         intake.update();
@@ -83,15 +90,30 @@ public class Intake extends Component {
     public void startup() {
         super.startup();
         intakeRun(0);
-        intakeRest();
+        intake_init();
     }
 
     public void intakeRun(double speed) {
         intake.queue_power(speed);
     }
 
-    public void intakeRest() {
+    public void intake_init() {
         pitchL.queue_position(IntakeConfig.pitchL_init);
         pitchR.queue_position(IntakeConfig.pitchR_init);
+    }
+
+    public void intake_cradel() {
+        pitchL.queue_position(IntakeConfig.pitchL_cradel);
+        pitchR.queue_position(IntakeConfig.pitchR_cradel);
+    }
+
+    public void intake_tran() {
+        pitchL.queue_position(IntakeConfig.pitchL_tran);
+        pitchR.queue_position(IntakeConfig.pitchR_tran);
+    }
+
+    public void intake_intake() {
+        pitchL.queue_position(IntakeConfig.pitchL_intake);
+        pitchR.queue_position(IntakeConfig.pitchR_intake);
     }
 }
