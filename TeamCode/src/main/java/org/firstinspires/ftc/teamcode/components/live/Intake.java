@@ -36,6 +36,7 @@ class IntakeConfig {
     public static int COLOR_UPDATE = 5; // Color Sensor update interval
     public static int COLOR_DISTANCE = 75; // Cut off distance of color sensor in mm
 }
+
 public class Intake extends Component {
 
     //// SERVOS ////
@@ -47,13 +48,13 @@ public class Intake extends Component {
     public ColorRangeSensor intakeColor;
     public boolean color_sensor_enabled = false;
     public double last_distance = 0;
+public String current_color = null;
 
     {
         name = "Intake";
     }
-    public Intake(Robot robot) {
-        super(robot);
-    }
+    
+    public Intake(Robot robot) { super(robot); }
 
     @Override
     public void registerHardware (HardwareMap hwmap)
@@ -63,13 +64,14 @@ public class Intake extends Component {
         //// SERVOS ////
         pitchL = new ServoQUS(hwmap.get(Servo.class, "pitchL"));
         pitchR = new ServoQUS(hwmap.get(Servo.class, "pitchR"));
-        pitchR.servo.setDirection(Servo.Direction.REVERSE); // come back to this
+        pitchR.servo.setDirection(Servo.Direction.REVERSE);
 
         intake = new CRServoQUS(hwmap.get(CRServo.class, "intake"));
         intake.servo.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //// SENSORS ////
         intakeColor = hwmap.get(ColorRangeSensor.class, "intakeColor");
+        public static String current_color = null;
 
     }
 
@@ -78,12 +80,6 @@ public class Intake extends Component {
         super.update(opmode);
 
         update_intake();
-    }
-
-    public void update_intake() {
-        pitchL.update();
-        pitchR.update();
-        intake.update();
     }
 
     @Override
@@ -96,6 +92,16 @@ public class Intake extends Component {
     public void intakeRun(double speed) {
         intake.queue_power(speed);
     }
+    
+    public void update_intake() {
+        pitchL.update();
+        pitchR.update();
+        intake.update();
+    }
+
+    public void intake_colorCheck(String color) {
+        current_color = intakeColor.getRawColor();
+    }
 
     public void intake_init() {
         pitchL.queue_position(IntakeConfig.pitchL_init);
@@ -107,7 +113,7 @@ public class Intake extends Component {
         pitchR.queue_position(IntakeConfig.pitchR_cradel);
     }
 
-    public void intake_tran() {
+    public void intake_transfer() {
         pitchL.queue_position(IntakeConfig.pitchL_tran);
         pitchR.queue_position(IntakeConfig.pitchR_tran);
     }
