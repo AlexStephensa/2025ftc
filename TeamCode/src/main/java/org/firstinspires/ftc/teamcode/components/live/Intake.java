@@ -77,10 +77,10 @@ public class Intake extends Component {
     public void update(OpMode opmode) {
         super.update(opmode);
 
-        intakeUpdate();
+        update_intake();
     }
 
-    public void intakeUpdate() {
+    public void update_intake() {
         pitchL.update();
         pitchR.update();
         intake.update();
