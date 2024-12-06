@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 class ReachConfig {
     public static final int UNIT_LENGTH = 10;     // mm
     public static final int MAX_LENGTH = 600;     // mm
-    public static final int MIN_LENGTH = 150;     // mm
+    public static final int MIN_LENGTH = 100;     // mm
     public static final int TWEAK_MAX_ADD = 20;   // mm
     public static final int SECTION = 6;          // number of scissor sections
     public static final int SECT_LENGTH = 112;    // length of section-arms in mm (from end to end)
@@ -114,8 +114,6 @@ public class Reach extends Component {
         telemetry.addData("RR TARGET",TELEMETRY_DECIMAL.format(reach_r_target));
         telemetry.addData("LR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_l_angle));
         telemetry.addData("RR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_r_angle));
-        telemetry.addData("LR ANGLE (DEG)", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle)));
-        telemetry.addData("RR ANGLE (DEG)", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_r_angle)));
         telemetry.addData("LR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle) / 360));
         telemetry.addData("RR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_r_angle) / 360));
         telemetry.addData("REACH MOVING", starting_move);
@@ -123,7 +121,7 @@ public class Reach extends Component {
     }
 
     private double reach_angle(double dis) {
-        return Math.acos((dis / SECTION) / SECT_LENGTH);
+        return Math.acos(dis / (SECTION * SECT_LENGTH));
     }
     private void update_reach() {
         reach_l.update();
