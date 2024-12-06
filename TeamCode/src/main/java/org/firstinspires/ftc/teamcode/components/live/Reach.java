@@ -40,8 +40,8 @@ public class Reach extends Component {
     private boolean starting_move = false;
     public int reach_l_target = 0;
     public int reach_r_target = 0;
-    public double reach_l_angle = 0; //reach_angle(MIN_LENGTH)
-    public double reach_r_angle = 0; //reach_angle(MIN_LENGTH)
+    public double reach_l_angle = reach_angle(MIN_LENGTH);
+    public double reach_r_angle = reach_angle(MIN_LENGTH);
 
     static double tweak = 0;
     static double tweak_cache = 0;
@@ -101,6 +101,8 @@ public class Reach extends Component {
     //@Override
     public void startup() {
         super.startup();
+        min_reach();
+        update_reach();
     }
     public void shutdown() {
         //shut down
@@ -112,6 +114,8 @@ public class Reach extends Component {
         telemetry.addData("RR TARGET",TELEMETRY_DECIMAL.format(reach_r_target));
         telemetry.addData("LR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_l_angle));
         telemetry.addData("RR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_r_angle));
+        telemetry.addData("LR ANGLE (DEG)", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle)));
+        telemetry.addData("RR ANGLE (DEG)", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_r_angle)));
         telemetry.addData("LR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle) / 360));
         telemetry.addData("RR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_r_angle) / 360));
         telemetry.addData("REACH MOVING", starting_move);

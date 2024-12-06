@@ -17,20 +17,20 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 @Config
 class IntakeConfig {
     // Servo Positions for Initialization
-    public static double pitchL_init = 0;
-    public static double pitchR_init = 0;
+    public static double pitchL_init = 0.5;
+    public static double pitchR_init = 0.5;
 
     // Servo Positions for Sample Transfer
-    public static double pitchL_tran = 0;
-    public static double pitchR_tran = 0;
+    public static double pitchL_tran = 0.4;
+    public static double pitchR_tran = 0.4;
 
     // Servo Positions for Reach Movement
-    public static double pitchL_cradel = 0;
-    public static double pitchR_cradel = 0.57;
+    public static double pitchL_cradel = 0.45;
+    public static double pitchR_cradel = 0.45;
 
     // Servo Positions for Intake from Field
-    public static double pitchL_intake = 0;
-    public static double pitchR_intake = 0;
+    public static double pitchL_intake = 0.56;
+    public static double pitchR_intake = 0.56;
 
 
     public static int COLOR_UPDATE = 5; // Color Sensor update interval
@@ -71,7 +71,7 @@ public String current_color = null;
 
         //// SENSORS ////
         intakeColor = hwmap.get(ColorRangeSensor.class, "intakeColor");
-        public static String current_color = null;
+        //public static String current_color = null;
 
     }
 
@@ -99,9 +99,9 @@ public String current_color = null;
         intake.update();
     }
 
-    public void intake_colorCheck(String color) {
+    /*public void intake_colorCheck(String color) {
         current_color = intakeColor.getRawColor();
-    }
+    }*/
 
     public void intake_init() {
         pitchL.queue_position(IntakeConfig.pitchL_init);
