@@ -34,14 +34,6 @@ public class LiveTeleop extends LiveTeleopBase {
 
     @Override
     public void on_loop() {
-        /*if (!robot.claw.left_claw_open && !robot.claw.right_claw_open) {
-            gamepad1.setLedColor(0, 1, 0, LED_DURATION_CONTINUOUS);
-            gamepad2.setLedColor(0, 1, 0, LED_DURATION_CONTINUOUS);
-        }
-        else {
-            gamepad1.setLedColor(1, 0, 0, LED_DURATION_CONTINUOUS);
-            gamepad2.setLedColor(1, 0, 0, LED_DURATION_CONTINUOUS);
-        }*/
 
         /// GAMEPAD TWO BACK HOTKEYS ///
         if(gamepad2.back) {
@@ -78,15 +70,7 @@ public class LiveTeleop extends LiveTeleopBase {
                 robot.intake.intake_transfer();
             }
 
-            /*f (gamepad2.left_bumper) {
-                robot.intake.intake_cradel();
-            }
-
-            if (gamepad2.right_bumper){
-                robot.intake.();
-            }*/
-
-            if(gamepad2.dpad_up && !dpad1_up_pressed) {
+            /*if(gamepad2.dpad_up && !dpad1_up_pressed) {
                 prepared_level = Range.clip(prepared_level + 1, 0, Lift.max_level);
                 dpad1_up_pressed = true;
             } else if (!gamepad2.dpad_up) {
@@ -98,7 +82,7 @@ public class LiveTeleop extends LiveTeleopBase {
                 dpad1_down_pressed = true;
             } else if (!gamepad2.dpad_down) {
                 dpad1_down_pressed = false;
-            }
+            }*/
 
             robot.Reach.tweak(gamepad2.right_trigger - gamepad2.left_trigger);
 
