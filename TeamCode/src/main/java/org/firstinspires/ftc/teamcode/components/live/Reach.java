@@ -22,8 +22,8 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 //@Config
 class ReachConfig {
     public static final int UNIT_LENGTH     = 10;   // mm
-    public static final int MAX_LENGTH      = 750 - 600;  // mm,  don't know why the 750 needs to be here
-    public static final int MIN_LENGTH      = 750 - 100;  // mm
+    public static final int MAX_LENGTH      = 600;  // mm,  don't know why the 750 needs to be here
+    public static final int MIN_LENGTH      = 75;  // mm
     public static final int TWEAK_MAX_ADD   = 20;   // mm
     public static final int SECTION         = 6;    // number of scissor sections
     public static final int SECT_LENGTH     = 112;  // length of section-arms in mm (from end to end)
@@ -76,9 +76,6 @@ public class Reach extends Component {
         }
 
          */
-        //testing outside if statement
-        reach_l.queue_position((Math.toDegrees(reach_l_angle)) / 360);
-        reach_r.queue_position((Math.toDegrees(reach_r_angle)) / 360);
         update_reach();
         if (tweak != tweak_cache) {
             tweak_cache = tweak;
@@ -101,7 +98,6 @@ public class Reach extends Component {
     //@Override
     public void startup() {
         super.startup();
-        min_reach();
         update_reach();
     }
     public void shutdown() {
@@ -124,6 +120,9 @@ public class Reach extends Component {
         return Math.acos(dis / (SECTION * SECT_LENGTH));
     }
     private void update_reach() {
+        reach_l.queue_position((Math.toDegrees(reach_l_angle)) / 360);
+        reach_r.queue_position((Math.toDegrees(reach_r_angle)) / 360);
+
         reach_l.update();
         reach_r.update();
     }

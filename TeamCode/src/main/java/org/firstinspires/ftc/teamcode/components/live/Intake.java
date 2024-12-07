@@ -29,8 +29,8 @@ class IntakeConfig {
     public static double pitchR_cradel = 0.45;
 
     // Servo Positions for Intake from Field
-    public static double pitchL_intake = 0.56;
-    public static double pitchR_intake = 0.56;
+    public static double pitchL_intake = 0.57;
+    public static double pitchR_intake = 0.57;
 
 
     public static int COLOR_UPDATE = 5; // Color Sensor update interval

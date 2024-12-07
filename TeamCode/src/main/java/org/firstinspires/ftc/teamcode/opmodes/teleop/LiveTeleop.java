@@ -36,11 +36,13 @@ public class LiveTeleop extends LiveTeleopBase {
     public void on_loop() {
 
         /// GAMEPAD TWO BACK HOTKEYS ///
+
+        // Reach
         if(gamepad2.back) {
             if(gamepad2.y) {
                 robot.Reach.max_reach();
             }
-            else {
+            else if (gamepad2.b){
                 robot.Reach.min_reach();
             }
 
