@@ -2,13 +2,16 @@ package org.firstinspires.ftc.teamcode.components.live;
 
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.Component;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.util.qus.CRServoQUS;
@@ -32,9 +35,14 @@ class IntakeConfig {
     public static double pitchL_intake = 0.57;
     public static double pitchR_intake = 0.57;
 
+    public static String intakeCurrent = "Initialization";
 
-    public static int COLOR_UPDATE = 5; // Color Sensor update interval
+
+    public static int COLOR_UPDATE_RATE = 5; // Color Sensor update interval
     public static int COLOR_DISTANCE = 75; // Cut off distance of color sensor in mm
+    public final boolean color_sensor_enabled = false;
+    public double last_distance = 0;
+    public static NormalizedRGBA current_color;
 }
 
 public class Intake extends Component {
@@ -46,9 +54,8 @@ public class Intake extends Component {
 
     //// SENSORS ////
     public ColorRangeSensor intakeColor;
-    public boolean color_sensor_enabled = false;
-    public double last_distance = 0;
-public String current_color = null;
+
+    public int ColorRate = IntakeConfig.COLOR_UPDATE_RATE;
 
     {
         name = "Intake";
@@ -70,8 +77,10 @@ public String current_color = null;
         intake.servo.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //// SENSORS ////
-        intakeColor = hwmap.get(ColorRangeSensor.class, "intakeColor");
-        //public static String current_color = null;
+        intakeColor = hwmap.get(RevColorSensorV3.class, "intakeColor");
+        //current_color = null;
+
+
 
     }
 
@@ -89,6 +98,14 @@ public String current_color = null;
         intake_init();
     }
 
+    @Override
+    public void updateTelemetry(Telemetry telemetry) {
+        super.updateTelemetry(telemetry);
+        telemetry.addData("SPINNER",TELEMETRY_DECIMAL.format(intake.servo.getPower()));
+        telemetry.addData("INTAKE CURRENT",TELEMETRY_DECIMAL.format(IntakeConfig.intakeCurrent));
+        telemetry.addData("COLOR RGBA",TELEMETRY_DECIMAL.format(IntakeConfig.current_color));
+    }
+
     public void intakeRun(double speed) {
         intake.queue_power(speed);
     }
@@ -99,27 +116,31 @@ public String current_color = null;
         intake.update();
     }
 
-    /*public void intake_colorCheck(String color) {
-        current_color = intakeColor.getRawColor();
-    }*/
+    public void intake_colorCheck() {
+        IntakeConfig.current_color = intakeColor.getNormalizedColors();
+    }
 
     public void intake_init() {
         pitchL.queue_position(IntakeConfig.pitchL_init);
         pitchR.queue_position(IntakeConfig.pitchR_init);
+        IntakeConfig.intakeCurrent = "INITIAL"; // Initialization
     }
 
     public void intake_cradel() {
         pitchL.queue_position(IntakeConfig.pitchL_cradel);
         pitchR.queue_position(IntakeConfig.pitchR_cradel);
+        IntakeConfig.intakeCurrent = "CRADEL";
     }
 
     public void intake_transfer() {
         pitchL.queue_position(IntakeConfig.pitchL_tran);
         pitchR.queue_position(IntakeConfig.pitchR_tran);
+        IntakeConfig.intakeCurrent = "TRANS";
     }
 
     public void intake_intake() {
         pitchL.queue_position(IntakeConfig.pitchL_intake);
         pitchR.queue_position(IntakeConfig.pitchR_intake);
+        IntakeConfig.intakeCurrent = "INTAKE";
     }
 }

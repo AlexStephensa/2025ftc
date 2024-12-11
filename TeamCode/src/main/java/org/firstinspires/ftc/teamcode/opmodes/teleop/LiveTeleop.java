@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.components.live.Lift;
 import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 
 @TeleOp(name="Teleop Live", group="driver control")
@@ -110,6 +108,10 @@ public class LiveTeleop extends LiveTeleopBase {
             (gamepad1.left_stick_y) * speed_mod,
             (gamepad1.right_stick_x) * speed_mod * 0.85
         );                      // Turn speed modifier ^^
+
+        if ((getRuntime() % robot.intake.ColorRate) == 0) {
+            robot.intake.intake_colorCheck();
+        }
 
     }
 
