@@ -38,13 +38,38 @@ public class LiveTeleop extends LiveTeleopBase {
         /// GAMEPAD TWO BACK HOTKEYS ///
 
         // Reach
-        if(gamepad2.back) {
-            if(gamepad2.y) {
-                robot.Reach.max_reach();
-            }
-            else if (gamepad2.b){
-                robot.Reach.min_reach();
-            }
+        if(gamepad2.dpad_up) {
+            robot.Reach.max_reach();
+        }
+        else if (gamepad2.dpad_down){
+            robot.Reach.min_reach();
+            robot.intake.intake_cradel();
+        }
+
+
+        /*if (gamepad2.a) {
+            robot.intake.intakeRun(1);
+        } else if (gamepad2.b) {
+            robot.intake.intakeRun(-1);
+        } else {
+            robot.intake.intakeRun(0);
+        }*/
+
+        robot.intake.intakeRun(gamepad2.right_trigger - gamepad2.left_trigger);
+
+        if(gamepad2.right_bumper) {
+            robot.intake.intake_intake();
+        }
+
+        if(gamepad2.left_bumper) {
+            robot.intake.intake_cradel();
+            robot.intake.intakeRun(0);
+        }
+
+        //robot.Reach.tweak(gamepad2.right_trigger - gamepad2.left_trigger);
+
+        /*if(gamepad2.back) {
+
 
         } else {
 
@@ -54,25 +79,8 @@ public class LiveTeleop extends LiveTeleopBase {
             }
 
             // Intake
-            robot.intake.intakeRun(gamepad2.right_trigger - gamepad2.left_trigger);
 
-            if(gamepad2.dpad_left) {
-                robot.intake.intake_intake();
-            }
-
-            if(gamepad2.dpad_right) {
-                robot.intake.intake_cradel();
-            }
-
-            if(gamepad2.dpad_up) {
-                robot.intake.intake_init();
-            }
-
-            if(gamepad2.dpad_down) {
-                robot.intake.intake_transfer();
-            }
-
-            /*if(gamepad2.dpad_up && !dpad1_up_pressed) {
+            if(gamepad2.dpad_up && !dpad1_up_pressed) {
                 prepared_level = Range.clip(prepared_level + 1, 0, Lift.max_level);
                 dpad1_up_pressed = true;
             } else if (!gamepad2.dpad_up) {
@@ -84,11 +92,9 @@ public class LiveTeleop extends LiveTeleopBase {
                 dpad1_down_pressed = true;
             } else if (!gamepad2.dpad_down) {
                 dpad1_down_pressed = false;
-            }*/
+            }
 
-            robot.Reach.tweak(gamepad2.right_trigger - gamepad2.left_trigger);
-
-        }
+        }*/
 
         /// DRIVE CONTROLS ///
         double speed_mod = 1;

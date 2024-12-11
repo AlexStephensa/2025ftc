@@ -38,8 +38,8 @@ public class Reach extends Component {
     //// VARIABLES ////
     public int position;    // position stored in levels
     private boolean starting_move = false;
-    public int reach_l_target = 0;
-    public int reach_r_target = 0;
+    public int reach_l_target = MIN_LENGTH;
+    public int reach_r_target = MIN_LENGTH;
     public double reach_l_angle = reach_angle(MIN_LENGTH);
     public double reach_r_angle = reach_angle(MIN_LENGTH);
 
@@ -127,7 +127,7 @@ public class Reach extends Component {
         reach_r.update();
     }
     public void extend_to(int target) {
-        position = Range.clip(target, MAX_LENGTH, MIN_LENGTH);
+        position = Range.clip(target, MIN_LENGTH, MAX_LENGTH);
         reach_l_target = (position);
         reach_r_target = (position);
         reach_l_angle = reach_angle(reach_l_target);
