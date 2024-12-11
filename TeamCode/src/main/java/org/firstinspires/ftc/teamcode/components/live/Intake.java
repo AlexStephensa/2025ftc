@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
@@ -42,7 +41,7 @@ class IntakeConfig {
     public static int COLOR_DISTANCE = 75; // Cut off distance of color sensor in mm
     public final boolean color_sensor_enabled = false;
     public double last_distance = 0;
-    public static NormalizedRGBA current_color;
+    public static NormalizedRGBA current_color = new NormalizedRGBA();
 }
 
 public class Intake extends Component {
@@ -53,7 +52,7 @@ public class Intake extends Component {
     public CRServoQUS intake;
 
     //// SENSORS ////
-    public ColorRangeSensor intakeColor;
+    public RevColorSensorV3 intakeColor;
 
     public int ColorRate = IntakeConfig.COLOR_UPDATE_RATE;
 
@@ -78,7 +77,6 @@ public class Intake extends Component {
 
         //// SENSORS ////
         intakeColor = hwmap.get(RevColorSensorV3.class, "intakeColor");
-        //current_color = null;
 
 
 
@@ -102,8 +100,8 @@ public class Intake extends Component {
     public void updateTelemetry(Telemetry telemetry) {
         super.updateTelemetry(telemetry);
         telemetry.addData("SPINNER",TELEMETRY_DECIMAL.format(intake.servo.getPower()));
-        telemetry.addData("INTAKE CURRENT",TELEMETRY_DECIMAL.format(IntakeConfig.intakeCurrent));
-        telemetry.addData("COLOR RGBA",TELEMETRY_DECIMAL.format(IntakeConfig.current_color));
+        telemetry.addData("INTAKE CURRENT",IntakeConfig.intakeCurrent);
+        telemetry.addData("COLOR RGBA",IntakeConfig.current_color.red + " " + IntakeConfig.current_color.blue + " " + IntakeConfig.current_color.green + " " + IntakeConfig.current_color.alpha);
     }
 
     public void intakeRun(double speed) {
@@ -123,7 +121,7 @@ public class Intake extends Component {
     public void intake_init() {
         pitchL.queue_position(IntakeConfig.pitchL_init);
         pitchR.queue_position(IntakeConfig.pitchR_init);
-        IntakeConfig.intakeCurrent = "INITIAL"; // Initialization
+        IntakeConfig.intakeCurrent = "INITIAL";
     }
 
     public void intake_cradel() {

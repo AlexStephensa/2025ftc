@@ -109,7 +109,7 @@ public class LiveTeleop extends LiveTeleopBase {
             (gamepad1.right_stick_x) * speed_mod * 0.85
         );                      // Turn speed modifier ^^
 
-        if ((getRuntime() % robot.intake.ColorRate) == 0) {
+       if ((getRuntime() % robot.intake.ColorRate) == 0) {
             robot.intake.intake_colorCheck();
         }
 
