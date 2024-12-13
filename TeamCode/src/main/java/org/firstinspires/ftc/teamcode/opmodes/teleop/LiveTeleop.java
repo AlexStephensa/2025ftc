@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.components.live.Lift;
 import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 
 @TeleOp(name="Teleop Live", group="driver control")
@@ -39,6 +41,9 @@ public class LiveTeleop extends LiveTeleopBase {
         if(gamepad2.dpad_up) {
             robot.Reach.max_reach();
         }
+        else if (gamepad2.dpad_left) {
+            robot.Reach.mid_reach();
+        }
         else if (gamepad2.dpad_down){
             robot.Reach.min_reach();
             robot.intake.intake_cradel();
@@ -66,17 +71,22 @@ public class LiveTeleop extends LiveTeleopBase {
 
         //robot.Reach.tweak(gamepad2.right_trigger - gamepad2.left_trigger);
 
-        /*if(gamepad2.back) {
+        if (gamepad2.back) {
+            /*if (gamepad2.y) {
+                robot.lift.max_lift();
+            }
+            else if (gamepad2.x) {
+                robot.lift.min_lift();
+            }*/
+
 
 
         } else {
 
             /// LIFT ///
-            if(gamepad2.x){
+            /*if(gamepad2.x){
                 robot.lift.elevate_to(prepared_level);
             }
-
-            // Intake
 
             if(gamepad2.dpad_up && !dpad1_up_pressed) {
                 prepared_level = Range.clip(prepared_level + 1, 0, Lift.max_level);
@@ -90,9 +100,9 @@ public class LiveTeleop extends LiveTeleopBase {
                 dpad1_down_pressed = true;
             } else if (!gamepad2.dpad_down) {
                 dpad1_down_pressed = false;
-            }
+            }*/
 
-        }*/
+        }
 
         /// DRIVE CONTROLS ///
         double speed_mod = 1;

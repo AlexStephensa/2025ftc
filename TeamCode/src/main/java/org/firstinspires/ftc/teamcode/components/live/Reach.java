@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.components.live;
 
 //import com.acmerobotics.dashboard.config.Config;
 
+import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MID_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.UNIT_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MAX_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MIN_LENGTH;
@@ -24,6 +25,7 @@ class ReachConfig {
     public static final int UNIT_LENGTH     = 10;   // mm
     public static final int MAX_LENGTH      = 600;  // mm
     public static final int MIN_LENGTH      = 150;  // mm
+    public static final int MID_LENGTH      = 400; // mm
     public static final int TWEAK_MAX_ADD   = 20;   // mm
     public static final int SECTION         = 6;    // number of scissor sections
     public static final int SECT_LENGTH     = 112;  // length of section-arms in mm (from end to end)
@@ -139,6 +141,9 @@ public class Reach extends Component {
     }
     public void max_reach() {
         extend_to(MAX_LENGTH);
+    }
+    public void mid_reach() {
+        extend_to(MID_LENGTH);
     }
     public void tweak(double tweak) {
         Reach.tweak = tweak;
