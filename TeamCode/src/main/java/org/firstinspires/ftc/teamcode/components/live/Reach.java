@@ -78,12 +78,12 @@ public class Reach extends Component {
         }
 
          */
-        update_reach();
+
         if (tweak != tweak_cache) {
             tweak_cache = tweak;
             reach_l.queue_position(
                     reach_angle(Range.clip(
-                            reach_l_target + (int) (tweak * UNIT_LENGTH / 2),
+                            reach_l_target + (int) (tweak * UNIT_LENGTH),
                             MIN_LENGTH,
                             MAX_LENGTH
                     ))
@@ -96,6 +96,7 @@ public class Reach extends Component {
                     ))
             );
         }
+        update_reach();
     }
     //@Override
     public void startup() {
@@ -122,8 +123,6 @@ public class Reach extends Component {
         return Math.acos(dis / (SECTION * SECT_LENGTH));
     }
     private void update_reach() {
-        reach_l.queue_position((Math.toDegrees(reach_l_angle)) / 360);
-        reach_r.queue_position((Math.toDegrees(reach_r_angle)) / 360);
 
         reach_l.update();
         reach_r.update();
@@ -134,6 +133,9 @@ public class Reach extends Component {
         reach_r_target = (position);
         reach_l_angle = reach_angle(reach_l_target);
         reach_r_angle = reach_angle(reach_r_target);
+
+        reach_l.queue_position((Math.toDegrees(reach_l_angle)) / 360);
+        reach_r.queue_position((Math.toDegrees(reach_r_angle)) / 360);
         starting_move = true;
     }
     public void min_reach() {

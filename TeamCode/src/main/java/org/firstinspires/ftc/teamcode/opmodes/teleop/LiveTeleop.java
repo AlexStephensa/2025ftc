@@ -58,6 +58,16 @@ public class LiveTeleop extends LiveTeleopBase {
             robot.intake.intakeRun(0);
         }*/
 
+        /*if (gamepad2.a) {
+            robot.intake.intakeRun(1.0);
+        }
+        else if (gamepad2.b) {
+            robot.intake.intakeRun(-1.0);
+        }
+        else {
+            robot.intake.intakeRun(0.0);
+        }*/
+
         robot.intake.intakeRun(gamepad2.right_trigger - gamepad2.left_trigger);
 
         if(gamepad2.right_bumper) {
