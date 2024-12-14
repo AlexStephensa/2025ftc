@@ -23,9 +23,9 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 //@Config
 class ReachConfig {
     public static final int UNIT_LENGTH     = 10;   // mm
-    public static final int MAX_LENGTH      = 600;  // mm
-    public static final int MIN_LENGTH      = 150;  // mm
-    public static final int MID_LENGTH      = 400; // mm
+    public static final int MAX_LENGTH      = 635;  // mm
+    public static final int MIN_LENGTH      = 150 -30;  // mm
+    public static final int MID_LENGTH      = 450; // mm
     public static final int TWEAK_MAX_ADD   = 20;   // mm
     public static final int SECTION         = 6;    // number of scissor sections
     public static final int SECT_LENGTH     = 112;  // length of section-arms in mm (from end to end)
