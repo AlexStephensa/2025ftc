@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -38,10 +37,8 @@ class IntakeConfig {
 
 
     public static int COLOR_UPDATE_RATE = 5; // Color Sensor update interval
-    public static int COLOR_DISTANCE = 75; // Cut off distance of color sensor in mm
-    public final boolean color_sensor_enabled = false;
-    public double last_distance = 0;
-    public static NormalizedRGBA current_color = new NormalizedRGBA();
+    public static int COLOR_CUTOFF = 300; // Cut off value of color sensor
+    public static String current_color;
 }
 
 public class Intake extends Component {
@@ -77,6 +74,7 @@ public class Intake extends Component {
 
         //// SENSORS ////
         intakeColor = hwmap.get(RevColorSensorV3.class, "intakeColor");
+        intakeColor.enableLed(false);
 
 
 
@@ -101,7 +99,8 @@ public class Intake extends Component {
         super.updateTelemetry(telemetry);
         telemetry.addData("SPINNER",TELEMETRY_DECIMAL.format(intake.servo.getPower()));
         telemetry.addData("INTAKE CURRENT",IntakeConfig.intakeCurrent);
-        telemetry.addData("COLOR RGBA",IntakeConfig.current_color.red + " " + IntakeConfig.current_color.blue + " " + IntakeConfig.current_color.green + " " + IntakeConfig.current_color.alpha);
+        telemetry.addData("COLOR RGBA",intakeColor.red() + " " + intakeColor.blue() + " " + intakeColor.green() + " " + intakeColor.alpha());
+        telemetry.addData("COLOR", IntakeConfig.current_color);
     }
 
     public void intakeRun(double speed) {
@@ -115,7 +114,16 @@ public class Intake extends Component {
     }
 
     public void intake_colorCheck() {
-        IntakeConfig.current_color = intakeColor.getNormalizedColors();
+        if (intakeColor.alpha() < IntakeConfig.COLOR_CUTOFF) {
+            IntakeConfig.current_color = "none";
+        } else if (intakeColor.red() > intakeColor.blue() && intakeColor.red() > intakeColor.green()) {
+            IntakeConfig.current_color = "red";
+        } else if (intakeColor.blue() > intakeColor.red() && intakeColor.blue() > intakeColor.green()) {
+            IntakeConfig.current_color = "blue";
+        } else if (intakeColor.green() > intakeColor.red() && intakeColor.green() > intakeColor.red()) {
+            IntakeConfig.current_color = "yellow";
+        }
+
     }
 
     public void intake_init() {
@@ -124,10 +132,10 @@ public class Intake extends Component {
         IntakeConfig.intakeCurrent = "INITIAL";
     }
 
-    public void intake_cradel() {
+    public void intake_cradle() {
         pitchL.queue_position(IntakeConfig.pitchL_cradel);
         pitchR.queue_position(IntakeConfig.pitchR_cradel);
-        IntakeConfig.intakeCurrent = "CRADEL";
+        IntakeConfig.intakeCurrent = "CRADLE";
     }
 
     public void intake_transfer() {
