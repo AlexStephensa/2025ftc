@@ -232,6 +232,13 @@ public class Lift extends Component {
 
     public void max_lift() {
         elevate(MAX_LEVEL - level);
+    }//
+
+    public void lift_test(double speed){
+        lift_l.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift_r.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift_l.setPower(speed);
+        lift_r.setPower(speed);
     }
 
     public void elevate_without_stops(int amt) {
