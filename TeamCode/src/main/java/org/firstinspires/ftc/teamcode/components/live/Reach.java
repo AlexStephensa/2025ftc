@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.components.live;
 
 //import com.acmerobotics.dashboard.config.Config;
 
-import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MID_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.UNIT_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MAX_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MIN_LENGTH;
@@ -23,9 +22,8 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 //@Config
 class ReachConfig {
     public static final int UNIT_LENGTH     = 10;   // mm
-    public static final int MAX_LENGTH      = 635;  // mm
-    public static final int MIN_LENGTH      = 150 -30;  // mm
-    public static final int MID_LENGTH      = 450; // mm
+    public static final int MAX_LENGTH      = 600;  // mm
+    public static final int MIN_LENGTH      = 100;  // mm
     public static final int TWEAK_MAX_ADD   = 20;   // mm
     public static final int SECTION         = 6;    // number of scissor sections
     public static final int SECT_LENGTH     = 112;  // length of section-arms in mm (from end to end)
@@ -78,12 +76,12 @@ public class Reach extends Component {
         }
 
          */
-
+        update_reach();
         if (tweak != tweak_cache) {
             tweak_cache = tweak;
             reach_l.queue_position(
                     reach_angle(Range.clip(
-                            reach_l_target + (int) (tweak * UNIT_LENGTH),
+                            reach_l_target + (int) (tweak * UNIT_LENGTH / 2),
                             MIN_LENGTH,
                             MAX_LENGTH
                     ))
@@ -96,7 +94,6 @@ public class Reach extends Component {
                     ))
             );
         }
-        update_reach();
     }
     //@Override
     public void startup() {
@@ -123,6 +120,8 @@ public class Reach extends Component {
         return Math.acos(dis / (SECTION * SECT_LENGTH));
     }
     private void update_reach() {
+        reach_l.queue_position((Math.toDegrees(reach_l_angle)) / 360);
+        reach_r.queue_position((Math.toDegrees(reach_r_angle)) / 360);
 
         reach_l.update();
         reach_r.update();
@@ -133,9 +132,6 @@ public class Reach extends Component {
         reach_r_target = (position);
         reach_l_angle = reach_angle(reach_l_target);
         reach_r_angle = reach_angle(reach_r_target);
-
-        reach_l.queue_position((Math.toDegrees(reach_l_angle)) / 360);
-        reach_r.queue_position((Math.toDegrees(reach_r_angle)) / 360);
         starting_move = true;
     }
     public void min_reach() {
@@ -143,9 +139,6 @@ public class Reach extends Component {
     }
     public void max_reach() {
         extend_to(MAX_LENGTH);
-    }
-    public void mid_reach() {
-        extend_to(MID_LENGTH);
     }
     public void tweak(double tweak) {
         Reach.tweak = tweak;
