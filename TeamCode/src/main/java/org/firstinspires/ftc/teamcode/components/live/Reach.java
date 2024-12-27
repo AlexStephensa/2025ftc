@@ -5,7 +5,6 @@ import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.MIN_LEN
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.SECTION;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.SECT_LENGTH;
 import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.TWEAK_MAX_ADD;
-import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.UNIT_LENGTH;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -66,15 +65,15 @@ public class Reach extends Component {
             tweak_cache = tweak;
             reach_l.queue_position(
                     Math.toDegrees(reach_angle(Range.clip(
-                            reach_l_target + (int) (tweak * UNIT_LENGTH),
+                            reach_l_target + (int) (tweak * TWEAK_MAX_ADD),
                             MIN_LENGTH,
-                            MAX_LENGTH
+                            MAX_LENGTH + TWEAK_MAX_ADD
                     ))) / 360
             );
 
             reach_r.queue_position(
                     Math.toDegrees(reach_angle(Range.clip(
-                            reach_r_target + (int) (tweak * UNIT_LENGTH),
+                            reach_r_target + (int) (tweak * TWEAK_MAX_ADD),
                             MIN_LENGTH,
                             MAX_LENGTH + TWEAK_MAX_ADD
                     ))) / 360
