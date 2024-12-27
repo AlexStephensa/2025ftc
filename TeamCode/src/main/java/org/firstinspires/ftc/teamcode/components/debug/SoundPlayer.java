@@ -1,7 +1,4 @@
-package org.firstinspires.ftc.teamcode.components.live;
-
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
+package org.firstinspires.ftc.teamcode.components.debug;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 
@@ -37,24 +38,15 @@ public class LiveTeleop extends LiveTeleopBase {
         /// GAMEPAD TWO BACK HOTKEYS ///
 
         // Reach
-        if(gamepad2.dpad_up) {
-            robot.Reach.max_reach();
+        if(gamepad2.dpad_right) {
+            robot.reach.max_reach();
         }
-        else if (gamepad2.dpad_down){
-            robot.Reach.min_reach();
+        else if (gamepad2.dpad_left){
+            robot.reach.min_reach();
             robot.intake.intake_cradle();
         }
 
-
-        /*if (gamepad2.a) {
-            robot.intake.intakeRun(1);
-        } else if (gamepad2.b) {
-            robot.intake.intakeRun(-1);
-        } else {
-            robot.intake.intakeRun(0);
-        }*/
-
-        robot.intake.intakeRun(gamepad2.right_trigger - gamepad2.left_trigger);
+        robot.intake.intakeRun(gamepad2.a ? 1 : (gamepad2.b ? -1 : 0));
 
         if(gamepad2.right_bumper) {
             robot.intake.intake_intake();
@@ -70,45 +62,30 @@ public class LiveTeleop extends LiveTeleopBase {
             robot.intake.intake_colorCheck();
         }
 
-        //robot.Reach.tweak(gamepad2.right_trigger - gamepad2.left_trigger);
+        robot.reach.tweak(gamepad2.right_trigger - gamepad2.left_trigger);
 
-        if(gamepad1.back) {
-            if (gamepad1.y) {
-                robot.lift.lift_test(-1);
-            } else if (gamepad1.x) {
-                robot.lift.lift_test(1);
-            } else {
-                robot.lift.lift_test(0);
-            }
-
-
-        } /*else {
-
+        if(gamepad2.back) {
+            robot.lift.min_lift();
+        } else {
             /// LIFT ///
-
-
-
             if(gamepad2.x){
                 robot.lift.elevate_to(prepared_level);
             }
 
-            // Intake
-
             if(gamepad2.dpad_up && !dpad1_up_pressed) {
-                prepared_level = Range.clip(prepared_level + 1, 0, Lift.max_level);
+                prepared_level = Range.clip(prepared_level + 1, 0, robot.lift.max_level);
                 dpad1_up_pressed = true;
             } else if (!gamepad2.dpad_up) {
                 dpad1_up_pressed = false;
             }
 
             if(gamepad2.dpad_down && !dpad1_down_pressed) {
-                prepared_level = Range.clip(prepared_level - 1, 0, Lift.max_level);
+                prepared_level = Range.clip(prepared_level - 1, 0, robot.lift.max_level);
                 dpad1_down_pressed = true;
             } else if (!gamepad2.dpad_down) {
                 dpad1_down_pressed = false;
             }
-
-        }*/
+        }
 
         /// DRIVE CONTROLS ///
         double speed_mod = 1;

@@ -6,25 +6,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.components.live.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.live.Intake;
 import org.firstinspires.ftc.teamcode.components.live.Lift;
-import org.firstinspires.ftc.teamcode.components.live.OCVPhoneCamera;
 import org.firstinspires.ftc.teamcode.components.live.Reach;
-import org.firstinspires.ftc.teamcode.components.live.SoundPlayer;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Point;
 
 import java.util.ArrayList;
 
 public class LiveRobot extends Robot {
-
     public DriveTrain       drive_train;
-    public OCVPhoneCamera   phone_camera;
     public Lift             lift;
-    public Reach            Reach;
-    public SoundPlayer      sound_player;
+    public Reach            reach;
     public Intake           intake;
-    //public Claw             claw;
-
-    //public LinearLift     linearLift;
-
 
     FtcDashboard            dashboard;
 
@@ -38,15 +29,11 @@ public class LiveRobot extends Robot {
         super(opmode);
 
         drive_train     = new DriveTrain(this);
-        phone_camera    = new OCVPhoneCamera(this);
-        Reach           = new Reach(this);
+        reach           = new Reach(this);
         lift            = new Lift(this);
-        sound_player    = new SoundPlayer(this);
         intake          = new Intake(this);
-        //claw            = new Claw(this);
-        //linearLift      = new LinearLift((this));
 
-        //dashboard = FtcDashboard.getInstance();
+        dashboard = FtcDashboard.getInstance();
     }
 
     @Override
