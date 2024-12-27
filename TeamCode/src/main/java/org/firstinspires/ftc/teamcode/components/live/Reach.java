@@ -41,8 +41,8 @@ public class Reach extends Component {
     private double reach_l_angle = reach_angle(MIN_LENGTH);
     private double reach_r_angle = reach_angle(MIN_LENGTH);
 
-    static double tweak = 0;
-    static double tweak_cache = 0;
+    double tweak = 0;
+    double tweak_cache = 0;
 
     {
         name = "Reach";
@@ -67,7 +67,7 @@ public class Reach extends Component {
                     Math.toDegrees(reach_angle(Range.clip(
                             reach_l_target + (int) (tweak * TWEAK_MAX_ADD),
                             MIN_LENGTH,
-                            MAX_LENGTH + TWEAK_MAX_ADD
+                            MAX_LENGTH
                     ))) / 360
             );
 
@@ -75,7 +75,7 @@ public class Reach extends Component {
                     Math.toDegrees(reach_angle(Range.clip(
                             reach_r_target + (int) (tweak * TWEAK_MAX_ADD),
                             MIN_LENGTH,
-                            MAX_LENGTH + TWEAK_MAX_ADD
+                            MAX_LENGTH
                     ))) / 360
             );
         }
@@ -130,10 +130,10 @@ public class Reach extends Component {
     }
 
     public void max_reach() {
-        extend_to(MAX_LENGTH);
+        extend_to(MAX_LENGTH - TWEAK_MAX_ADD);
     }
 
     public void tweak(double tweak) {
-        Reach.tweak = tweak;
+        this.tweak = tweak;
     }
 }
