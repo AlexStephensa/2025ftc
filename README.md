@@ -20,7 +20,7 @@ public class ThisIs {
     public static main(String[] args) {
         if (The.Bracket) {
             Format;
-         } else if (1 == 1) {
+        } else if (1 == 1) {
             You Should;
         } else {
             Use;
