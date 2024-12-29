@@ -19,13 +19,11 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
 @Config
 class ReachConfig {
-    public static final int UNIT_LENGTH     = 10;   // mm
     public static final int MAX_LENGTH      = 600;  // mm
     public static final int MIN_LENGTH      = 100;  // mm
     public static final int TWEAK_MAX_ADD   = 100;   // mm
     public static final int SECTION         = 6;    // number of scissor sections
     public static final int SECT_LENGTH     = 112;  // length of section-arms in mm (from end to end)
-
 }
 
 public class Reach extends Component {
@@ -50,14 +48,14 @@ public class Reach extends Component {
 
     public Reach(Robot robot) { super(robot); }
 
-    //@Override
+    @Override
     public void registerHardware (HardwareMap hwmap) {
         //// SERVOS ////
         reach_l     = new ServoQUS(hwmap.get(Servo.class, "reachL"));
         reach_r     = new ServoQUS(hwmap.get(Servo.class, "reachR"));
-
     }
-    //@Override
+
+    @Override
     public void update(OpMode opmode) {
         super.update(opmode);
 
@@ -84,7 +82,7 @@ public class Reach extends Component {
         reach_r.update();
     }
 
-    //@Override
+    @Override
     public void startup() {
         super.startup();
 
@@ -92,7 +90,7 @@ public class Reach extends Component {
     }
 
     public void shutdown() {
-        //shut down
+
     }
 
     @Override

@@ -5,10 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robots.LiveRobot;
 
-import static org.firstinspires.ftc.teamcode.constants.AutonomousConst.RED;
-
 @Autonomous(name="Odo Hold", group="autonomous")
-//@Disabled
 public class OdoHold extends LinearOpMode {
 
     LiveRobot robot;

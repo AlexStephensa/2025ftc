@@ -4,10 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robots.DebugRobot;
-import org.firstinspires.ftc.teamcode.robots.LiveRobot;
 
 @Autonomous(name="Debug Odo Hold", group="autonomous")
-//@Disabled
 public class DebugOdoHold extends LinearOpMode {
 
     DebugRobot robot;

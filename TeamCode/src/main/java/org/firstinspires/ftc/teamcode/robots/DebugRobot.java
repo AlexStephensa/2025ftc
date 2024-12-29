@@ -7,18 +7,13 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.components.live.DriveTrain;
-import org.firstinspires.ftc.teamcode.coyote.geometry.Point;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
-
-import java.util.ArrayList;
 
 public class DebugRobot extends Robot {
 
     public DriveTrain       drive_train;
 
     FtcDashboard            dashboard;
-
-    ArrayList<Point> robot_movement = new ArrayList<Point>();
 
     {
         name = "Taurus";

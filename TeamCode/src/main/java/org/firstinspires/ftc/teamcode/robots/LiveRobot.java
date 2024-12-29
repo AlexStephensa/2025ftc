@@ -3,23 +3,20 @@ package org.firstinspires.ftc.teamcode.robots;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.components.live.Arm;
 import org.firstinspires.ftc.teamcode.components.live.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.live.Intake;
 import org.firstinspires.ftc.teamcode.components.live.Lift;
 import org.firstinspires.ftc.teamcode.components.live.Reach;
-import org.firstinspires.ftc.teamcode.coyote.geometry.Point;
-
-import java.util.ArrayList;
 
 public class LiveRobot extends Robot {
     public DriveTrain       drive_train;
     public Lift             lift;
     public Reach            reach;
     public Intake           intake;
+    public Arm              arm;
 
     FtcDashboard            dashboard;
-
-    ArrayList<Point> robot_movement = new ArrayList<Point>();
 
     {
         name = "Boris";
@@ -32,6 +29,7 @@ public class LiveRobot extends Robot {
         reach           = new Reach(this);
         lift            = new Lift(this);
         intake          = new Intake(this);
+        arm             = new Arm(this);
 
         dashboard = FtcDashboard.getInstance();
     }

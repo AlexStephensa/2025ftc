@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import static com.qualcomm.robotcore.hardware.Gamepad.LED_DURATION_CONTINUOUS;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
@@ -11,16 +13,11 @@ public class LiveTeleop extends LiveTeleopBase {
 
     boolean dpad1_up_pressed = false;
     boolean dpad1_down_pressed = false;
-    boolean dpad1_left_pressed = false;
-    boolean dpad1_right_pressed = false;
+    boolean gp1_back_pressed = false;
 
-    boolean gp1_a_pressed = false;
-    boolean gp1_b_pressed = false;
-    boolean gp1_y_pressed = false;
     boolean intake = false;
 
     int prepared_level = 1;
-    int prepared_cone = 4;
 
 
     @Override
@@ -30,36 +27,35 @@ public class LiveTeleop extends LiveTeleopBase {
     @Override
     public void on_start() {
         this.getRuntime();
+
+        robot.arm.open_claw();
     }
 
     @Override
     public void on_loop() {
-
-        /// GAMEPAD TWO BACK HOTKEYS ///
-
         // Reach
+
+        if(gamepad1.back && !gp1_back_pressed) {
+            robot.intake.toggle_wanted_color();
+            gamepad1.setLedColor(robot.intake.intake_color_wanted == "RED" ? 1 : 0, 0, robot.intake.intake_color_wanted == "BLUE" ? 1 : 0, LED_DURATION_CONTINUOUS);
+            gp1_back_pressed = true;
+        } else if (!gamepad1.back) {
+            gp1_back_pressed = false;
+        }
+
         if(gamepad2.dpad_right) {
             robot.reach.max_reach();
         }
         else if (gamepad2.dpad_left){
             robot.reach.min_reach();
-            robot.intake.intake_cradle();
+            robot.intake.intake_transfer();
         }
 
-        robot.intake.intakeRun(gamepad2.a ? 1 : (gamepad2.b ? -1 : 0));
+        robot.intake.intake_run(gamepad2.a ? 1 : (gamepad2.b ? -1 : 0), gamepad1, gamepad2);
 
         if(gamepad2.right_bumper) {
             robot.intake.intake_intake();
             intake = true;
-        }
-
-        if(gamepad2.left_bumper) {
-            robot.intake.intake_cradle();
-            intake = false;
-        }
-
-        if (intake) {
-            robot.intake.intake_colorCheck();
         }
 
         robot.reach.tweak(gamepad2.right_trigger - gamepad2.left_trigger);
@@ -100,7 +96,7 @@ public class LiveTeleop extends LiveTeleopBase {
             (gamepad1.left_stick_x) * speed_mod,
             (gamepad1.left_stick_y) * speed_mod,
             (gamepad1.right_stick_x) * speed_mod * 0.85
-        );                      // Turn speed modifier ^^
+        );
     }
 
     @Override

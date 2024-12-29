@@ -19,7 +19,7 @@ import java.util.List;
 
 @Config
 class RobotConfig {
-    // Interval in cycles at which we call update on al the components
+    // Interval in cycles at which we call update on all the components
     public static int COMPONENT_UPDATE_CYCLE = 1;
     // Interval in cycles at which we bulk read from Rev Hub 1
     public static int BULK_READ_1_CYCLE = 1;

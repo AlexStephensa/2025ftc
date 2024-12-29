@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
 
+import static com.qualcomm.robotcore.hardware.Gamepad.LED_DURATION_CONTINUOUS;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -17,39 +21,37 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
 @Config
 class IntakeConfig {
-    // Servo Positions for Initialization
-    public static double pitchL_init = 0.5;
-    public static double pitchR_init = 0.5;
-
     // Servo Positions for Sample Transfer
-    public static double pitchL_tran = 0.4;
-    public static double pitchR_tran = 0.4;
-
-    // Servo Positions for Reach Movement
-    public static double pitchL_cradel = 0.45;
-    public static double pitchR_cradel = 0.45;
+    public static double PITCH_L_TRANSFER_POSITION = 0.4;
+    public static double PITCH_R_TRANSFER_POSITION = 0.4;
 
     // Servo Positions for Intake from Field
-    public static double pitchL_intake = 0.57;
-    public static double pitchR_intake = 0.57;
+    public static double PITCH_L_INTAKE_POSITION = 0.57;
+    public static double PITCH_R_INTAKE_POSITION = 0.57;
 
     public static int COLOR_UPDATE_RATE = 5; // Color Sensor update interval
     public static int COLOR_CUTOFF = 300; // Cut off value of color sensor
+
+    public static int SPIT_DURATION = 200_000_000; // nanoseconds, 0.2s
 }
 
 public class Intake extends Component {
-    public String current_color;
+    private NormalizedRGBA current_color;
+    private String current_color_name = "NONE";
 
-    public String intakeCurrent = "INITIAL";
+    public String intake_color_wanted = "BLUE";
+
+    private String intakeCurrent = "TRANS";
+
+    private long spitting_since = -1;
 
     //// SERVOS ////
-    public ServoQUS pitchL;
-    public ServoQUS pitchR;
-    public CRServoQUS intake;
+    private ServoQUS pitch_l;
+    private ServoQUS pitch_r;
+    private CRServoQUS intake;
 
     //// SENSORS ////
-    public RevColorSensorV3 intakeColor;
-
+    private RevColorSensorV3 color_sensor;
 
     {
         name = "Intake";
@@ -63,32 +65,35 @@ public class Intake extends Component {
         super.registerHardware(hwmap);
 
         //// SERVOS ////
-        pitchL = new ServoQUS(hwmap.get(Servo.class, "pitchL"));
-        pitchR = new ServoQUS(hwmap.get(Servo.class, "pitchR"));
-        pitchR.servo.setDirection(Servo.Direction.REVERSE);
+        pitch_l = new ServoQUS(hwmap.get(Servo.class, "pitchL"));
+        pitch_r = new ServoQUS(hwmap.get(Servo.class, "pitchR"));
+        pitch_r.servo.setDirection(Servo.Direction.REVERSE);
 
         intake = new CRServoQUS(hwmap.get(CRServo.class, "intake"));
         intake.servo.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //// SENSORS ////
-        intakeColor = hwmap.get(RevColorSensorV3.class, "intakeColor");
-        intakeColor.enableLed(false);
+        color_sensor = hwmap.get(RevColorSensorV3.class, "intakeColor");
     }
 
-    //@Override
+    @Override
     public void update(OpMode opmode) {
         super.update(opmode);
 
-        pitchL.update();
-        pitchR.update();
+        pitch_l.update();
+        pitch_r.update();
         intake.update();
+
+        if (robot.cycle % IntakeConfig.COLOR_UPDATE_RATE == 0) {
+            current_color = color_sensor.getNormalizedColors();
+            intake_color_check();
+        }
     }
 
     @Override
     public void startup() {
         super.startup();
-        intakeRun(0);
-        intake_init();
+        intake_transfer();
     }
 
     @Override
@@ -96,47 +101,59 @@ public class Intake extends Component {
         super.updateTelemetry(telemetry);
         telemetry.addData("SPINNER",TELEMETRY_DECIMAL.format(intake.servo.getPower()));
         telemetry.addData("INTAKE CURRENT", intakeCurrent);
-        telemetry.addData("COLOR RGBA",intakeColor.red() + " " + intakeColor.blue() + " " + intakeColor.green() + " " + intakeColor.alpha());
-        telemetry.addData("COLOR", current_color);
+        telemetry.addData("COLOR RGBA",current_color.red + " " + current_color.blue + " " + current_color.green + " " + current_color.alpha);
+        telemetry.addData("COLOR", current_color_name);
     }
 
-    public void intakeRun(double speed) {
-        intake.queue_power(speed);
-    }
+    public void intake_run(double speed, Gamepad gamepad1, Gamepad gamepad2) {
+        gamepad2.setLedColor((
+            intakeCurrent == "RED" || intakeCurrent == "YELLOW") ? 1 : 0,
+            intakeCurrent == "YELLOW" ? 1 : 0,
+            intakeCurrent == "BLUE" ? 1 : 0,
+            LED_DURATION_CONTINUOUS
+        );
 
-    public void intake_colorCheck() {
-        if (intakeColor.alpha() < IntakeConfig.COLOR_CUTOFF) {
-            current_color = "none";
-        } else if (intakeColor.red() > intakeColor.blue() && intakeColor.red() > intakeColor.green()) {
-            current_color = "red";
-        } else if (intakeColor.blue() > intakeColor.red() && intakeColor.blue() > intakeColor.green()) {
-            current_color = "blue";
-        } else if (intakeColor.green() > intakeColor.red() && intakeColor.green() > intakeColor.red()) {
-            current_color = "yellow";
+        if (current_color_name != "NONE" && current_color_name != intake_color_wanted && current_color_name != "YELLOW") {
+            if (spitting_since == -1) {
+                spitting_since = System.nanoTime();
+            } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
+                intake.queue_power(-1);
+            }
+        } else {
+            if (current_color_name == intake_color_wanted) {
+                gamepad1.rumble(100);
+                gamepad2.rumble(100);
+            }
+            intake.queue_power(speed);
+            spitting_since = -1;
         }
     }
 
-    public void intake_init() {
-        pitchL.queue_position(IntakeConfig.pitchL_init);
-        pitchR.queue_position(IntakeConfig.pitchR_init);
-        intakeCurrent = "INITIAL";
-    }
-
-    public void intake_cradle() {
-        pitchL.queue_position(IntakeConfig.pitchL_cradel);
-        pitchR.queue_position(IntakeConfig.pitchR_cradel);
-        intakeCurrent = "CRADLE";
+    public void intake_color_check() {
+        if (current_color.alpha < IntakeConfig.COLOR_CUTOFF) {
+            current_color_name = "NONE";
+        } else if (current_color.red > current_color.blue && current_color.red > current_color.green) {
+            current_color_name = "RED";
+        } else if (current_color.blue > current_color.red && current_color.blue > current_color.green) {
+            current_color_name = "BLUE";
+        } else if (current_color.green > current_color.red && current_color.green > current_color.red) {
+            current_color_name = "YELLOW";
+        }
     }
 
     public void intake_transfer() {
-        pitchL.queue_position(IntakeConfig.pitchL_tran);
-        pitchR.queue_position(IntakeConfig.pitchR_tran);
+        pitch_l.queue_position(IntakeConfig.PITCH_L_TRANSFER_POSITION);
+        pitch_r.queue_position(IntakeConfig.PITCH_R_TRANSFER_POSITION);
         intakeCurrent = "TRANS";
     }
 
     public void intake_intake() {
-        pitchL.queue_position(IntakeConfig.pitchL_intake);
-        pitchR.queue_position(IntakeConfig.pitchR_intake);
+        pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION);
+        pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION);
         intakeCurrent = "INTAKE";
+    }
+
+    public void toggle_wanted_color() {
+        intake_color_wanted = (intake_color_wanted == "BLUE") ? "RED" : "BLUE";
     }
 }

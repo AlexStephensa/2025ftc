@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
-import android.os.Debug;
 import android.util.ArrayMap;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robots.DebugRobot;
-import org.firstinspires.ftc.teamcode.robots.LiveRobot;
 
 public abstract class DebugTeleopBase extends LinearOpMode {
 

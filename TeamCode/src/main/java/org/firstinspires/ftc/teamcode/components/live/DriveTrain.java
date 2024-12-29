@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
-//import com.acmerobotics.dashboard.config.Config;
-
 import static org.firstinspires.ftc.teamcode.util.MathUtil.angle_difference;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -267,8 +265,6 @@ public class DriveTrain extends Component {
 
                 mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
 
-
-
                 if ((distance < pos_acc && distance_a < angle_acc) || (timeout > 0 && robot.opmode.getRuntime() > timeout)) {
                     if (robot.opmode.getRuntime()-time_at_goal >= time_at_target) {
                         stop();
@@ -349,7 +345,6 @@ public class DriveTrain extends Component {
                 time_at_goal = robot.opmode.getRuntime();
             }
         }
-
     }
 
     public void drive_to_pose(Pose pose, double drive_speed, double turn_speed) {
@@ -368,7 +363,5 @@ public class DriveTrain extends Component {
 
         // Update actual motor powers with our movement vector
         mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
-
     }
-
 }

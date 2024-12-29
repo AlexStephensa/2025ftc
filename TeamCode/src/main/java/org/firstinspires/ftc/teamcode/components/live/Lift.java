@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
-//import com.acmerobotics.dashboard.config.Config;
-
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.LIFT_LEVELS;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.LIFT_OFFSET;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MAX_LEVEL;
@@ -23,10 +21,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.Component;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 
-// Elevator lifts the stone and extender up
-// Extender extends over the tower, and the grabber releases the stone
-
-
 @Config
 class LiftConfig {
     public static int LIFT_OFFSET = 0;
@@ -45,10 +39,6 @@ class LiftConfig {
     public static double PID_P = 1;
     public static double PID_I = 0;
     public static double PID_D = 0;
-
-    public static int LIFT_DOWN_OVERSHOOT = 100;
-
-    public static int TWEAK_MAX_ADD = 100;
 }
 
 public class Lift extends Component {
@@ -71,7 +61,6 @@ public class Lift extends Component {
     public int lift_r_offset = 0;
 
     static double tweak = 0;
-    static double tweak_cache = 0;
 
     static double pid_speed = 0;
 

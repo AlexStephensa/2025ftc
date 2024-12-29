@@ -3,10 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes.debug;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.opmodes.DebugTeleopBase;
-import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 
 @TeleOp(name="Teleop Debug", group="driver control")
-//@Disabled
 public class DebugTeleop extends DebugTeleopBase {
 
     @Override
