@@ -29,11 +29,11 @@ class LiftConfig {
 
     public static int[] LIFT_LEVELS = {
             0,     // level
-            6160,  // high bin
-            2440,  // low bin
-            2140,  // specimen
-            5180,  // high rung
-            6220   // hang
+            70240,  // high bin
+            30350,  // low bin
+            24240,  // specimen
+            57520,  // high rung
+            68200   // hang
     };
 
     public static double PID_P = 1;
@@ -135,8 +135,8 @@ public class Lift extends Component {
     }
 
     public void set_power(double speed) {
-        lift_l.setPower(speed);
-        lift_r.setPower(-speed);
+        lift_l.setPower(-speed);
+        lift_r.setPower(speed);
     }
 
     private void set_target_position(int pos) {
