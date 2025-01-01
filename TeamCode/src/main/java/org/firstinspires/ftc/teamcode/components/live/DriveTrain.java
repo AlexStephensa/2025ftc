@@ -129,7 +129,7 @@ public class DriveTrain extends Component {
 
         telemetry.addData("PID", drive_lf.motor.getPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
 
-        //telemetry.addData("IMU", last_imu_orientation.firstAngle+" "+last_imu_orientation.secondAngle+" "+last_imu_orientation.thirdAngle);
+        telemetry.addData("IMU", last_imu_orientation.firstAngle+" "+last_imu_orientation.secondAngle+" "+last_imu_orientation.thirdAngle);
 
         if (current_path != null) {
             Pose cfp = current_path.getFollowPose();

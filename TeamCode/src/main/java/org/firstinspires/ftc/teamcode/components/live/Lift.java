@@ -28,7 +28,7 @@ class LiftConfig {
     public static int MIN_LEVEL = 0;
 
     public static int[] LIFT_LEVELS = {
-            0,     // level
+            0,      // level 0
             70240,  // high bin
             30350,  // low bin
             24240,  // specimen
@@ -47,18 +47,16 @@ public class Lift extends Component {
     public int max_level = LiftConfig.MAX_LEVEL;
 
     //// MOTORS ////
-    public DcMotorEx lift_l;
-    public DcMotorEx lift_r;
+    public DcMotorEx lift_f;
+    public DcMotorEx lift_b;
 
     //// SENSORS ////
     public DigitalChannel limit_switchV;
 
+
     public int level;
-
     public int lift_target = 0;
-
-    public int lift_l_offset = 0;
-    public int lift_r_offset = 0;
+    public int lift_offset = 0;
 
     static double tweak = 0;
 
@@ -82,8 +80,8 @@ public class Lift extends Component {
         super.registerHardware(hwmap);
 
         //// MOTORS ////
-        lift_l     = hwmap.get(DcMotorEx.class, "liftF");
-        lift_r     = hwmap.get(DcMotorEx.class, "liftB");
+        lift_f = hwmap.get(DcMotorEx.class, "liftF");
+        lift_b = hwmap.get(DcMotorEx.class, "liftB");
 
         limit_switchV = hwmap.get(DigitalChannel.class, "vLimSwitch");
     }
@@ -93,7 +91,7 @@ public class Lift extends Component {
         super.update(opmode);
 
         pid_control.setTargetPosition(lift_target);
-        pid_speed = pid_control.update(lift_l.getCurrentPosition()) / 100;
+        pid_speed = pid_control.update(lift_f.getCurrentPosition()) / 100;
 
         set_power(pid_speed);
     }
@@ -102,13 +100,13 @@ public class Lift extends Component {
     public void startup() {
         super.startup();
 
-        lift_l.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lift_r.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift_f.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift_b.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        lift_l.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift_f.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        lift_l.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lift_r.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift_f.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift_b.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void shutdown() {
@@ -119,12 +117,11 @@ public class Lift extends Component {
     public void updateTelemetry(Telemetry telemetry) {
         super.updateTelemetry(telemetry);
 
-        telemetry.addData("TURNS",TELEMETRY_DECIMAL.format(lift_l.getCurrentPosition()));
+        telemetry.addData("TURNS",TELEMETRY_DECIMAL.format(lift_f.getCurrentPosition()));
 
         telemetry.addData("TARGET",TELEMETRY_DECIMAL.format(lift_target));
 
-        telemetry.addData("LL OFFSET", TELEMETRY_DECIMAL.format(lift_l_offset));
-        telemetry.addData("RL OFFSET", TELEMETRY_DECIMAL.format(lift_r_offset));
+        telemetry.addData("OFFSET", TELEMETRY_DECIMAL.format(lift_offset));
 
         telemetry.addData("LEVEL", level);
 
@@ -135,8 +132,8 @@ public class Lift extends Component {
     }
 
     public void set_power(double speed) {
-        lift_l.setPower(-speed);
-        lift_r.setPower(speed);
+        lift_f.setPower(-speed);
+        lift_b.setPower(speed);
     }
 
     private void set_target_position(int pos) {

@@ -30,6 +30,9 @@ class ArmConfig {
 }
 
 public class Arm extends Component {
+    private String arm_current;
+    private boolean claw_state;
+
     //// SERVOS ////
     public ServoQUS elbow_l;
     public ServoQUS elbow_r;
@@ -47,7 +50,10 @@ public class Arm extends Component {
         //// SERVOS ////
         elbow_l     = new ServoQUS(hwmap.get(Servo.class, "elbow_l"));
         elbow_r     = new ServoQUS(hwmap.get(Servo.class, "elbow_r"));
+        elbow_r.servo.setDirection(Servo.Direction.REVERSE);
+
         wrist     = new ServoQUS(hwmap.get(Servo.class, "wrist"));
+
         claw     = new ServoQUS(hwmap.get(Servo.class, "claw"));
     }
 
@@ -65,12 +71,15 @@ public class Arm extends Component {
     @Override
     public void updateTelemetry(Telemetry telemetry) {
         super.updateTelemetry(telemetry);
+        telemetry.addData("ARM CURRENT", arm_current);
+        telemetry.addData("CLAW CLOSED", claw_state);
     }
 
     public void transfer_position() {
         elbow_l.queue_position(ArmConfig.ELBOW_L_TRANSFER_POSITION);
         elbow_r.queue_position(ArmConfig.ELBOW_R_TRANSFER_POSITION);
         wrist.queue_position(ArmConfig.WRIST_TRANSFER_POSITION);
+        arm_current = "TRANS";
     }
 
     public void waiting_position() {
@@ -78,25 +87,30 @@ public class Arm extends Component {
         elbow_r.queue_position(ArmConfig.ELBOW_R_WAITING_POSITION);
         wrist.queue_position(ArmConfig.WRIST_TRANSFER_POSITION);
         open_claw();
+        arm_current = "WAIT";
     }
 
     public void basket_position() {
         elbow_l.queue_position(ArmConfig.ELBOW_L_BASKET_POSITION);
         elbow_r.queue_position(ArmConfig.ELBOW_R_BASKET_POSITION);
         wrist.queue_position(ArmConfig.WRIST_BASKET_POSITION);
+        arm_current = "BASK";
     }
 
     public void specimen_position() {
         elbow_l.queue_position(ArmConfig.ELBOW_L_SPECIMEN_POSITION);
         elbow_r.queue_position(ArmConfig.ELBOW_R_SPECIMEN_POSITION);
         wrist.queue_position(ArmConfig.WRIST_SPECIMEN_POSITION);
+        arm_current = "SPEC";
     }
 
     public void open_claw() {
         claw.queue_position(ArmConfig.CLAW_OPEN_POSITION);
+        claw_state = false;
     }
 
     public void close_claw() {
         claw.queue_position(ArmConfig.CLAW_CLOSE_POSITION);
+        claw_state = true;
     }
 }

@@ -96,12 +96,12 @@ public class Reach extends Component {
     @Override
     public void updateTelemetry(Telemetry telemetry) {
         super.updateTelemetry(telemetry);
-        telemetry.addData("LR TARGET",TELEMETRY_DECIMAL.format(reach_l_target));
-        telemetry.addData("RR TARGET",TELEMETRY_DECIMAL.format(reach_r_target));
-        telemetry.addData("LR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_l_angle));
-        telemetry.addData("RR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_r_angle));
-        telemetry.addData("LR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle) / 360));
-        telemetry.addData("RR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_r_angle) / 360));
+        telemetry.addData("REACH TARGET",TELEMETRY_DECIMAL.format(reach_l_target));
+//        telemetry.addData("RR TARGET",TELEMETRY_DECIMAL.format(reach_r_target));
+//        telemetry.addData("LR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_l_angle));
+//        telemetry.addData("RR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_r_angle));
+//        telemetry.addData("LR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle) / 360));
+//        telemetry.addData("RR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_r_angle) / 360));
         telemetry.addData("REACH MOVING", starting_move);
     }
 

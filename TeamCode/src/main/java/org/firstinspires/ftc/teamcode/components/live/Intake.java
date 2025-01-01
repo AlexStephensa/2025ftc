@@ -41,7 +41,7 @@ public class Intake extends Component {
 
     public String intake_color_wanted = "BLUE";
 
-    private String intakeCurrent = "TRANS";
+    private String intake_current;
 
     private long spitting_since = -1;
 
@@ -100,16 +100,16 @@ public class Intake extends Component {
     public void updateTelemetry(Telemetry telemetry) {
         super.updateTelemetry(telemetry);
         telemetry.addData("SPINNER",TELEMETRY_DECIMAL.format(intake.servo.getPower()));
-        telemetry.addData("INTAKE CURRENT", intakeCurrent);
-        telemetry.addData("COLOR RGBA",current_color.red + " " + current_color.blue + " " + current_color.green + " " + current_color.alpha);
+        telemetry.addData("INTAKE CURRENT", intake_current);
+//        telemetry.addData("COLOR RGBA",current_color.red + " " + current_color.blue + " " + current_color.green + " " + current_color.alpha);
         telemetry.addData("COLOR", current_color_name);
     }
 
     public void intake_run(double speed, Gamepad gamepad1, Gamepad gamepad2) {
         gamepad2.setLedColor((
-            intakeCurrent == "RED" || intakeCurrent == "YELLOW") ? 1 : 0,
-            intakeCurrent == "YELLOW" ? 1 : 0,
-            intakeCurrent == "BLUE" ? 1 : 0,
+            intake_current == "RED" || intake_current == "YELLOW") ? 1 : 0,
+                intake_current == "YELLOW" ? 1 : 0,
+                intake_current == "BLUE" ? 1 : 0,
             LED_DURATION_CONTINUOUS
         );
 
@@ -136,7 +136,7 @@ public class Intake extends Component {
             current_color_name = "RED";
         } else if (current_color.blue > current_color.red && current_color.blue > current_color.green) {
             current_color_name = "BLUE";
-        } else if (current_color.green > current_color.red && current_color.green > current_color.red) {
+        } else if (current_color.green > current_color.red && current_color.green > current_color.blue) {
             current_color_name = "YELLOW";
         }
     }
@@ -144,13 +144,13 @@ public class Intake extends Component {
     public void intake_transfer() {
         pitch_l.queue_position(IntakeConfig.PITCH_L_TRANSFER_POSITION);
         pitch_r.queue_position(IntakeConfig.PITCH_R_TRANSFER_POSITION);
-        intakeCurrent = "TRANS";
+        intake_current = "TRANS";
     }
 
     public void intake_intake() {
         pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION);
         pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION);
-        intakeCurrent = "INTAKE";
+        intake_current = "INTAKE";
     }
 
     public void toggle_wanted_color() {
