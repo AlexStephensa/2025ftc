@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -11,15 +12,15 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
 @Config
 class ArmConfig {
-    static public double ELBOW_L_TRANSFER_POSITION = 0;
-    static public double ELBOW_L_WAITING_POSITION = 0;
+    static public double ELBOW_L_TRANSFER_POSITION = 0.4;
+    static public double ELBOW_L_WAITING_POSITION = 0.5;
     static public double ELBOW_L_SPECIMEN_POSITION = 0;
-    static public double ELBOW_L_BASKET_POSITION = 0;
+    static public double ELBOW_L_BASKET_POSITION = 0.9;
 
-    static public double ELBOW_R_TRANSFER_POSITION = 0;
-    static public double ELBOW_R_WAITING_POSITION = 0;
+    static public double ELBOW_R_TRANSFER_POSITION = 0.4;
+    static public double ELBOW_R_WAITING_POSITION = 0.5;
     static public double ELBOW_R_SPECIMEN_POSITION = 0;
-    static public double ELBOW_R_BASKET_POSITION = 0;
+    static public double ELBOW_R_BASKET_POSITION = 0.9;
 
     static public double WRIST_TRANSFER_POSITION = 0;
     static public double WRIST_SPECIMEN_POSITION = 0;
@@ -55,6 +56,16 @@ public class Arm extends Component {
         wrist     = new ServoQUS(hwmap.get(Servo.class, "wrist"));
 
         claw     = new ServoQUS(hwmap.get(Servo.class, "claw"));
+    }
+
+    @Override
+    public void update(OpMode opmode) {
+        super.update(opmode);
+
+        elbow_l.update();
+        elbow_r.update();
+        wrist.update();
+
     }
 
     @Override

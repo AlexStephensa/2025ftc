@@ -33,7 +33,13 @@ public class LiveTeleop extends LiveTeleopBase {
 
     @Override
     public void on_loop() {
-        // Reach
+
+        // ARM TESTING
+        if(gamepad1.dpad_left) {
+            robot.arm.specimen_position();
+        } else if(gamepad1.dpad_right) {
+            robot.arm.basket_position();
+        }
 
         if(gamepad1.back && !gp1_back_pressed) {
             robot.intake.toggle_wanted_color();

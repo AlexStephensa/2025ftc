@@ -132,8 +132,8 @@ public class Lift extends Component {
     }
 
     public void set_power(double speed) {
-        lift_f.setPower(-speed);
-        lift_b.setPower(speed);
+        lift_f.setPower(speed);
+        lift_b.setPower(-speed);
     }
 
     private void set_target_position(int pos) {
