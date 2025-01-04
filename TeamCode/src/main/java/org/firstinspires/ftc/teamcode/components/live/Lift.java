@@ -36,7 +36,7 @@ class LiftConfig {
             68200   // hang
     };
 
-    public static double PID_P = 1;
+    public static double PID_P = 0.2;
     public static double PID_I = 0;
     public static double PID_D = 0;
 }

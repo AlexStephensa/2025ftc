@@ -35,10 +35,19 @@ public class LiveTeleop extends LiveTeleopBase {
     public void on_loop() {
 
         // ARM TESTING
-        if(gamepad1.dpad_left) {
+        if(gamepad1.dpad_down) {
             robot.arm.specimen_position();
-        } else if(gamepad1.dpad_right) {
+        } else if (gamepad1.dpad_up) {
             robot.arm.basket_position();
+        } else if (gamepad1.dpad_left) {
+            robot.arm.transfer_position();
+        } else if (gamepad1.dpad_right) {
+            robot.arm.waiting_position();
+        }
+        if(gamepad1.a) {
+            robot.arm.close_claw();
+        } else if(gamepad1.b) {
+            robot.arm.open_claw();
         }
 
         if(gamepad1.back && !gp1_back_pressed) {
