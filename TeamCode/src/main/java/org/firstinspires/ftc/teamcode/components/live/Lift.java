@@ -27,6 +27,8 @@ class LiftConfig {
     public static int MAX_LEVEL = 5; //highest level the virtual robot can extend
     public static int MIN_LEVEL = 0;
 
+    public static int MIN_LIFT_OVERSHOOT = 400;
+
     public static int[] LIFT_LEVELS = {
             0,      // level 0
             70240,  // high bin
@@ -36,9 +38,9 @@ class LiftConfig {
             68200   // hang
     };
 
-    public static double PID_P = 0.2;
+    public static double PID_P = 0.16;
     public static double PID_I = 0;
-    public static double PID_D = 0;
+    public static double PID_D = 0.002;
 }
 
 public class Lift extends Component {
@@ -57,6 +59,8 @@ public class Lift extends Component {
     public int level;
     public int lift_target = 0;
     public int lift_offset = 0;
+
+    public boolean last_limit_switch = true;
 
     static double tweak = 0;
 
@@ -90,10 +94,28 @@ public class Lift extends Component {
     public void update(OpMode opmode) {
         super.update(opmode);
 
-        pid_control.setTargetPosition(lift_target);
-        pid_speed = pid_control.update(lift_f.getCurrentPosition()) / 100;
+        boolean cur_limit_switch = !limit_switchV.getState();
+        int cur_position = lift_f.getCurrentPosition();
+
+        if (lift_target == 0) {
+            if (cur_limit_switch && !last_limit_switch) {
+                lift_offset = cur_position;
+            }
+
+            if (!cur_limit_switch) {
+                pid_control.setTargetPosition(lift_offset - LiftConfig.MIN_LIFT_OVERSHOOT);
+            } else {
+                pid_control.setTargetPosition(lift_offset);
+            }
+        } else {
+            pid_control.setTargetPosition(lift_offset + lift_target);
+        }
+
+        pid_speed = pid_control.update(cur_position) / 100;
 
         set_power(pid_speed);
+
+        last_limit_switch = cur_limit_switch;
     }
 
     @Override

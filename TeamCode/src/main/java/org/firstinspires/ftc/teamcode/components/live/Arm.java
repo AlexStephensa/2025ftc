@@ -12,22 +12,22 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
 @Config
 class ArmConfig {
-    static public double ELBOW_L_TRANSFER_POSITION = 0.45;
-    static public double ELBOW_L_WAITING_POSITION = 0.5; // tweak
-    static public double ELBOW_L_SPECIMEN_POSITION = 0.07;
-    static public double ELBOW_L_BASKET_POSITION = 0.875;
+    static public double ELBOW_L_TRANSFER_POSITION = 0.58;
+    static public double ELBOW_L_WAITING_POSITION = 0.52; // tweak
+    static public double ELBOW_L_SPECIMEN_POSITION = 0.88;
+    static public double ELBOW_L_BASKET_POSITION = 0.15;
 
-    static public double ELBOW_R_TRANSFER_POSITION = 0.45;
-    static public double ELBOW_R_WAITING_POSITION = 0.5; // tweak
-    static public double ELBOW_R_SPECIMEN_POSITION = 0.07;
-    static public double ELBOW_R_BASKET_POSITION = 0.875;
+    static public double ELBOW_R_TRANSFER_POSITION = 0.58;
+    static public double ELBOW_R_WAITING_POSITION = 0.52; // tweak
+    static public double ELBOW_R_SPECIMEN_POSITION = 0.88;
+    static public double ELBOW_R_BASKET_POSITION = 0.15;
 
     static public double WRIST_TRANSFER_POSITION = 0.65;
-    static public double WRIST_SPECIMEN_POSITION = 0.7;
+    static public double WRIST_SPECIMEN_POSITION = 0.75;
     static public double WRIST_BASKET_POSITION = 0.15;
 
     static public double CLAW_CLOSE_POSITION = 0.72;
-    static public double CLAW_OPEN_POSITION = 0.45;
+    static public double CLAW_OPEN_POSITION = 0.4;
 }
 
 public class Arm extends Component {
@@ -71,7 +71,7 @@ public class Arm extends Component {
 
     @Override
     public void startup() {
-        transfer_position();
+        waiting_position();
         open_claw();
     }
 

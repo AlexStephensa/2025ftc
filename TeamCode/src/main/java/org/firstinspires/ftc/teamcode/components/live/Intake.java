@@ -26,18 +26,20 @@ class IntakeConfig {
     public static double PITCH_R_TRANSFER_POSITION = 0.4;
 
     // Servo Positions for Intake from Field
-    public static double PITCH_L_INTAKE_POSITION = 0.57;
-    public static double PITCH_R_INTAKE_POSITION = 0.57;
+    public static double PITCH_L_INTAKE_POSITION = 0.55;
+    public static double PITCH_R_INTAKE_POSITION = 0.55;
+
+    public static double PITCH_INTAKE_TWEAK = 0.03;
 
     public static int COLOR_UPDATE_RATE = 5; // Color Sensor update interval
-    public static int COLOR_CUTOFF = 300; // Cut off value of color sensor
+    public static double COLOR_CUTOFF = 0.5; // Cut off value of color sensor
 
-    public static int SPIT_DURATION = 200_000_000; // nanoseconds, 0.2s
+    public static int SPIT_DURATION = 300_000_000; // nanoseconds, 0.3s
 }
 
 public class Intake extends Component {
     private NormalizedRGBA current_color;
-    private String current_color_name = "NONE";
+    public String current_color_name = "NONE";
 
     public String intake_color_wanted = "BLUE";
 
@@ -101,31 +103,46 @@ public class Intake extends Component {
         super.updateTelemetry(telemetry);
         telemetry.addData("SPINNER",TELEMETRY_DECIMAL.format(intake.servo.getPower()));
         telemetry.addData("INTAKE CURRENT", intake_current);
-//        telemetry.addData("COLOR RGBA",current_color.red + " " + current_color.blue + " " + current_color.green + " " + current_color.alpha);
+        telemetry.addData("COLOR RGBA",current_color.red + " " + current_color.green + " " + current_color.blue + " " + current_color.alpha);
         telemetry.addData("COLOR", current_color_name);
     }
 
     public void intake_run(double speed, Gamepad gamepad1, Gamepad gamepad2) {
-        gamepad2.setLedColor((
-            intake_current == "RED" || intake_current == "YELLOW") ? 1 : 0,
-                intake_current == "YELLOW" ? 1 : 0,
-                intake_current == "BLUE" ? 1 : 0,
-            LED_DURATION_CONTINUOUS
-        );
+        if (speed > 0) {
+            if (intake_current == "INTAKE") {
+                pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
+                pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
+            }
 
-        if (current_color_name != "NONE" && current_color_name != intake_color_wanted && current_color_name != "YELLOW") {
-            if (spitting_since == -1) {
-                spitting_since = System.nanoTime();
-            } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
-                intake.queue_power(-1);
+            gamepad2.setLedColor((
+                            current_color_name == "RED" || current_color_name == "YELLOW") ? 1 : 0,
+                    current_color_name == "YELLOW" ? 1 : 0,
+                    current_color_name == "BLUE" ? 1 : 0,
+                    LED_DURATION_CONTINUOUS
+            );
+
+            if (current_color_name != "NONE" && current_color_name != intake_color_wanted && current_color_name != "YELLOW") {
+                if (spitting_since == -1) {
+                    spitting_since = System.nanoTime();
+                } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
+                    intake.queue_power(-1);
+                }
+            } else {
+                if (current_color_name == intake_color_wanted || current_color_name == "YELLOW") {
+                    gamepad1.rumble(100);
+                    gamepad2.rumble(100);
+                    intake_transfer();
+                }
+                intake.queue_power(speed);
+                spitting_since = -1;
             }
         } else {
-            if (current_color_name == intake_color_wanted) {
-                gamepad1.rumble(100);
-                gamepad2.rumble(100);
-            }
             intake.queue_power(speed);
-            spitting_since = -1;
+
+            if (intake_current == "INTAKE") {
+                pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION);
+                pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION);
+            }
         }
     }
 

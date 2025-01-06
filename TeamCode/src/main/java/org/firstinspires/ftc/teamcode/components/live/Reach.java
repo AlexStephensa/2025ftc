@@ -19,11 +19,13 @@ import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
 
 @Config
 class ReachConfig {
-    public static final int MAX_LENGTH      = 600;  // mm
+    public static final int MAX_LENGTH      = 671;  // mm
     public static final int MIN_LENGTH      = 100 - 50;  // mm
     public static final int TWEAK_MAX_ADD   = 100;   // mm
     public static final int SECTION         = 6;    // number of scissor sections
-    public static final int SECT_LENGTH     = 112;  // length of section-arms in mm (from end to end)
+    public static final int SECT_LENGTH     = 112;  // length of section-arms in mm (from end to end)\
+
+    public static final int SERVO_RANGE     = 355; // deg
 }
 
 public class Reach extends Component {
@@ -66,7 +68,7 @@ public class Reach extends Component {
                             reach_l_target + (int) (tweak * TWEAK_MAX_ADD),
                             MIN_LENGTH,
                             MAX_LENGTH
-                    ))) / 360
+                    ))) / ReachConfig.SERVO_RANGE
             );
 
             reach_r.queue_position(
@@ -74,7 +76,7 @@ public class Reach extends Component {
                             reach_r_target + (int) (tweak * TWEAK_MAX_ADD),
                             MIN_LENGTH,
                             MAX_LENGTH
-                    ))) / 360
+                    ))) / ReachConfig.SERVO_RANGE
             );
         }
 
@@ -100,8 +102,8 @@ public class Reach extends Component {
         telemetry.addData("RR TARGET",TELEMETRY_DECIMAL.format(reach_r_target));
         telemetry.addData("LR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_l_angle));
         telemetry.addData("RR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_r_angle));
-        telemetry.addData("LR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle) / 360));
-        telemetry.addData("RR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_r_angle) / 360));
+        telemetry.addData("LR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle) / ReachConfig.SERVO_RANGE));
+        telemetry.addData("RR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_r_angle) / ReachConfig.SERVO_RANGE));
         telemetry.addData("REACH MOVING", starting_move);
     }
 
@@ -117,8 +119,8 @@ public class Reach extends Component {
 
         reach_l_angle = reach_angle(reach_l_target);
         reach_r_angle = reach_angle(reach_r_target);
-        reach_l.queue_position((Math.toDegrees(reach_l_angle)) / 360);
-        reach_r.queue_position((Math.toDegrees(reach_r_angle)) / 360);
+        reach_l.queue_position((Math.toDegrees(reach_l_angle)) / ReachConfig.SERVO_RANGE);
+        reach_r.queue_position((Math.toDegrees(reach_r_angle)) / ReachConfig.SERVO_RANGE);
 
         starting_move = true;
     }
