@@ -22,7 +22,7 @@ class ArmConfig {
     static public double ELBOW_R_SPECIMEN_POSITION = 0.88;
     static public double ELBOW_R_BASKET_POSITION = 0.15;
 
-    static public double WRIST_TRANSFER_POSITION = 0.65;
+    static public double WRIST_TRANSFER_POSITION = 0.6;
     static public double WRIST_SPECIMEN_POSITION = 0.75;
     static public double WRIST_BASKET_POSITION = 0.15;
 
