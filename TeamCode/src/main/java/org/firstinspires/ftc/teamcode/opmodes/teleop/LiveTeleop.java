@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 
+import java.nio.ReadOnlyBufferException;
+
 @TeleOp(name="Teleop Live", group="driver control")
 //@Disabled
 public class LiveTeleop extends LiveTeleopBase {
@@ -35,22 +37,6 @@ public class LiveTeleop extends LiveTeleopBase {
     @Override
     public void on_loop() {
 
-        // ARM TESTING
-        if(gamepad1.dpad_down) {
-            robot.arm.specimen_position();
-        } else if (gamepad1.dpad_up) {
-            robot.arm.basket_position();
-        } else if (gamepad1.dpad_left) {
-            robot.arm.transfer_position();
-        } else if (gamepad1.dpad_right) {
-            robot.arm.waiting_position();
-        }
-        if(gamepad1.a) {
-            robot.arm.close_claw();
-        } else if(gamepad1.b) {
-            robot.arm.open_claw();
-        }
-
         if(gamepad1.back && !gp1_back_pressed) {
             robot.intake.toggle_wanted_color();
             gamepad1.setLedColor(robot.intake.intake_color_wanted == "RED" ? 1 : 0, 0, robot.intake.intake_color_wanted == "BLUE" ? 1 : 0, LED_DURATION_CONTINUOUS);
@@ -66,6 +52,10 @@ public class LiveTeleop extends LiveTeleopBase {
         else if (gamepad2.dpad_left){
             robot.reach.min_reach();
             robot.intake.intake_transfer();
+        }
+
+        if (gamepad2.left_bumper) {
+            robot.arm.open_claw();
         }
 
         robot.intake.intake_run(gamepad2.a ? 1 : (gamepad2.b ? -1 : 0), gamepad1, gamepad2);
@@ -86,6 +76,9 @@ public class LiveTeleop extends LiveTeleopBase {
                         robot.lift.min_lift();
                         robot.arm.waiting_position();
                     }, 100);
+                }
+                else if (robot.lift.level == LiftConst.HANG) {
+                    robot.lift.elevate_to(LiftConst.LOW_BASKET);
                 }
                 else {
                     robot.lift.min_lift();
