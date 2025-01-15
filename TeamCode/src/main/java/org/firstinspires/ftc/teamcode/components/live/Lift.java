@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MIN_LEVE
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_D;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_I;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_P;
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.THRESHOLD;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -28,6 +29,7 @@ class LiftConfig {
     public static int MIN_LEVEL = 0;
 
     public static int MIN_LIFT_OVERSHOOT = 400;
+    public static int THRESHOLD = 200;
 
     public static int[] LIFT_LEVELS = {
             0,      // level 0
@@ -113,7 +115,7 @@ public class Lift extends Component {
 
         pid_speed = pid_control.update(cur_position) / 100;
 
-        set_power(pid_speed);
+        hold_threshold(pid_speed);
 
         last_limit_switch = cur_limit_switch;
     }
@@ -151,6 +153,8 @@ public class Lift extends Component {
 
         telemetry.addData("PID VEL", pid_speed);
 
+        telemetry.addData("PID VEL", pid_speed);
+
     }
 
     public void set_power(double speed) {
@@ -164,6 +168,14 @@ public class Lift extends Component {
 
     public void elevate(int amt) {
         elevate_to(level + amt);
+    }
+
+    public void hold_threshold(double speed){
+        if (Math.abs(lift_target - lift_f.getCurrentPosition()) <= THRESHOLD) {
+            set_power(0);
+        } else {
+            set_power(speed);
+        }
     }
 
     public void elevate_to(int target_level) {
