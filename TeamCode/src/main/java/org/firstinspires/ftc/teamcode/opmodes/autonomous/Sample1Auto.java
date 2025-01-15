@@ -24,7 +24,7 @@ public class Sample1Auto extends LiveAutoBase {
 
         robot.drive_train.odo_reset(0.0, 0.0, 0.0);
         robot.drive_train.odo_move(2.0, 0.0, 0.0, 0.5);
-        robot.wait(500);
+        //robot.wait(500);
         robot.drive_train.odo_move(2.0, 0.0, 0.0, 0.5);
 
     }
