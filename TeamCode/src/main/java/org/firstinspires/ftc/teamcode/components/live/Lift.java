@@ -136,7 +136,8 @@ public class Lift extends Component {
 
         pid_speed = pid_control.update(cur_position) / 100;
 
-        hold_threshold(pid_speed);
+        // set_power(hold_threshold(pid_speed));
+        set_power(pid_speed);
 
         last_limit_switch = cur_limit_switch;
     }
@@ -191,13 +192,13 @@ public class Lift extends Component {
         elevate_to(level + amt);
     }
 
-    public void hold_threshold(double speed){
+    public double hold_threshold(double speed){
         if (Math.abs(lift_target - lift_f.getCurrentPosition()) <= THRESHOLD) {
-            set_power(0);
             AT_THRESH = true;
+            return 0;
         } else {
-            set_power(speed);
             AT_THRESH = false;
+            return speed;
         }
     }
 
