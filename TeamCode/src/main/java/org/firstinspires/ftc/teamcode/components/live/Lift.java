@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.components.live;
 
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.LIFT_LEVELS;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.LIFT_OFFSET;
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MAX_EXTENSION;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MAX_LEVEL;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MIN_LEVEL;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_D;
@@ -9,6 +10,7 @@ import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_I;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_P;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.THRESHOLD;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.AT_THRESH;
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.TWEAK_MAX_ADD;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -18,6 +20,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.Component;
@@ -26,12 +29,16 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 @Config
 class LiftConfig {
     public static int LIFT_OFFSET = 0;
-    public static int MAX_LEVEL = 5; //highest level the virtual robot can extend
+    public static int MAX_LEVEL = 5; // highest level the virtual robot can extend
     public static int MIN_LEVEL = 0;
+
+    public static int MAX_EXTENSION = 72000; // highest safe extension of physical robot
 
     public static int MIN_LIFT_OVERSHOOT = 400;
     public static int THRESHOLD = 200;
     public static boolean AT_THRESH = true;
+
+    public static int TWEAK_MAX_ADD = 1000;
 
     public static int[] LIFT_LEVELS = {
             0,      // level 0
@@ -67,6 +74,7 @@ public class Lift extends Component {
     public boolean last_limit_switch = true;
 
     static double tweak = 0;
+    static double tweak_cache = 0;
 
     static double pid_speed = 0;
 
@@ -113,6 +121,17 @@ public class Lift extends Component {
             }
         } else {
             pid_control.setTargetPosition(lift_offset + lift_target);
+
+             if (tweak != tweak_cache) {
+                 tweak_cache = tweak;
+                 pid_control.setTargetPosition(
+                         Range.clip(
+                                 lift_target + lift_offset + (int) (tweak * TWEAK_MAX_ADD),
+                                 0,
+                                 MAX_EXTENSION + TWEAK_MAX_ADD
+                         )
+                 );
+             }
         }
 
         pid_speed = pid_control.update(cur_position) / 100;
