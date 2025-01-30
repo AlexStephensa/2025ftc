@@ -1,16 +1,14 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
+import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.AT_THRESH;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.LIFT_LEVELS;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.LIFT_OFFSET;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MAX_EXTENSION;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MAX_LEVEL;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MIN_LEVEL;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_D;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_I;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_P;
 import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.THRESHOLD;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.AT_THRESH;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.TWEAK_MAX_ADD;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -20,7 +18,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.Component;
@@ -122,7 +119,7 @@ public class Lift extends Component {
         } else {
             pid_control.setTargetPosition(lift_offset + lift_target);
 
-             if (tweak != tweak_cache) {
+             /*if (tweak != tweak_cache) {
                  tweak_cache = tweak;
                  pid_control.setTargetPosition(
                          Range.clip(
@@ -131,7 +128,7 @@ public class Lift extends Component {
                                  MAX_EXTENSION + TWEAK_MAX_ADD
                          )
                  );
-             }
+             }*/
         }
 
         pid_speed = pid_control.update(cur_position) / 100;

@@ -347,6 +347,12 @@ public class DriveTrain extends Component {
         }
     }
 
+    public void setCurrentPose(double x, double y, double a) {
+        this.lcs.x = x;
+        this.lcs.y = y;
+        this.lcs.a = a;
+    }
+
     public void drive_to_pose(Pose pose, double drive_speed, double turn_speed) {
         /**
          * Set drive variables to drive towards a pose

@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 
-import java.nio.ReadOnlyBufferException;
-
 @TeleOp(name="Teleop Live", group="driver control")
 //@Disabled
 public class LiveTeleop extends LiveTeleopBase {
@@ -119,7 +117,7 @@ public class LiveTeleop extends LiveTeleopBase {
             }
 
             if (robot.lift.level == LiftConst.SPECIMEN) {
-                run_in(() -> { robot.arm.specimen_position(); }, 500);
+                run_in(() -> robot.arm.specimen_position(), 500);
             }
         }
 
