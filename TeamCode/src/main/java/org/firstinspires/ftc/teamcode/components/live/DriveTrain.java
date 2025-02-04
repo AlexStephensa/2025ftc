@@ -48,6 +48,11 @@ public class DriveTrain extends Component {
     private double drive_y = 0; // Y-pos intent
     private double drive_a = 0; // Angle intent
 
+    private double target_x = 0;
+    private double target_y = 0;
+    private double target_a = 0;
+
+
     // The current coyote path the drive train is running
     public Path current_path;
 
@@ -126,6 +131,10 @@ public class DriveTrain extends Component {
         telemetry.addData("X", lcs.x);
         telemetry.addData("Y", lcs.y);
         telemetry.addData("A", lcs.a);
+
+        telemetry.addData("target X", target_x);
+        telemetry.addData("target Y", target_y);
+        telemetry.addData("target A", target_a);
 
         telemetry.addData("PID", drive_lf.motor.getPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
 
@@ -234,6 +243,10 @@ public class DriveTrain extends Component {
         odo_move(x, y, a, speed, 1, 0.02, 0, 0);
     }
 
+    public void odo_move(Pose pose, double speed, double timeout) {
+        odo_move(pose.x, pose.y, pose.angle, speed, 1, 0.02, timeout, 0);
+    }
+
     public void odo_move(double x, double y, double a, double speed, double pos_acc, double angle_acc) {
         odo_move(x, y, a, speed, pos_acc, angle_acc, 0, 0);
     }
@@ -250,6 +263,8 @@ public class DriveTrain extends Component {
 
 
         robot.opmode.resetRuntime();
+        Pose pose = new Pose(x, y, a);
+        targetPose(pose);
 
         double time_at_goal = 0;
 
@@ -347,10 +362,15 @@ public class DriveTrain extends Component {
         }
     }
 
-    public void setCurrentPose(double x, double y, double a) {
-        this.lcs.x = x;
-        this.lcs.y = y;
-        this.lcs.a = a;
+    public Pose getCurrentPose() {
+        Pose current = new Pose(this.lcs.x, this.lcs.y, this.lcs.a);
+        return current;
+    }
+
+    private void targetPose(Pose pose) {
+        target_x = pose.x;
+        target_y = pose.y;
+        target_a = pose.angle;
     }
 
     public void drive_to_pose(Pose pose, double drive_speed, double turn_speed) {
