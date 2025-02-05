@@ -142,7 +142,7 @@ public class DriveTrain extends Component {
 
         if (current_path != null) {
             Pose cfp = current_path.getFollowPose();
-            telemetry.addData("PP FP", cfp.x+" "+cfp.y+" "+cfp.angle);
+            telemetry.addData("PP FP", cfp.x+" "+cfp.y+" "+cfp.a);
         }
     }
 
@@ -244,7 +244,7 @@ public class DriveTrain extends Component {
     }
 
     public void odo_move(Pose pose, double speed, double timeout) {
-        odo_move(pose.x, pose.y, pose.angle, speed, 1, 0.02, timeout, 0);
+        odo_move(pose.x, pose.y, pose.a, speed, 1, 0.02, timeout, 0);
     }
 
     public void odo_move(double x, double y, double a, double speed, double pos_acc, double angle_acc) {
@@ -256,16 +256,13 @@ public class DriveTrain extends Component {
     }
 
     public void odo_move(double x, double y, double a, double speed, double pos_acc, double angle_acc, double timeout, double time_at_target) {
+        target(x, y, a);
         a = -a;
 
         double original_distance = Math.hypot(x-lcs.x, y-lcs.y);
         double original_distance_a = Math.abs(a - lcs.a);
 
-
         robot.opmode.resetRuntime();
-        Pose pose = new Pose(x, y, a);
-        targetPose(pose);
-
         double time_at_goal = 0;
 
         if (original_distance > 0 || original_distance_a > 0) {
@@ -293,6 +290,7 @@ public class DriveTrain extends Component {
     }
 
     public void odo_drive_towards(double x, double y, double a, double speed) {
+        target(x, y, a);
         /**
          * Set drive variables to drive towards a pose
          */
@@ -306,6 +304,10 @@ public class DriveTrain extends Component {
         mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
     }
 
+    public void odo_drive_towards(Pose pose, double speed) {
+        odo_drive_towards(pose.x, pose.y, pose.a, speed);
+    }
+
 
     public void odo_reset(double x, double y, double a) {
         /**
@@ -314,6 +316,15 @@ public class DriveTrain extends Component {
         this.lcs.x = x;
         this.lcs.y = y;
         this.lcs.a = a;
+    }
+
+    public void odo_reset(Pose pose) {
+        /**
+         * Reset odometry to an arbitrary pose
+         */
+        this.lcs.x = pose.x;
+        this.lcs.y = pose.y;
+        this.lcs.a = pose.a;
     }
 
     public void follow_curve_path(Path path) {
@@ -346,7 +357,7 @@ public class DriveTrain extends Component {
             }
 
             // Find our turn speed based on angle difference
-            double turn_speed = Range.clip(Math.abs((angle_difference(lcs.a, lookahead_pose.angle-(Math.PI/2))) * 2), 0, 1) * path.getSpeed();
+            double turn_speed = Range.clip(Math.abs((angle_difference(lcs.a, lookahead_pose.a -(Math.PI/2))) * 2), 0, 1) * path.getSpeed();
 
             // Drive towards the lookahead point
             drive_to_pose(lookahead_pose, translational_speed, turn_speed);
@@ -362,15 +373,12 @@ public class DriveTrain extends Component {
         }
     }
 
-    public Pose getCurrentPose() {
-        Pose current = new Pose(this.lcs.x, this.lcs.y, this.lcs.a);
-        return current;
-    }
+    public Pose getCurrentPose() { return new Pose(this.lcs.x, this.lcs.y, this.lcs.a); }
 
-    private void targetPose(Pose pose) {
-        target_x = pose.x;
-        target_y = pose.y;
-        target_a = pose.angle;
+    private void target(double x, double y, double a) {
+        target_x = x;
+        target_y = y;
+        target_a = a;
     }
 
     public void drive_to_pose(Pose pose, double drive_speed, double turn_speed) {
@@ -385,7 +393,7 @@ public class DriveTrain extends Component {
         double mvmt_x = Math.cos(drive_angle - lcs.a) * drive_speed;
         double mvmt_y = -Math.sin(drive_angle - lcs.a) * drive_speed;
         // Find angle speed to turn towards the desired angle
-        double mvmt_a = -((angle_difference(lcs.a, pose.angle-(Math.PI/2) /* robot treats forward as 0deg*/) > 0 ? 1.0 : -1.0) * turn_speed);
+        double mvmt_a = -((angle_difference(lcs.a, pose.a -(Math.PI/2) /* robot treats forward as 0deg*/) > 0 ? 1.0 : -1.0) * turn_speed);
 
         // Update actual motor powers with our movement vector
         mecanum_drive(mvmt_x, mvmt_y, mvmt_a);

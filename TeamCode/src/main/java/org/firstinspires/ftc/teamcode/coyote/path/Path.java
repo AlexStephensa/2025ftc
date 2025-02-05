@@ -276,7 +276,7 @@ public class Path {
         try {
             return
                     (robot_pose.distance(getLastPoint()) < position_precision &&
-                    Math.abs(angle_difference(robot_pose.angle, getHeadingGoal(heading_method, getFollowPose()))) < heading_precision) ||
+                    Math.abs(angle_difference(robot_pose.a, getHeadingGoal(heading_method, getFollowPose()))) < heading_precision) ||
                             (stop_condition != null && stop_condition.call());
         } catch (Exception e) {
             return false;
