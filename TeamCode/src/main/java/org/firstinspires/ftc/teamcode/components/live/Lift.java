@@ -61,14 +61,14 @@ public class Lift extends Component {
     public DcMotorEx lift_b;
 
     //// SENSORS ////
-    public DigitalChannel limit_switchV;
+    public DigitalChannel limit_switchL;
 
 
     public int level;
     public int lift_target = 0;
     public int lift_offset = 0;
 
-    public boolean last_limit_switch = true;
+    private boolean last_limit_switch = true;
 
     static double tweak = 0;
     static double tweak_cache = 0;
@@ -96,14 +96,14 @@ public class Lift extends Component {
         lift_f = hwmap.get(DcMotorEx.class, "liftF");
         lift_b = hwmap.get(DcMotorEx.class, "liftB");
 
-        limit_switchV = hwmap.get(DigitalChannel.class, "vLimSwitch");
+        limit_switchL = hwmap.get(DigitalChannel.class, "vLimSwitch");
     }
 
     @Override
     public void update(OpMode opmode) {
         super.update(opmode);
 
-        boolean cur_limit_switch = !limit_switchV.getState();
+        boolean cur_limit_switch = !limit_switchL.getState();
         int cur_position = lift_f.getCurrentPosition();
 
         if (lift_target == 0) {
@@ -168,11 +168,11 @@ public class Lift extends Component {
 
         telemetry.addData("LEVEL", level);
 
-        telemetry.addData("LIM", !limit_switchV.getState());
+        telemetry.addData("LIFT LIM", !limit_switchL.getState());
 
         telemetry.addData("PID VEL", pid_speed);
 
-        telemetry.addData("AT THRESH", AT_THRESH);
+        //telemetry.addData("AT THRESH", AT_THRESH);
 
     }
 

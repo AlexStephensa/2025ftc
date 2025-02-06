@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.components.live.ReachConfig.TWEAK_M
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -33,13 +34,16 @@ public class Reach extends Component {
     public ServoQUS reach_l;
     public ServoQUS reach_r;
 
-    //// VARIABLES ////
-    public int position;    // position stored in levels
-    private boolean starting_move = false;
+    //// SENSORS ////
+    public DigitalChannel limit_switchR;
+
+    public int position;
     private int reach_l_target = MIN_LENGTH;
     private int reach_r_target = MIN_LENGTH;
     private double reach_l_angle = reach_angle(MIN_LENGTH);
     private double reach_r_angle = reach_angle(MIN_LENGTH);
+
+    private boolean last_limit_switch = true;
 
     double tweak = 0;
     double tweak_cache = 0;
@@ -55,11 +59,15 @@ public class Reach extends Component {
         //// SERVOS ////
         reach_l     = new ServoQUS(hwmap.get(Servo.class, "reachL"));
         reach_r     = new ServoQUS(hwmap.get(Servo.class, "reachR"));
+
+        limit_switchR = hwmap.get(DigitalChannel.class, "rLimSwitch");
     }
 
     @Override
     public void update(OpMode opmode) {
         super.update(opmode);
+
+        boolean cur_limit_switch = !limit_switchR.getState();
 
         if (tweak != tweak_cache) {
             tweak_cache = tweak;
@@ -98,13 +106,12 @@ public class Reach extends Component {
     @Override
     public void updateTelemetry(Telemetry telemetry) {
         super.updateTelemetry(telemetry);
-        telemetry.addData("REACH TARGET",TELEMETRY_DECIMAL.format(reach_l_target));
-        telemetry.addData("RR TARGET",TELEMETRY_DECIMAL.format(reach_r_target));
-        telemetry.addData("LR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_l_angle));
-        telemetry.addData("RR ANGLE (RAD)", TELEMETRY_DECIMAL.format(reach_r_angle));
-        telemetry.addData("LR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle) / ReachConfig.SERVO_RANGE));
-        telemetry.addData("RR ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_r_angle) / ReachConfig.SERVO_RANGE));
-        telemetry.addData("REACH MOVING", starting_move);
+
+        telemetry.addData("REACH TARGET", TELEMETRY_DECIMAL.format(reach_l_target));
+
+        telemetry.addData("REACH ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle) / ReachConfig.SERVO_RANGE));
+
+        telemetry.addData("REACH LIM", !limit_switchR.getState());
     }
 
     private double reach_angle(double dis) {
@@ -121,8 +128,6 @@ public class Reach extends Component {
         reach_r_angle = reach_angle(reach_r_target);
         reach_l.queue_position((Math.toDegrees(reach_l_angle)) / ReachConfig.SERVO_RANGE);
         reach_r.queue_position((Math.toDegrees(reach_r_angle)) / ReachConfig.SERVO_RANGE);
-
-        starting_move = true;
     }
 
     public void min_reach() {

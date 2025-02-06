@@ -146,6 +146,36 @@ public class Intake extends Component {
         }
     }
 
+    public void intake_run_auto(double speed) {
+        if (speed > 0) {
+            if (intake_current == "INTAKE") {
+                pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
+                pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
+            }
+
+            if (current_color_name != "NONE" && current_color_name != intake_color_wanted && current_color_name != "YELLOW") {
+                if (spitting_since == -1) {
+                    spitting_since = System.nanoTime();
+                } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
+                    intake.queue_power(-1);
+                }
+            } else {
+                if (current_color_name == intake_color_wanted || current_color_name == "YELLOW") {
+                    intake_transfer();
+                }
+                intake.queue_power(speed);
+                spitting_since = -1;
+            }
+        } else {
+            intake.queue_power(speed);
+
+            if (intake_current == "INTAKE") {
+                pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION);
+                pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION);
+            }
+        }
+    }
+
     public void intake_color_check() {
         if (current_color.alpha < IntakeConfig.COLOR_CUTOFF) {
             current_color_name = "NONE";

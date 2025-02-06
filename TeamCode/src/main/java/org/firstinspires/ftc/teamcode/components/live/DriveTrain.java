@@ -243,6 +243,10 @@ public class DriveTrain extends Component {
         odo_move(x, y, a, speed, 1, 0.02, 0, 0);
     }
 
+    public void odo_move(Pose pose, double speed) {
+        odo_move(pose, speed, 0);
+    }
+
     public void odo_move(Pose pose, double speed, double timeout) {
         odo_move(pose.x, pose.y, pose.a, speed, 1, 0.02, timeout, 0);
     }
