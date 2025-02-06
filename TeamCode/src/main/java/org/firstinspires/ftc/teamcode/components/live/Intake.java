@@ -109,26 +109,26 @@ public class Intake extends Component {
 
     public void intake_run(double speed, Gamepad gamepad1, Gamepad gamepad2) {
         if (speed > 0) {
-            if (intake_current == "INTAKE") {
+            if (intake_current.equals("INTAKE")) {
                 pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
                 pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
             }
 
             gamepad2.setLedColor((
-                            current_color_name == "RED" || current_color_name == "YELLOW") ? 1 : 0,
-                    current_color_name == "YELLOW" ? 1 : 0,
-                    current_color_name == "BLUE" ? 1 : 0,
+                            current_color_name.equals("RED") || current_color_name.equals("YELLOW")) ? 1 : 0,
+                    current_color_name.equals("YELLOW") ? 1 : 0,
+                    current_color_name.equals("BLUE") ? 1 : 0,
                     LED_DURATION_CONTINUOUS
             );
 
-            if (current_color_name != "NONE" && current_color_name != intake_color_wanted && current_color_name != "YELLOW") {
+            if (!current_color_name.equals("NONE") && !current_color_name.equals("intake_color_wanted") && !current_color_name.equals("YELLOW")) {
                 if (spitting_since == -1) {
                     spitting_since = System.nanoTime();
                 } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
                     intake.queue_power(-1);
                 }
             } else {
-                if (current_color_name == intake_color_wanted || current_color_name == "YELLOW") {
+                if (current_color_name.equals("intake_color_wanted") || current_color_name.equals("YELLOW")) {
                     gamepad1.rumble(100);
                     gamepad2.rumble(100);
                     intake_transfer();
@@ -139,7 +139,7 @@ public class Intake extends Component {
         } else {
             intake.queue_power(speed);
 
-            if (intake_current == "INTAKE") {
+            if (intake_current.equals("INTAKE")) {
                 pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION);
                 pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION);
             }
@@ -148,19 +148,19 @@ public class Intake extends Component {
 
     public void intake_run_auto(double speed) {
         if (speed > 0) {
-            if (intake_current == "INTAKE") {
+            if (intake_current.equals("INTAKE")) {
                 pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
                 pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
             }
 
-            if (current_color_name != "NONE" && current_color_name != intake_color_wanted && current_color_name != "YELLOW") {
+            if (!current_color_name.equals("NONE") && !current_color_name.equals("intake_color_wanted") && !current_color_name.equals("YELLOW")) {
                 if (spitting_since == -1) {
                     spitting_since = System.nanoTime();
                 } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
                     intake.queue_power(-1);
                 }
             } else {
-                if (current_color_name == intake_color_wanted || current_color_name == "YELLOW") {
+                if (current_color_name.equals("intake_color_wanted") || current_color_name.equals("YELLOW")) {
                     intake_transfer();
                 }
                 intake.queue_power(speed);
@@ -169,7 +169,7 @@ public class Intake extends Component {
         } else {
             intake.queue_power(speed);
 
-            if (intake_current == "INTAKE") {
+            if (intake_current.equals("INTAKE")) {
                 pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION);
                 pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION);
             }
@@ -201,6 +201,6 @@ public class Intake extends Component {
     }
 
     public void toggle_wanted_color() {
-        intake_color_wanted = (intake_color_wanted == "BLUE") ? "RED" : "BLUE";
+        intake_color_wanted = (intake_color_wanted.equals("BLUE")) ? "RED" : "BLUE";
     }
 }

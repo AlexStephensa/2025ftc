@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 
-@Autonomous(name = "testAuto", group = "autonomous")
-public class testAuto extends LiveAutoBase {
+@Autonomous(name = "4Sample+Park", group = "autonomous")
+public class sampleType4 extends LiveAutoBase {
     public int nextSample; // what part of the sample cycle the robot is on
 
     @Override
@@ -16,14 +16,14 @@ public class testAuto extends LiveAutoBase {
         robot.arm.transfer_position();
         robot.arm.close_claw();
         robot.drive_train.odo_reset(AutoConst.leftInitPose);
-        nextSample = 1; // where in the intake loop to start
+        nextSample = AutoConst.SAMPLE_RIGHT; // where in the intake loop to start
     }
 
     @Override
     public void on_start() {
 
         highBasket();
-        sampleIntake();
+        sampleIntake(AutoConst.SAMPLE_RIGHT);
         highBasket();
         sampleIntake();
         highBasket();
@@ -40,7 +40,7 @@ public class testAuto extends LiveAutoBase {
     public void highBasket() {
         robot.drive_train.odo_drive_towards(AutoConst.highBasketPose, 1); // quickly driving to pose
 
-        if (!robot.reach.limit_switchR.getState() && robot.intake.current_color_name != "NONE") {
+        if (!robot.reach.limit_switchR.getState() && !robot.intake.current_color_name.equals("NONE")) {
             robot.arm.transfer_position();
             halt(1);
             robot.arm.close_claw();
@@ -62,7 +62,7 @@ public class testAuto extends LiveAutoBase {
         robot.drive_train.odo_move(samplePose(nextSample), 0.75);
 
         robot.reach.extend_to(200);
-        while (robot.intake.current_color_name != "YELLOW") {
+        while (!robot.intake.current_color_name.equals("YELLOW")) {
             robot.intake.intake_run_auto(1);
             robot.reach.extend_to(robot.reach.position + 20);
         }
@@ -77,7 +77,7 @@ public class testAuto extends LiveAutoBase {
         robot.drive_train.odo_move(samplePose(pos), 0.75);
 
         robot.reach.extend_to(200);
-        while (robot.intake.current_color_name != "YELLOW") {
+        while (!robot.intake.current_color_name.equals("YELLOW")) {
             robot.intake.intake_run_auto(1);
             robot.reach.extend_to(robot.reach.position + 20);
         }
