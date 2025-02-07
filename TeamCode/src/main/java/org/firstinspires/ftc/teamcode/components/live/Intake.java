@@ -153,14 +153,14 @@ public class Intake extends Component {
                 pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
             }
 
-            if (!current_color_name.equals("NONE") && !current_color_name.equals("intake_color_wanted") && !current_color_name.equals("YELLOW")) {
+            if (!current_color_name.equals("NONE") && !current_color_name.equals(intake_color_wanted) && !current_color_name.equals("YELLOW")) {
                 if (spitting_since == -1) {
                     spitting_since = System.nanoTime();
                 } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
                     intake.queue_power(-1);
                 }
             } else {
-                if (current_color_name.equals("intake_color_wanted") || current_color_name.equals("YELLOW")) {
+                if (current_color_name.equals(intake_color_wanted) || current_color_name.equals("YELLOW")) {
                     intake_transfer();
                 }
                 intake.queue_power(speed);

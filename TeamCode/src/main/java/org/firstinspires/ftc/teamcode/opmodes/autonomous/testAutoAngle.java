@@ -2,12 +2,10 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.constants.AutoConst;
-import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 
-@Autonomous(name = "testAuto", group = "autonomous")
+@Autonomous(name = "testAutoAngle", group = "autonomous")
 public class testAutoAngle extends LiveAutoBase {
 
     double drive_speed = 0.5;

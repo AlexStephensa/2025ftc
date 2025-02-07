@@ -101,11 +101,11 @@ public class LiveTeleop extends LiveTeleopBase {
                     }, 100);
                     run_in(() -> {
                         robot.arm.close_claw();
-                    }, 200);
+                    }, 250);
                     run_in(() -> {
                         robot.lift.elevate_to(prepared_level);
                         robot.arm.basket_position();
-                    }, 300);
+                    }, 350);
                 }
                 else {
                     robot.lift.elevate_to(prepared_level);

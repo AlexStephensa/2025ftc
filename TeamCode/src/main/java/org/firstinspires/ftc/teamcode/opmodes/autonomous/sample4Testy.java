@@ -3,12 +3,11 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.constants.AutoConst;
-import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 
-@Autonomous(name = "4Sample+Park", group = "autonomous")
-public class sampleType4 extends LiveAutoBase {
+@Autonomous(name = "sample4Testy", group = "autonomous")
+public class sample4Testy extends LiveAutoBase {
     public int nextSample; // what part of the sample cycle the robot is on
 
     @Override
@@ -41,34 +40,36 @@ public class sampleType4 extends LiveAutoBase {
     public void highBasket() {
         //robot.drive_train.odo_drive_towards(AutoConst.highBasketPose, 1); // quickly driving to pose
 
-        if (!robot.reach.limit_switchR.getState() && !robot.intake.current_color_name.equals("NONE")) {
+        /*if (!robot.reach.limit_switchR.getState() && !robot.intake.current_color_name.equals("NONE")) {
             robot.arm.transfer_position();
             robot.arm.close_claw();
-        }
+        }*/
 
-        robot.lift.elevate_to(LiftConst.HIGH_BASKET);
-        robot.arm.basket_position(); // moving lift and arm to deposit positions
+        //robot.lift.elevate_to(LiftConst.HIGH_BASKET);
+        //robot.arm.basket_position(); // moving lift and arm to deposit positions
 
         robot.drive_train.odo_move(AutoConst.highBasketPose, 0.5, 3); // move slower to pose
 
-        robot.arm.open_claw(); // deposit sample in basket
+        //robot.arm.open_claw(); // deposit sample in basket
     }
 
     public void sampleIntake() {
-        robot.lift.elevate_to(LiftConst.INIT);
-        robot.arm.waiting_position();
+        //robot.lift.elevate_to(LiftConst.INIT);
+        //robot.arm.waiting_position();
         robot.drive_train.odo_move(samplePose(nextSample), 0.75, 1);
 
-        robot.intake.intake_intake();
+        /*robot.intake.intake_intake();
         while (!robot.intake.current_color_name.equals("YELLOW")) {
             robot.intake.intake_run_auto(1);
             if (robot.reach.position < 200) {
                 robot.reach.extend_to(robot.reach.position + 10);
                 halt(0.1);
             }
-        }
+        }*/
 
-        robot.reach.min_reach();
+        halt(2);
+
+        //robot.reach.min_reach();
     }
 
     public Pose samplePose(int pose) {
@@ -97,8 +98,7 @@ public class sampleType4 extends LiveAutoBase {
 
         halt(1);
 
-        robot.arm.basket_position(); // for the robot to touch the low rung
-        robot.drive_train.odo_drive_towards(AutoConst.subPark, 1);
-        halt(1);
+        //robot.arm.basket_position(); // for the robot to touch the low rung
+        robot.drive_train.odo_move(AutoConst.subPark, 1, 2);
     }
 }

@@ -31,7 +31,7 @@ class LiftConfig {
 
     public static int MAX_EXTENSION = 72000; // highest safe extension of physical robot
 
-    public static int MIN_LIFT_OVERSHOOT = 400;
+    public static int MIN_LIFT_OVERSHOOT = 2000;
     public static int THRESHOLD = 200;
     public static boolean AT_THRESH = true;
 
