@@ -88,6 +88,8 @@ public class Reach extends Component {
             );
         }
 
+        last_limit_switch = cur_limit_switch;
+
         reach_l.update();
         reach_r.update();
     }

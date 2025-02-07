@@ -26,8 +26,8 @@ class IntakeConfig {
     public static double PITCH_R_TRANSFER_POSITION = 0.4;
 
     // Servo Positions for Intake from Field
-    public static double PITCH_L_INTAKE_POSITION = 0.55;
-    public static double PITCH_R_INTAKE_POSITION = 0.55;
+    public static double PITCH_L_INTAKE_POSITION = 0.57;
+    public static double PITCH_R_INTAKE_POSITION = 0.57;
 
     public static double PITCH_INTAKE_TWEAK = 0.03;
 

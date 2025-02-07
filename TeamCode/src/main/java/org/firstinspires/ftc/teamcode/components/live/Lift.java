@@ -46,9 +46,9 @@ class LiftConfig {
             68200   // hang
     };
 
-    public static double PID_P = 0.16;
-    public static double PID_I = 0;
-    public static double PID_D = 0.002;
+    public static double PID_P = 0.08;
+    public static double PID_I = 0.0016;
+    public static double PID_D = 0.0002;
 }
 
 public class Lift extends Component {

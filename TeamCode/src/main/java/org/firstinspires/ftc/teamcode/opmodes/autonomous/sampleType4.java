@@ -35,23 +35,21 @@ public class sampleType4 extends LiveAutoBase {
 
     @Override
     public void on_stop() {
+
     }
 
     public void highBasket() {
-        robot.drive_train.odo_drive_towards(AutoConst.highBasketPose, 1); // quickly driving to pose
+        //robot.drive_train.odo_drive_towards(AutoConst.highBasketPose, 1); // quickly driving to pose
 
         if (!robot.reach.limit_switchR.getState() && !robot.intake.current_color_name.equals("NONE")) {
             robot.arm.transfer_position();
-            halt(1);
             robot.arm.close_claw();
         }
 
         robot.lift.elevate_to(LiftConst.HIGH_BASKET);
         robot.arm.basket_position(); // moving lift and arm to deposit positions
 
-        halt(0.5); // wait for the robot to approach pose
-
-        robot.drive_train.odo_move(AutoConst.highBasketPose, 0.5); // move slower to pose
+        robot.drive_train.odo_move(AutoConst.highBasketPose, 0.5, 3); // move slower to pose
 
         robot.arm.open_claw(); // deposit sample in basket
     }
@@ -59,12 +57,15 @@ public class sampleType4 extends LiveAutoBase {
     public void sampleIntake() {
         robot.lift.elevate_to(LiftConst.INIT);
         robot.arm.waiting_position();
-        robot.drive_train.odo_move(samplePose(nextSample), 0.75);
+        robot.drive_train.odo_move(samplePose(nextSample), 0.75, 1);
 
-        robot.reach.extend_to(200);
+        robot.intake.intake_intake();
         while (!robot.intake.current_color_name.equals("YELLOW")) {
             robot.intake.intake_run_auto(1);
-            robot.reach.extend_to(robot.reach.position + 20);
+            if (robot.reach.position < 400) {
+                robot.reach.extend_to(robot.reach.position + 10);
+                halt(0.05);
+            }
         }
 
         halt(0.1);
@@ -74,15 +75,13 @@ public class sampleType4 extends LiveAutoBase {
     public void sampleIntake(int pos) {
         robot.lift.elevate_to(LiftConst.INIT);
         robot.arm.waiting_position();
-        robot.drive_train.odo_move(samplePose(pos), 0.75);
+        robot.drive_train.odo_move(samplePose(pos), 0.75, 1);
 
         robot.reach.extend_to(200);
         while (!robot.intake.current_color_name.equals("YELLOW")) {
             robot.intake.intake_run_auto(1);
             robot.reach.extend_to(robot.reach.position + 20);
         }
-
-        halt(0.1);
         robot.reach.min_reach();
     }
 
