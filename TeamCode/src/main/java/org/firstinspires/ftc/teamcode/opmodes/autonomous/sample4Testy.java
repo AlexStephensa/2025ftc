@@ -38,7 +38,7 @@ public class sample4Testy extends LiveAutoBase {
     }
 
     public void highBasket() {
-        //robot.drive_train.odo_drive_towards(AutoConst.highBasketPose, 1); // quickly driving to pose
+        robot.drive_train.odo_drive_towards(AutoConst.highBasketPoseOffset, 1); // quickly driving to pose
 
         /*if (!robot.reach.limit_switchR.getState() && !robot.intake.current_color_name.equals("NONE")) {
             robot.arm.transfer_position();
@@ -48,7 +48,7 @@ public class sample4Testy extends LiveAutoBase {
         //robot.lift.elevate_to(LiftConst.HIGH_BASKET);
         //robot.arm.basket_position(); // moving lift and arm to deposit positions
 
-        robot.drive_train.odo_move(AutoConst.highBasketPose, 0.5, 3); // move slower to pose
+        robot.drive_train.odo_move(AutoConst.highBasketPose, 0.5, 5); // move slower to pose
 
         //robot.arm.open_claw(); // deposit sample in basket
     }
@@ -56,7 +56,7 @@ public class sample4Testy extends LiveAutoBase {
     public void sampleIntake() {
         //robot.lift.elevate_to(LiftConst.INIT);
         //robot.arm.waiting_position();
-        robot.drive_train.odo_move(samplePose(nextSample), 0.75, 1);
+        robot.drive_train.odo_move(samplePose(nextSample), 0.75, 5);
 
         /*robot.intake.intake_intake();
         while (!robot.intake.current_color_name.equals("YELLOW")) {

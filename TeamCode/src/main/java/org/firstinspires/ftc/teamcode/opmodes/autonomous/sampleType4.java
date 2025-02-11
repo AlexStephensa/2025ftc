@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 
 @Autonomous(name = "4Sample+Park", group = "autonomous")
 public class sampleType4 extends LiveAutoBase {
+
+    public double robotSpeed = 0.5;
     public int nextSample; // what part of the sample cycle the robot is on
 
     @Override
@@ -39,7 +41,7 @@ public class sampleType4 extends LiveAutoBase {
     }
 
     public void highBasket() {
-        //robot.drive_train.odo_drive_towards(AutoConst.highBasketPose, 1); // quickly driving to pose
+        robot.drive_train.odo_drive_towards(AutoConst.highBasketPoseOffset, 1); // quickly driving to pose
 
         if (!robot.reach.limit_switchR.getState() && !robot.intake.current_color_name.equals("NONE")) {
             robot.arm.transfer_position();
@@ -49,7 +51,9 @@ public class sampleType4 extends LiveAutoBase {
         robot.lift.elevate_to(LiftConst.HIGH_BASKET);
         robot.arm.basket_position(); // moving lift and arm to deposit positions
 
-        robot.drive_train.odo_move(AutoConst.highBasketPose, 0.5, 3); // move slower to pose
+        halt(1);
+
+        robot.drive_train.odo_move(AutoConst.highBasketPose, robotSpeed, 1.5); // move slower to pose
 
         robot.arm.open_claw(); // deposit sample in basket
     }
@@ -57,10 +61,10 @@ public class sampleType4 extends LiveAutoBase {
     public void sampleIntake() {
         robot.lift.elevate_to(LiftConst.INIT);
         robot.arm.waiting_position();
-        robot.drive_train.odo_move(samplePose(nextSample), 0.75, 1);
+        robot.drive_train.odo_move(samplePose(nextSample), robotSpeed, 1);
 
         robot.intake.intake_intake();
-        while (!robot.intake.current_color_name.equals("YELLOW")) {
+        while (!(robot.intake.current_color_name == "YELLOW")) {
             robot.intake.intake_run_auto(1);
             if (robot.reach.position < 200) {
                 robot.reach.extend_to(robot.reach.position + 10);
