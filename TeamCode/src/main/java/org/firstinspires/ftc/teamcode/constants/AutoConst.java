@@ -18,16 +18,21 @@ public class AutoConst {
 
     public static Pose lowBasketPose        = new Pose(15,   15,  Math.PI * 7/4 + gridMod);
 
-    public static Pose rightSamplePose      = new Pose(22.5, 30,  Math.PI * 3/2 + gridMod);
-    public static Pose midSamplePose        = new Pose(12.5, 30,  Math.PI * 3/2 + gridMod);
-    public static Pose leftSamplePose       = new Pose(19,   44,  Math.PI + gridMod);
-    public static Pose partnerSamplePose    = new Pose(55,   15,  0 + gridMod);
-
-
     //// Sample Locations ////
-    public static int SAMPLE_RIGHT      = 1;
-    public static int SAMPLE_MID        = 2;
-    public static int SAMPLE_LEFT       = 3;
-    public static int SAMPLE_PARTNER    = 4;
+    public static int SAMPLE_RIGHT              = 1;
+    public static Pose rightSamplePose          = new Pose(22.5, 30,  Math.PI * 3/2 + gridMod);
+    public static Pose rightSamplePoseOffset    = new Pose(22.5, 28,  Math.PI * 3/2 + gridMod);
+
+    public static int SAMPLE_MID                = 2;
+    public static Pose midSamplePose            = new Pose(12.5, 30,  Math.PI * 3/2 + gridMod);
+    public static Pose midSamplePoseOffset      = new Pose(12.5, 30,  Math.PI * 3/2 + gridMod);
+
+    public static int SAMPLE_LEFT               = 3;
+    public static Pose leftSamplePose           = new Pose(19,   44,  Math.PI + gridMod);
+    public static Pose leftSamplePoseOffset     = new Pose(19,   44,  Math.PI + gridMod);
+
+    public static int SAMPLE_PARTNER            = 4;
+    public static Pose partnerSamplePose        = new Pose(55,   15,  0 + gridMod);
+    public static Pose partnerSamplePoseOffset  = new Pose(55,   15,  0 + gridMod);
 
 }

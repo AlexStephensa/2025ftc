@@ -7,7 +7,7 @@ public class Pose extends Point {
     public Pose(double x, double y, double a) {
         this.x = x;
         this.y = y;
-        this.a = a;
+        this.a = (a > (Math.PI * 2)) ? (a - (Math.PI * 2)) : a;;
     }
 
     public void set_x(double x) {

@@ -43,7 +43,7 @@ public class Reach extends Component {
     private double reach_l_angle = reach_angle(MIN_LENGTH);
     private double reach_r_angle = reach_angle(MIN_LENGTH);
 
-    private boolean last_limit_switch = true;
+    public boolean cur_limit_switch = true;
 
     double tweak = 0;
     double tweak_cache = 0;
@@ -67,7 +67,7 @@ public class Reach extends Component {
     public void update(OpMode opmode) {
         super.update(opmode);
 
-        boolean cur_limit_switch = !limit_switchR.getState();
+        cur_limit_switch = !limit_switchR.getState();
 
         if (tweak != tweak_cache) {
             tweak_cache = tweak;
@@ -87,8 +87,6 @@ public class Reach extends Component {
                     ))) / ReachConfig.SERVO_RANGE
             );
         }
-
-        last_limit_switch = cur_limit_switch;
 
         reach_l.update();
         reach_r.update();

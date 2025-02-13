@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.components.Component;
 
 import java.util.ArrayList;
@@ -108,10 +109,11 @@ public class Robot {
         }
     }
 
+    /**
+     * This method is called as fast as possible by the update thread
+     */
     public void update() {
-        /**
-         * This method is called as fast as possible by the update thread
-         */
+
         if(cycle % BULK_READ_1_CYCLE == 0) {
             expansion_hubs.get(0).clearBulkCache();
         }
@@ -130,6 +132,12 @@ public class Robot {
 
         // Update telemetry on the dashboard and on the phones
         if (cycle % TELEMETRY_CYCLE == 0) {
+
+            // Check for good battery Voltage
+            if (expansion_hubs.get(0).getInputVoltage(VoltageUnit.VOLTS) <= 12.25 || expansion_hubs.get(1).getInputVoltage(VoltageUnit.VOLTS) <= 12.25) {
+                addWarning("Robot Voltage Low");
+            }
+
             updateTelemetry();
 
             for (Component component : components) {
@@ -151,10 +159,11 @@ public class Robot {
         cycle++;
     }
 
+    /**
+     * For updating the telemetry on the phones
+     */
     public void updateTelemetry() {
-        /**
-         * For updating the telemetry on the phones
-         */
+
         if (warnings.size() > 0) {
             telemetry.addData("[WARNINGS]","");
             for (int i = 0; i < warnings.size(); i++) {
@@ -166,27 +175,26 @@ public class Robot {
         telemetry.addData("FREQ", update_freq);
     }
 
-
+    /**
+     * This should automatically be called whenever you make a new component attached to a robot instance
+     * Basically just adds the component to a list of registered components, and attaches all hardware the component needs from the configuration
+     */
     public void registerComponent(Component component) {
-        /**
-         * This should automatically be called whenever you make a new component attached to a robot instance
-         * Basically just adds the component to a list of registered components, and attaches all hardware the component needs from the configuration
-         */
         component.registerHardware(hwmap);
         components.add(component);
     }
 
+    /**
+     * Called on robot startup, registers all hardware the robot instance needs to use, in this case both the rev hubs
+     */
     public void registerHardware(HardwareMap hwmap) {
-        /**
-         * Called on robot startup, registers all hardware the robot instance needs to use, in this case both the rev hubs
-         */
         expansion_hubs = hwmap.getAll(LynxModule.class);
     }
 
+    /**
+     * Add a warning to be displayed on the phone for when something is amiss and the robot should not be run
+     */
     public void addWarning(String warning) {
-        /**
-         * Add a warning to be displayed on the phone for when something is amiss and the robot should not be run
-         */
         warnings.add(warning);
     }
 }

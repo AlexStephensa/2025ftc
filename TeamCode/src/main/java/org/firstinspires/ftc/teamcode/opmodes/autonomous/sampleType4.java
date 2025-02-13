@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.constants.AutoConst;
+import org.firstinspires.ftc.teamcode.constants.IntakeConst;
 import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
@@ -11,25 +12,24 @@ import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 public class sampleType4 extends LiveAutoBase {
 
     public double robotSpeed = 0.5;
-    public int nextSample; // what part of the sample cycle the robot is on
+    public int sampleCount = 0;
 
     @Override
     public void on_init() {
-        robot.arm.transfer_position();
-        robot.arm.close_claw();
         robot.drive_train.odo_reset(AutoConst.leftInitPose);
-        nextSample = AutoConst.SAMPLE_RIGHT; // where in the intake loop to start
+
+        robot.addWarning("ROBS NOSE IS TOO LARGE");
     }
 
     @Override
     public void on_start() {
 
         highBasket();
-        sampleIntake();
+        sampleIntake(AutoConst.SAMPLE_RIGHT);
         highBasket();
-        sampleIntake();
+        sampleIntake(AutoConst.SAMPLE_MID);
         highBasket();
-        sampleIntake();
+        sampleIntake(AutoConst.SAMPLE_LEFT);
         highBasket();
         subPark();
 
@@ -41,58 +41,78 @@ public class sampleType4 extends LiveAutoBase {
     }
 
     public void highBasket() {
-        robot.drive_train.odo_drive_towards(AutoConst.highBasketPoseOffset, 1); // quickly driving to pose
+        int sample = sampleCount;
+        robot.drive_train.odo_drive_towards(AutoConst.highBasketPoseOffset, 1); // quickly drive to pose
 
-        if (!robot.reach.limit_switchR.getState() && !robot.intake.current_color_name.equals("NONE")) {
-            robot.arm.transfer_position();
-            robot.arm.close_claw();
+        while (!(robot.reach.cur_limit_switch && robot.lift.cur_limit_switch)) { // Attempt to retract all slides
+            robot.arm.waiting_position();
+            robot.lift.min_lift();
+            robot.reach.min_reach();
         }
 
-        robot.lift.elevate_to(LiftConst.HIGH_BASKET);
-        robot.arm.basket_position(); // moving lift and arm to deposit positions
+        boolean haveSample = (robot.intake.current_color != IntakeConst.SAMPLE_NONE);
 
-        halt(1);
+        robot.arm.transfer_position(); // grab sample and raise lift to high basket
+        halt(0.1);
 
-        robot.drive_train.odo_move(AutoConst.highBasketPose, robotSpeed, 1.5); // move slower to pose
-
-        robot.arm.open_claw(); // deposit sample in basket
-    }
-
-    public void sampleIntake() {
-        robot.lift.elevate_to(LiftConst.INIT);
-        robot.arm.waiting_position();
-        robot.drive_train.odo_move(samplePose(nextSample), robotSpeed, 1);
-
-        robot.intake.intake_intake();
-        while (!(robot.intake.current_color_name == "YELLOW")) {
-            robot.intake.intake_run_auto(1);
-            if (robot.reach.position < 200) {
-                robot.reach.extend_to(robot.reach.position + 10);
-                halt(0.1);
+        while (haveSample) {
+            robot.arm.close_claw();
+            halt(0.1);
+            robot.lift.elevate_to(LiftConst.HIGH_BASKET);
+            halt(0.2);
+            if (robot.intake.current_color != IntakeConst.SAMPLE_NONE) {
+                robot.arm.open_claw();
+                robot.lift.min_lift();
+                halt(0.5);
+            } else {
+                haveSample = false;
+                sampleCount++;
             }
         }
 
+        if (sample != sampleCount) {
+            robot.arm.basket_position();
+
+            robot.drive_train.odo_move(AutoConst.highBasketPose, 0.5, 1); // move slower to pose
+
+            robot.arm.open_claw(); // deposit sample in basket
+        }
+    }
+
+    public void sampleIntake(int position) {
+        robot.drive_train.odo_drive_towards(samplePose(position, true), 1); // quickly driving to pose
+
+        robot.lift.elevate_to(LiftConst.INIT);
+        robot.arm.waiting_position();
+
+        robot.intake.intake_intake();
+        robot.reach.extend_to(200);
+
+        robot.drive_train.odo_drive_towards(samplePose(position, false), 0.5); // move slower to pose
+
+        while (robot.intake.current_color == IntakeConst.SAMPLE_NONE) {
+            robot.intake.intake_run_auto(1);
+        }
+
+        robot.intake.intake_transfer();
+        halt(0.1);
         robot.reach.min_reach();
     }
 
-    public Pose samplePose(int pose) {
-        if (pose == AutoConst.SAMPLE_PARTNER) {
-            nextSample = AutoConst.SAMPLE_RIGHT; // usually samplePartner is first followed by sampleRight
-            return AutoConst.partnerSamplePose;
-
-        } else if (pose == AutoConst.SAMPLE_MID) {
-            nextSample = AutoConst.SAMPLE_LEFT; // followed by sampleLeft
-            return AutoConst.midSamplePose;
-
-        } else if (pose == AutoConst.SAMPLE_LEFT) {
-            nextSample = 0; // nothing is after this so it wont do anything ending the loop
-            return AutoConst.leftSamplePose;
-
-        } else {
-            nextSample = AutoConst.SAMPLE_MID; // followed by sampleMid
-            return AutoConst.rightSamplePose;
+    public Pose samplePose(int position, boolean offset) {
+        if (position == AutoConst.SAMPLE_RIGHT) {
+            return offset ? AutoConst.rightSamplePoseOffset : AutoConst.rightSamplePose;
         }
-
+        if (position == AutoConst.SAMPLE_MID) {
+            return offset ? AutoConst.midSamplePoseOffset : AutoConst.midSamplePose;
+        }
+        if (position == AutoConst.SAMPLE_LEFT) {
+            return offset ? AutoConst.leftSamplePoseOffset : AutoConst.leftSamplePose;
+        }
+        if (position == AutoConst.SAMPLE_PARTNER) {
+            return offset ? AutoConst.partnerSamplePoseOffset : AutoConst.partnerSamplePose;
+        }
+        return null;
     }
 
     public void subPark() {

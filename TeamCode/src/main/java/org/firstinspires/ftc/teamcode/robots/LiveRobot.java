@@ -19,7 +19,7 @@ public class LiveRobot extends Robot {
     FtcDashboard            dashboard;
 
     {
-        name = "Boris";
+        name = "BORIS";
     }
 
     public LiveRobot(LinearOpMode opmode) {

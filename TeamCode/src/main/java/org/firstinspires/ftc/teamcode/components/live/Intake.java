@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.Component;
+import org.firstinspires.ftc.teamcode.constants.IntakeConst;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.util.qus.CRServoQUS;
 import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
@@ -38,12 +39,12 @@ class IntakeConfig {
 }
 
 public class Intake extends Component {
-    private NormalizedRGBA current_color;
-    public String current_color_name = "NONE";
+    private NormalizedRGBA current_color_RGBA;
+    public int current_color = IntakeConst.SAMPLE_NONE;
 
-    public String intake_color_wanted = "BLUE";
+    public int intake_color_wanted = IntakeConst.SAMPLE_BLUE;
 
-    private String intake_current;
+    private int intake_angle;
 
     private long spitting_since = -1;
 
@@ -87,7 +88,7 @@ public class Intake extends Component {
         intake.update();
 
         if (robot.cycle % IntakeConfig.COLOR_UPDATE_RATE == 0) {
-            current_color = color_sensor.getNormalizedColors();
+            current_color_RGBA = color_sensor.getNormalizedColors();
             intake_color_check();
         }
     }
@@ -102,33 +103,33 @@ public class Intake extends Component {
     public void updateTelemetry(Telemetry telemetry) {
         super.updateTelemetry(telemetry);
         telemetry.addData("SPINNER",TELEMETRY_DECIMAL.format(intake.servo.getPower()));
-        telemetry.addData("INTAKE CURRENT", intake_current);
-        telemetry.addData("COLOR RGBA",current_color.red + " " + current_color.green + " " + current_color.blue + " " + current_color.alpha);
-        telemetry.addData("COLOR", current_color_name);
+        telemetry.addData("INTAKE CURRENT", intake_angle());
+        telemetry.addData("COLOR RGB",current_color_RGBA.red + " " + current_color_RGBA.green + " " + current_color_RGBA.blue);
+        telemetry.addData("COLOR", current_color);
     }
 
     public void intake_run(double speed, Gamepad gamepad1, Gamepad gamepad2) {
         if (speed > 0) {
-            if (intake_current == "INTAKE") {
+            if (intake_angle == IntakeConst.INTAKE) {
                 pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
                 pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
             }
 
-            gamepad2.setLedColor((
-                            current_color_name == "RED" || current_color_name == "YELLOW") ? 1 : 0,
-                    current_color_name.equals("YELLOW") ? 1 : 0,
-                    current_color_name.equals("BLUE") ? 1 : 0,
+            gamepad2.setLedColor(
+                    (current_color == IntakeConst.SAMPLE_RED || current_color == IntakeConst.SAMPLE_YELLOW) ? 1 : 0,
+                    (current_color == IntakeConst.SAMPLE_YELLOW) ? 1 : 0,
+                    (current_color == IntakeConst.SAMPLE_BLUE) ? 1 : 0,
                     LED_DURATION_CONTINUOUS
             );
 
-            if (!(current_color_name == "NONE") && !(current_color_name == intake_color_wanted) && !(current_color_name == "YELLOW")) {
+            if (!(current_color == IntakeConst.SAMPLE_NONE) && !(current_color == intake_color_wanted) && !(current_color == IntakeConst.SAMPLE_YELLOW)) {
                 if (spitting_since == -1) {
                     spitting_since = System.nanoTime();
                 } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
                     intake.queue_power(-1);
                 }
             } else {
-                if ((current_color_name == intake_color_wanted) || (current_color_name == "YELLOW")) {
+                if ((current_color == intake_color_wanted) || (current_color == IntakeConst.SAMPLE_YELLOW)) {
                     gamepad1.rumble(100);
                     gamepad2.rumble(100);
                     intake_transfer();
@@ -138,7 +139,7 @@ public class Intake extends Component {
             }
         } else {
             intake.queue_power(speed);
-            if (intake_current == "INTAKE") {
+            if (intake_angle == IntakeConst.INTAKE) {
                 pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION);
                 pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION);
             }
@@ -146,59 +147,41 @@ public class Intake extends Component {
     }
 
     public void intake_run_auto(double speed) {
-        if (speed > 0) {
-            if (intake_current == "INTAKE") {
-                pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
-                pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
-            }
-
-            if (!(current_color_name == "NONE") && !(current_color_name == intake_color_wanted) && !(current_color_name == "YELLOW")) {
-                if (spitting_since == -1) {
-                    spitting_since = System.nanoTime();
-                } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
-                    intake.queue_power(-1);
-                }
-            } else {
-                if ((current_color_name == intake_color_wanted) || (current_color_name == "YELLOW")) {
-                    intake_transfer();
-                }
-                intake.queue_power(speed);
-                spitting_since = -1;
-            }
-        } else {
-            intake.queue_power(speed);
-            if (intake_current == "INTAKE") {
-                pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION);
-                pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION);
-            }
-        }
+        pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
+        pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
+        intake.queue_power(speed);
     }
 
     public void intake_color_check() {
-        if (current_color.alpha < IntakeConfig.COLOR_CUTOFF) {
-            current_color_name = "NONE";
-        } else if (current_color.red > current_color.blue && current_color.red > current_color.green) {
-            current_color_name = "RED";
-        } else if (current_color.blue > current_color.red && current_color.blue > current_color.green) {
-            current_color_name = "BLUE";
-        } else if (current_color.green > current_color.red && current_color.green > current_color.blue) {
-            current_color_name = "YELLOW";
+        if (current_color_RGBA.alpha < IntakeConfig.COLOR_CUTOFF) {
+            current_color = IntakeConst.SAMPLE_NONE;
+        } else if (current_color_RGBA.red > current_color_RGBA.blue && current_color_RGBA.red > current_color_RGBA.green) {
+            current_color = IntakeConst.SAMPLE_RED;
+        } else if (current_color_RGBA.blue > current_color_RGBA.red && current_color_RGBA.blue > current_color_RGBA.green) {
+            current_color = IntakeConst.SAMPLE_BLUE;
+        } else if (current_color_RGBA.green > current_color_RGBA.red && current_color_RGBA.green > current_color_RGBA.blue) {
+            current_color = IntakeConst.SAMPLE_YELLOW;
         }
     }
 
     public void intake_transfer() {
         pitch_l.queue_position(IntakeConfig.PITCH_L_TRANSFER_POSITION);
         pitch_r.queue_position(IntakeConfig.PITCH_R_TRANSFER_POSITION);
-        intake_current = "TRANS";
+        intake_angle = IntakeConst.TRANS;
     }
 
     public void intake_intake() {
         pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION);
         pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION);
-        intake_current = "INTAKE";
+        intake_angle = IntakeConst.INTAKE;
     }
 
     public void toggle_wanted_color() {
-        intake_color_wanted = (intake_color_wanted.equals("BLUE")) ? "RED" : "BLUE";
+        intake_color_wanted = (intake_color_wanted == IntakeConst.SAMPLE_BLUE) ? IntakeConst.SAMPLE_RED : IntakeConst.SAMPLE_BLUE;
     }
+
+    private String intake_angle() {
+        return (intake_angle == IntakeConst.INTAKE) ? "INTAKE" : "TRANS";
+    }
+
 }
