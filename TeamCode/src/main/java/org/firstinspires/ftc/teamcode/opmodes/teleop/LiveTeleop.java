@@ -5,6 +5,7 @@ import static com.qualcomm.robotcore.hardware.Gamepad.LED_DURATION_CONTINUOUS;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.constants.IntakeConst;
 import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 
@@ -37,7 +38,7 @@ public class LiveTeleop extends LiveTeleopBase {
 
         if(gamepad1.back && !gp1_back_pressed) {
             robot.intake.toggle_wanted_color();
-            gamepad1.setLedColor(robot.intake.intake_color_wanted == "RED" ? 1 : 0, 0, robot.intake.intake_color_wanted == "BLUE" ? 1 : 0, LED_DURATION_CONTINUOUS);
+            gamepad1.setLedColor(robot.intake.intake_color_wanted == IntakeConst.SAMPLE_RED ? 1 : 0, 0, robot.intake.intake_color_wanted == IntakeConst.SAMPLE_BLUE ? 1 : 0, LED_DURATION_CONTINUOUS);
             gp1_back_pressed = true;
         } else if (!gamepad1.back) {
             gp1_back_pressed = false;

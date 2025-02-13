@@ -52,6 +52,9 @@ public class DriveTrain extends Component {
     private double target_y = 0;
     private double target_a = 0;
 
+    private double speed;
+    private boolean moving = false;
+
 
     // The current coyote path the drive train is running
     public Path current_path;
@@ -88,6 +91,24 @@ public class DriveTrain extends Component {
                 drive_rf.motor.getCurrentPosition(),
                 drive_lb.motor.getCurrentPosition()
         );
+
+
+        // Test Code for running components while drive train in auto
+        double a = -target_a;
+        if (moving) {
+            double distance = Math.hypot(target_x - lcs.x, target_y - lcs.y);
+            double drive_angle = Math.atan2(target_y - lcs.y, target_x - lcs.x);
+
+            double mvmt_x = -Math.cos(drive_angle - lcs.a) * (Range.clip(distance, 0, (5 * speed)) / (5 * speed)) * speed;
+            double mvmt_y = Math.sin(drive_angle - lcs.a) * (Range.clip(distance, 0, (5 * speed)) / (5 * speed)) * speed;
+            double mvmt_a = -Range.clip((angle_difference(lcs.a, a)) * 3, -1, 1) * speed;
+
+            if (distance < 0.1 && drive_angle < Math.PI * 1/16) {
+                moving = false;
+            } else {
+                mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
+            }
+        }
 
         // Finding new motors powers from the drive variables
         double[] motor_powers = mecanum_math(drive_x, drive_y, drive_a);
@@ -181,10 +202,11 @@ public class DriveTrain extends Component {
         stop();
     }
 
+    /**
+     * Return the motor powers needed to move in the given travel vector. Should give optimal speeds (not sqrt(2)/2 for 45% angles)
+     */
     private double[] mecanum_math(double x, double y, double a) {
-        /**
-         * Return the motor powers needed to move in the given travel vector. Should give optimal speeds (not sqrt(2)/2 for 45% angles)
-         */
+
         double[] power = new double[]{- x + y - a, + x + y + a, + x + y - a, - x + y + a};
 
         double max = Math.max(Math.max(Math.abs(power[0]),Math.abs(power[1])),Math.max(Math.abs(power[2]),Math.abs(power[3])));
@@ -199,28 +221,29 @@ public class DriveTrain extends Component {
         return power;
     }
 
+    /**
+     * Read the angular orientation from the IMU, takes about 6ms
+     */
     public void read_from_imu() {
-        /**
-         * Read the angular orientation from the IMU, takes about 6ms
-         */
+
         last_imu_orientation = imu.getAngularOrientation();
         lcs.a = last_imu_orientation.firstAngle;
     }
 
+    /**
+     * Public setter for the drive variables, used for teleop drive
+     * Can basically plug controller joystick inputs directly into it
+     */
     public void mecanum_drive(double x, double y, double a) {
-        /**
-         * Public setter for the drive variables, used for teleop drive
-         * Can basically plug controller joystick inputs directly into it
-         */
         drive_x = x;
         drive_y = y;
         drive_a = a;
     }
 
+    /**
+     * Stop all motors and reset all drive variables
+     */
     public void stop() {
-        /**
-         * Stop all motors and reset all drive variables
-         */
         mecanum_drive(0, 0, 0);
         drive_lf.motor.setPower(0);
         drive_rf.motor.setPower(0);
@@ -228,10 +251,10 @@ public class DriveTrain extends Component {
         drive_rb.motor.setPower(0);
     }
 
+    /**
+     * Set the mode of all drive motors in bulk
+     */
     private void set_mode(DcMotor.RunMode mode) {
-        /**
-         * Set the mode of all drive motors in bulk
-         */
         drive_lf.motor.setMode(mode);
         drive_rf.motor.setMode(mode);
         drive_lb.motor.setMode(mode);
@@ -240,7 +263,11 @@ public class DriveTrain extends Component {
 
 
     public void odo_move(double x, double y, double a, double speed) {
-        odo_move(x, y, a, speed, 1, 0.02, 0, 0);
+        odo_move(x, y, a, speed, 1, 0.02, 0);
+    }
+
+    public void odo_move(double x, double y, double a, double speed, double timeout) {
+        odo_move(x, y, a, speed, 1, 0.02, timeout, 0);
     }
 
     public void odo_move(Pose pose, double speed) {
@@ -263,7 +290,7 @@ public class DriveTrain extends Component {
         target(x, y, a);
         a = -a;
 
-        double original_distance = Math.hypot(x-lcs.x, y-lcs.y);
+        double original_distance = Math.hypot(x - lcs.x, y - lcs.y);
         double original_distance_a = Math.abs(a - lcs.a);
 
         robot.opmode.resetRuntime();
@@ -293,49 +320,58 @@ public class DriveTrain extends Component {
         }
     }
 
-    public void odo_drive_towards(double x, double y, double a, double speed) {
+    public void odo_drive(Pose pose, double speed) {
+        odo_drive(pose.x, pose.y, pose.a, speed);
+    }
+
+    public void odo_drive(double x, double y, double a, double speed) {
         target(x, y, a);
-        /**
-         * Set drive variables to drive towards a pose
-         */
+        this.speed = speed;
+        this.moving = true;
+    }
+
+    public void odo_move_towards(Pose pose, double speed) {
+        odo_move_towards(pose.x, pose.y, pose.a, speed);
+    }
+
+    /**
+     * Set drive variables to drive towards a pose
+     */
+    public void odo_move_towards(double x, double y, double a, double speed) {
+        target(x, y, a);
+
         double distance = Math.hypot(x - lcs.x, y - lcs.y);
 
         double drive_angle = Math.atan2(y-lcs.y, x-lcs.x);
-        double mvmt_x = Math.cos(drive_angle - lcs.a) * ((Range.clip(distance, 0, (5*speed)))/(5*speed)) * speed;
-        double mvmt_y = -Math.sin(drive_angle - lcs.a) * ((Range.clip(distance, 0, (5*speed)))/(5*speed)) * speed;
+        double mvmt_x = -Math.cos(drive_angle - lcs.a) * ((Range.clip(distance, 0, (5*speed)))/(5*speed)) * speed;
+        double mvmt_y = Math.sin(drive_angle - lcs.a) * ((Range.clip(distance, 0, (5*speed)))/(5*speed)) * speed;
         double mvmt_a = -Range.clip((angle_difference(lcs.a, a))*3, -1, 1) * speed;
 
         mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
     }
 
-    public void odo_drive_towards(Pose pose, double speed) {
-        odo_drive_towards(pose.x, pose.y, pose.a, speed);
-    }
-
-
+    /**
+     * Reset odometry to an arbitrary pose
+     */
     public void odo_reset(double x, double y, double a) {
-        /**
-         * Reset odometry to an arbitrary pose
-         */
         this.lcs.x = x;
         this.lcs.y = y;
         this.lcs.a = a;
     }
 
+    /**
+     * Reset odometry to an arbitrary pose
+     */
     public void odo_reset(Pose pose) {
-        /**
-         * Reset odometry to an arbitrary pose
-         */
         this.lcs.x = pose.x;
         this.lcs.y = pose.y;
         this.lcs.a = pose.a;
     }
 
+    /**
+     * Follow a coyote curve path with odometry
+     */
     public void follow_curve_path(Path path) {
-        /**
-         * Follow a coyote curve path with odometry
-         */
-        
         // Update our current path, for telemetry
         this.current_path = path;
 
