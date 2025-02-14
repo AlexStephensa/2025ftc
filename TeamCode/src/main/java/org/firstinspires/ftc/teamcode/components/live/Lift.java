@@ -40,7 +40,7 @@ class LiftConfig {
     public static int THRESHOLD = 200;
     public static boolean AT_THRESH = true;
 
-    public static int TWEAK_MAX_ADD = 1000;
+    public static int TWEAK_MAX_ADD = 8000;
 
     public static int[] LIFT_LEVELS = {
             0,      // level 0
@@ -173,6 +173,8 @@ public class Lift extends Component {
         telemetry.addData("OFFSET", TELEMETRY_DECIMAL.format(lift_offset));
 
         telemetry.addData("LEVEL", level);
+
+        telemetry.addData("TWEAK", tweak);
 
         telemetry.addData("LIFT LIM", !limit_switchL.getState());
 

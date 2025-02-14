@@ -71,7 +71,7 @@ public class fourSampleAuto extends LiveAutoBase {
             if (robot.intake.current_color != IntakeConst.SAMPLE_NONE) {
                 robot.arm.open_claw();
                 robot.lift.min_lift();
-                halt(0.5);
+                halt(1);
             } else {
                 haveSample = false;
                 sampleCount++;
@@ -105,6 +105,10 @@ public class fourSampleAuto extends LiveAutoBase {
 
         while (robot.intake.current_color == IntakeConst.SAMPLE_NONE) {
             robot.intake.intake_run_auto(1);
+            if (robot.cycle % 20 == 0) {
+                Pose start = robot.drive_train.lcs.get_pose();
+                robot.drive_train.odo_drive(start.x, start.y + 1, start.a, slow);
+            }
         }
 
         robot.intake.intake_transfer();
@@ -131,9 +135,9 @@ public class fourSampleAuto extends LiveAutoBase {
     public void subPark() {
         Pose start = robot.drive_train.lcs.get_pose();
         robot.drive_train.odo_drive(start.x, AutoConst.subPark.y, AutoConst.subPark.a, fast);
-        robot.lift.min_lift();
-
         halt(2);
+
+        robot.lift.min_lift();
 
         robot.drive_train.odo_drive(AutoConst.subPark, slow);
         robot.arm.basket_position();

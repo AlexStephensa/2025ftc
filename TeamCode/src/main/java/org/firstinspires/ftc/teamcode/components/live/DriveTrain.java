@@ -4,7 +4,6 @@ import static org.firstinspires.ftc.teamcode.util.MathUtil.angle_difference;
 
 import androidx.annotation.NonNull;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,7 +11,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.components.Component;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.coyote.path.Path;
@@ -97,8 +95,10 @@ public class DriveTrain extends Component {
 
 
         // Test Code for running components while drive train in auto
-        double a = -target_a;
+
         if (moving && auto) {
+            double a = -target_a;
+
             double distance = Math.hypot(target_x - lcs.x, target_y - lcs.y);
             double drive_angle = Math.atan2(target_y - lcs.y, target_x - lcs.x);
 
