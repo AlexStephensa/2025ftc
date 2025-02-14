@@ -76,9 +76,7 @@ public class Arm extends Component {
     }
 
     @Override
-    public void shutdown() {
-        //shut down
-    }
+    public void shutdown() {}
 
     @Override
     public void updateTelemetry(Telemetry telemetry) {

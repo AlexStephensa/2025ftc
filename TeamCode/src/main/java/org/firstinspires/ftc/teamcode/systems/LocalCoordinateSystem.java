@@ -25,15 +25,11 @@ public class LocalCoordinateSystem {
     public double prev_re;
     public double prev_ce;
 
-    private double INCHES_PER_COUNT_L;
-    private double INCHES_PER_COUNT_R;
-    private double INCHES_PER_COUNT_C;
+    private final double INCHES_PER_COUNT_L = LCSConfig.WHEEL_DIAMETER_L * Math.PI / LCSConfig.ENCODER_CPR;;
+    private final double INCHES_PER_COUNT_R = LCSConfig.WHEEL_DIAMETER_R * Math.PI / LCSConfig.ENCODER_CPR;;
+    private final double INCHES_PER_COUNT_C = LCSConfig.WHEEL_DIAMETER_C * Math.PI / LCSConfig.ENCODER_CPR;;
 
     public void update(double le, double re, double ce) {
-        INCHES_PER_COUNT_L   = LCSConfig.WHEEL_DIAMETER_L * Math.PI / LCSConfig.ENCODER_CPR;
-        INCHES_PER_COUNT_R   = LCSConfig.WHEEL_DIAMETER_R * Math.PI / LCSConfig.ENCODER_CPR;
-        INCHES_PER_COUNT_C   = LCSConfig.WHEEL_DIAMETER_C * Math.PI / LCSConfig.ENCODER_CPR;
-
         // Calculate encoder deltas
         double ld = le - prev_le;
         double rd = re - prev_re;
@@ -86,6 +82,9 @@ public class LocalCoordinateSystem {
         prev_ce = ce;
     }
 
+    /**
+     * @return current x, y, a, as a Pose
+     */
     public Pose get_pose() {
         return new Pose(x, y, a);
     }

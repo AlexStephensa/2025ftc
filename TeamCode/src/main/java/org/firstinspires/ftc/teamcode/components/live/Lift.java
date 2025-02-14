@@ -136,10 +136,10 @@ public class Lift extends Component {
         pid_speed = pid_control.update(cur_position) / 1000;
 
         if (lift_target <= 0 && cur_limit_switch) {
-            liftSetZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             set_power(0);
         } else {
-            liftSetZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             set_power(pid_speed);
         }
 
@@ -150,7 +150,7 @@ public class Lift extends Component {
     public void startup() {
         super.startup();
 
-        liftSetZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         lift_f.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -179,7 +179,7 @@ public class Lift extends Component {
         telemetry.addData("PID VEL", pid_speed);
     }
 
-    public void liftSetZeroPowerBehavior(DcMotor.ZeroPowerBehavior mode) {
+    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior mode) {
         lift_f.setZeroPowerBehavior(mode);
         lift_b.setZeroPowerBehavior(mode);
     }

@@ -41,19 +41,41 @@ public abstract class LiveTeleopBase extends LinearOpMode {
         stop();
     }
 
-    // Called when init is pressed, runs once
+    /**
+     * Called when init is pressed, runs once
+     */
     public abstract void on_init();
 
-    // Called when start is pressed, runs once
+    /**
+     * Called when start is pressed, runs once
+     */
     public abstract void on_start();
 
-    // Called when the program stops, runs once
+    /**
+     * Called when stop is pressed, runs once
+     */
     public abstract void on_stop();
 
-    // Called repeatedly while the program is running
+    /**
+     * Called repeatedly while the program is running
+     */
     public abstract void on_loop();
 
-    public void run_in(Runnable command, double milliseconds) {
-        todo_tasks.put(getRuntime()+((milliseconds)/1000.0), command);
+    /**
+     * Waits until @seconds passes then runs @command
+     * @param command runnable command
+     * @param seconds seconds to wait
+     */
+    public void run_in(Runnable command, double seconds) {
+        todo_tasks.put(getRuntime() + (seconds), command);
+    }
+
+    /**
+     * Waits until @milliseconds passes then runs @command
+     * @param command runnable command
+     * @param milliseconds milliseconds to wait
+     */
+    public void run_in(Runnable command, int milliseconds) {
+        todo_tasks.put(getRuntime() + ((milliseconds)/1000.0), command);
     }
 }

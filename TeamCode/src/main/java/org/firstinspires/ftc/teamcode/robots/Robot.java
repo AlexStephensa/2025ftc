@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.components.Component;
 
 import java.util.ArrayList;
@@ -98,6 +99,11 @@ public class Robot {
         update_thread = new UpdateThread(this);
 
         new Thread(update_thread).start();
+
+        // Check for good battery Voltage
+        if (expansion_hubs.get(0).getInputVoltage(VoltageUnit.VOLTS) <= 12.25 || expansion_hubs.get(1).getInputVoltage(VoltageUnit.VOLTS) <= 12.25) {
+            addWarning("Robot Voltage Low");
+        }
     }
 
     public void shutdown() {

@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.components.live;
 
 import static org.firstinspires.ftc.teamcode.util.MathUtil.angle_difference;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -20,7 +22,7 @@ import org.firstinspires.ftc.teamcode.util.qus.DcMotorQUS;
 
 //@Config
 class DriveTrainConfig {
-    public static int GYRO_READ_INTERVAL = 200;
+    //public static int GYRO_READ_INTERVAL = 200;
 }
 
 public class DriveTrain extends Component {
@@ -35,10 +37,10 @@ public class DriveTrain extends Component {
     private DcMotorQUS drive_rb; // Right-Back drive motor
 
     //// SENSORS ////
-    private BNO055IMU imu; // For recalibrating odometry angle periodically
+    //private BNO055IMU imu; // For recalibrating odometry angle periodically
 
     // The cached last read IMU orientation
-    private Orientation last_imu_orientation = new Orientation();
+    //private Orientation last_imu_orientation = new Orientation();
 
     // The odometry math system used for calculating position from encoder count updates from the odometers
     public LocalCoordinateSystem lcs = new LocalCoordinateSystem();
@@ -54,6 +56,7 @@ public class DriveTrain extends Component {
 
     private double speed;
     private boolean moving = false;
+    public boolean auto = false;
 
 
     // The current coyote path the drive train is running
@@ -95,7 +98,7 @@ public class DriveTrain extends Component {
 
         // Test Code for running components while drive train in auto
         double a = -target_a;
-        if (moving) {
+        if (moving && auto) {
             double distance = Math.hypot(target_x - lcs.x, target_y - lcs.y);
             double drive_angle = Math.atan2(target_y - lcs.y, target_x - lcs.x);
 
@@ -103,7 +106,7 @@ public class DriveTrain extends Component {
             double mvmt_y = Math.sin(drive_angle - lcs.a) * (Range.clip(distance, 0, (5 * speed)) / (5 * speed)) * speed;
             double mvmt_a = -Range.clip((angle_difference(lcs.a, a)) * 3, -1, 1) * speed;
 
-            if (distance < 0.1 && drive_angle < Math.PI * 1/16) {
+            if (distance < 1 && drive_angle < 0.02) {
                 moving = false;
             } else {
                 mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
@@ -136,9 +139,9 @@ public class DriveTrain extends Component {
 
         // Periodically read from the IMU in order to realign the angle to counteract drift
         // IMU angle is generally more accurate than odometry angle near the end of the match
-        if (robot.cycle % DriveTrainConfig.GYRO_READ_INTERVAL == 0) {
-            //read_from_imu();
-        }
+        /*if (robot.cycle % DriveTrainConfig.GYRO_READ_INTERVAL == 0) {
+            read_from_imu();
+        }*/
     }
 
     @Override
@@ -159,7 +162,7 @@ public class DriveTrain extends Component {
 
         telemetry.addData("PID", drive_lf.motor.getPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
 
-        telemetry.addData("IMU", last_imu_orientation.firstAngle+" "+last_imu_orientation.secondAngle+" "+last_imu_orientation.thirdAngle);
+        //telemetry.addData("IMU", last_imu_orientation.firstAngle+" "+last_imu_orientation.secondAngle+" "+last_imu_orientation.thirdAngle);
 
         if (current_path != null) {
             Pose cfp = current_path.getFollowPose();
@@ -180,10 +183,7 @@ public class DriveTrain extends Component {
         imu.initialize(parameters);*/
 
         // Set all the zero power behaviors to brake on startup, to prevent slippage as much as possible
-        drive_lf.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        drive_rf.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        drive_lb.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        drive_rb.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Reverse the left motors, because they have a different orientation on the robot
         drive_rf.motor.setDirection(DcMotor.Direction.REVERSE);
@@ -202,12 +202,73 @@ public class DriveTrain extends Component {
         stop();
     }
 
+
+    //// Class Methods ////
+
+
+    // Quick Use Methods //
+
+    /**
+     * Read the angular orientation from the IMU, takes about 6ms
+     */
+    public void read_from_imu() {
+        /*last_imu_orientation = imu.getAngularOrientation();
+        lcs.a = last_imu_orientation.firstAngle;*/
+    }
+
+    /**
+     * Set the mode of all drive motors in bulk
+     * @param mode new DcMotor.RunMode
+     */
+    private void set_mode(DcMotor.RunMode mode) {
+        drive_lf.motor.setMode(mode);
+        drive_rf.motor.setMode(mode);
+        drive_lb.motor.setMode(mode);
+        drive_rb.motor.setMode(mode);
+    }
+
+    /**
+     * Set the zero power mode of all drive motors in bulk
+     * @param mode new DcMotor.ZeroPowerBehavior
+     */
+    private void setZeroPower(DcMotor.ZeroPowerBehavior mode) {
+        drive_lf.motor.setZeroPowerBehavior(mode);
+        drive_rf.motor.setZeroPowerBehavior(mode);
+        drive_lb.motor.setZeroPowerBehavior(mode);
+        drive_rb.motor.setZeroPowerBehavior(mode);
+    }
+
+
+    // Drive Train TeleOp Methods //
+
+    /**
+     * Public setter for the drive variables, used for teleop drive
+     * Can basically plug controller joystick inputs directly into it
+     */
+    public void mecanum_drive(double x, double y, double a) {
+        drive_x = x;
+        drive_y = y;
+        drive_a = a;
+    }
+
+
+    // Drive Train Math Methods //
+
     /**
      * Return the motor powers needed to move in the given travel vector. Should give optimal speeds (not sqrt(2)/2 for 45% angles)
+     * @param x analog x to move
+     * @param y analog y to move
+     * @param a analog angle to move
+     * @return double[] list of  new motor powers
      */
     private double[] mecanum_math(double x, double y, double a) {
 
-        double[] power = new double[]{- x + y - a, + x + y + a, + x + y - a, - x + y + a};
+        double[] power = new double[]{
+            - x + y - a,
+            + x + y + a,
+            + x + y - a,
+            - x + y + a
+        };
 
         double max = Math.max(Math.max(Math.abs(power[0]),Math.abs(power[1])),Math.max(Math.abs(power[2]),Math.abs(power[3])));
 
@@ -222,22 +283,37 @@ public class DriveTrain extends Component {
     }
 
     /**
-     * Read the angular orientation from the IMU, takes about 6ms
+     * Reset odometry to an arbitrary pose
+     * @param x new x
+     * @param y new y
+     * @param a new angle
      */
-    public void read_from_imu() {
-
-        last_imu_orientation = imu.getAngularOrientation();
-        lcs.a = last_imu_orientation.firstAngle;
+    public void odo_reset(double x, double y, double a) {
+        this.lcs.x = x;
+        this.lcs.y = y;
+        this.lcs.a = a;
     }
 
     /**
-     * Public setter for the drive variables, used for teleop drive
-     * Can basically plug controller joystick inputs directly into it
+     * Reset odometry to an arbitrary pose
+     * @param pose new pose
      */
-    public void mecanum_drive(double x, double y, double a) {
-        drive_x = x;
-        drive_y = y;
-        drive_a = a;
+    public void odo_reset(@NonNull Pose pose) {
+        this.lcs.x = pose.x;
+        this.lcs.y = pose.y;
+        this.lcs.a = pose.a;
+    }
+
+    /**
+     * Sets current target for drive train
+     * @param x target x
+     * @param y target y
+     * @param a target angle
+     */
+    private void target(double x, double y, double a) {
+        target_x = x;
+        target_y = y;
+        target_a = a;
     }
 
     /**
@@ -251,41 +327,96 @@ public class DriveTrain extends Component {
         drive_rb.motor.setPower(0);
     }
 
+
+    // Movement Methods //
+
     /**
-     * Set the mode of all drive motors in bulk
+     * Set drive variables to drive to a pose
+     * - Note: Uses a local loop to update, will stop at target pose
+     * @param x target x
+     * @param y target x
+     * @param a target a
+     * @param speed robot drive speed
      */
-    private void set_mode(DcMotor.RunMode mode) {
-        drive_lf.motor.setMode(mode);
-        drive_rf.motor.setMode(mode);
-        drive_lb.motor.setMode(mode);
-        drive_rb.motor.setMode(mode);
-    }
-
-
     public void odo_move(double x, double y, double a, double speed) {
-        odo_move(x, y, a, speed, 1, 0.02, 0);
+        odo_move(x, y, a, speed, 0);
     }
 
+    /**
+     * Set drive variables to drive to a pose until timeout
+     * - Note: Uses a local loop to update, will stop at target pose
+     * @param x target x
+     * @param y target x
+     * @param a target a
+     * @param speed robot drive speed
+     * @param timeout amount of time allowed to make the move
+     */
     public void odo_move(double x, double y, double a, double speed, double timeout) {
         odo_move(x, y, a, speed, 1, 0.02, timeout, 0);
     }
 
+    /**
+     * Set drive variables to drive to a pose
+     * - Note: Uses a local loop to update, will stop at target pose
+     * @param pose target pose
+     * @param speed robot drive speed
+     */
     public void odo_move(Pose pose, double speed) {
         odo_move(pose, speed, 0);
     }
 
+    /**
+     * Set drive variables to drive to a pose until timeout
+     * - Note: Uses a local loop to update, will stop at target pose
+     * @param pose target pose
+     * @param speed robot drive speed
+     * @param timeout amount of time allowed to make the move
+     */
     public void odo_move(Pose pose, double speed, double timeout) {
         odo_move(pose.x, pose.y, pose.a, speed, 1, 0.02, timeout, 0);
     }
 
+    /**
+     * Set drive variables to drive to a pose until timeout
+     * - Note: Uses a local loop to update, will stop at target pose
+     * @param x target x
+     * @param y target x
+     * @param a target a
+     * @param speed robot drive speed
+     * @param pos_acc target threshold for x & y
+     * @param angle_acc target threshold for angle
+     */
     public void odo_move(double x, double y, double a, double speed, double pos_acc, double angle_acc) {
         odo_move(x, y, a, speed, pos_acc, angle_acc, 0, 0);
     }
 
+    /**
+     * Set drive variables to drive to a pose until timeout
+     * - Note: Uses a local loop to update, will stop at target pose
+     * @param x target x
+     * @param y target x
+     * @param a target a
+     * @param speed robot drive speed
+     * @param pos_acc target threshold for x & y
+     * @param angle_acc target threshold for angle
+     * @param timeout amount of time allowed to make the move
+     */
     public void odo_move(double x, double y, double a, double speed, double pos_acc, double angle_acc, double timeout) {
         odo_move(x, y, a, speed, pos_acc, angle_acc, timeout, 0);
     }
 
+    /**
+     * Set drive variables to drive to a pose until timeout
+     * - Note: Uses a local loop to update, will stop at target pose
+     * @param x target x
+     * @param y target x
+     * @param a target a
+     * @param speed robot drive speed
+     * @param pos_acc target threshold for x & y
+     * @param angle_acc target threshold for angle
+     * @param timeout amount of time allowed to make the move
+     * @param time_at_target time to wait once at target
+     */
     public void odo_move(double x, double y, double a, double speed, double pos_acc, double angle_acc, double timeout, double time_at_target) {
         target(x, y, a);
         a = -a;
@@ -320,22 +451,49 @@ public class DriveTrain extends Component {
         }
     }
 
-    public void odo_drive(Pose pose, double speed) {
+
+    /**
+     * Set drive variables to drive to a pose
+     * - Note: Uses the main loop to update, will stop at target pose
+     * @param pose target pose
+     * @param speed robot drive speed
+     */
+    public void odo_drive(@NonNull Pose pose, double speed) {
         odo_drive(pose.x, pose.y, pose.a, speed);
     }
 
+    /**
+     * Set drive variables to drive to a pose
+     * - Note: Uses the main loop to update, will stop at target pose
+     * @param x target x
+     * @param y target y
+     * @param a target angle
+     * @param speed robot drive speed
+     */
     public void odo_drive(double x, double y, double a, double speed) {
         target(x, y, a);
         this.speed = speed;
         this.moving = true;
     }
 
-    public void odo_move_towards(Pose pose, double speed) {
+
+    /**
+     * Set drive variables to drive towards a pose
+     * - Note: This will just drive towards pose, it wont stop once at pose
+     * @param pose target pose
+     * @param speed robot drive speed
+     */
+    public void odo_move_towards(@NonNull Pose pose, double speed) {
         odo_move_towards(pose.x, pose.y, pose.a, speed);
     }
 
     /**
      * Set drive variables to drive towards a pose
+     * - Note: This will just drive towards pose, it wont stop once at pose
+     * @param x target x
+     * @param y target y
+     * @param a target angle
+     * @param speed robot drive speed
      */
     public void odo_move_towards(double x, double y, double a, double speed) {
         target(x, y, a);
@@ -350,26 +508,10 @@ public class DriveTrain extends Component {
         mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
     }
 
-    /**
-     * Reset odometry to an arbitrary pose
-     */
-    public void odo_reset(double x, double y, double a) {
-        this.lcs.x = x;
-        this.lcs.y = y;
-        this.lcs.a = a;
-    }
-
-    /**
-     * Reset odometry to an arbitrary pose
-     */
-    public void odo_reset(Pose pose) {
-        this.lcs.x = pose.x;
-        this.lcs.y = pose.y;
-        this.lcs.a = pose.a;
-    }
 
     /**
      * Follow a coyote curve path with odometry
+     * @param path path to follow
      */
     public void follow_curve_path(Path path) {
         // Update our current path, for telemetry
@@ -413,18 +555,13 @@ public class DriveTrain extends Component {
         }
     }
 
-    public Pose getCurrentPose() { return new Pose(this.lcs.x, this.lcs.y, this.lcs.a); }
-
-    private void target(double x, double y, double a) {
-        target_x = x;
-        target_y = y;
-        target_a = a;
-    }
-
-    public void drive_to_pose(Pose pose, double drive_speed, double turn_speed) {
-        /**
-         * Set drive variables to drive towards a pose
-         */
+    /**
+     * Sets drive variables to drive towards a pose
+     * @param pose target pose
+     * @param drive_speed robot drive speed
+     * @param turn_speed robot turn speed
+     */
+    public void drive_to_pose(@NonNull Pose pose, double drive_speed, double turn_speed) {
 
         // Find the angle to the pose
         double drive_angle = Math.atan2(pose.y-lcs.y, pose.x-lcs.x);
