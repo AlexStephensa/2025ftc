@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 
 public class AutoConst {
 
-    static double gridMod = Math.PI * 3/2;
+    public static double gridMod = Math.PI * 3/2;
 
     //// Pose list ////
     public static Pose leftInitPose         = new Pose(32.5, 8.5,Math.PI + gridMod);

@@ -19,6 +19,7 @@ public class fourSampleAuto extends LiveAutoBase {
     public void on_init() {
         robot.drive_train.odo_reset(AutoConst.leftInitPose);
         robot.drive_train.auto = true;
+        robot.intake.auto_run = false;
     }
 
     @Override
@@ -54,9 +55,10 @@ public class fourSampleAuto extends LiveAutoBase {
 
         boolean haveSample = (robot.intake.current_color != IntakeConst.SAMPLE_NONE);
 
+        robot.intake.auto_run = false;
         robot.arm.transfer_position(); // grab sample and raise lift to high basket
 
-        halt(0.1);
+        halt(0.2);
 
         while (haveSample) {
             robot.arm.close_claw();
@@ -100,25 +102,25 @@ public class fourSampleAuto extends LiveAutoBase {
         halt(0.2);
 
         robot.drive_train.odo_drive(samplePose(position, false), slow); // move slower to pose
-        robot.intake.intake_intake();
+        robot.intake.intake_pitch(IntakeConst.INTAKE);
+        robot.intake.auto_run = true;
 
-        halt(0.5);
+        while (!robot.drive_train.moving) {
+            halt(0.1);
+        }
 
-        robot.intake.setAuto_run(true);
-        boolean jiggle = true;
+        boolean wiggle = true;
+        double cur_a = robot.drive_train.target_a;
         while (robot.intake.current_color == IntakeConst.SAMPLE_NONE) {
             if (robot.cycle % 20 == 0) {
-                Pose start = robot.drive_train.lcs.get_pose();
-                jiggle = jiggle ? false : true;
-                robot.drive_train.odo_drive(start.x, start.y + 1, start.a + (jiggle ? -0.2 : 0.2), slow);
+                robot.drive_train.odo_creep_wiggle(cur_a, 1, -1, (wiggle ? 0.2 : -0.2), slow);
+                wiggle = !wiggle;
             }
         }
 
-        robot.intake.intake_transfer();
+        robot.intake.intake_pitch(IntakeConst.TRANS);
         halt(0.1);
         robot.reach.min_reach();
-        halt(0.3);
-        robot.intake.setAuto_run(false);
     }
 
     public Pose samplePose(int position, boolean offset) {

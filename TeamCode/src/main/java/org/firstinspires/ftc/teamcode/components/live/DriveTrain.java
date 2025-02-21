@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.components.live;
 
 import static org.firstinspires.ftc.teamcode.util.MathUtil.angle_difference;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -12,6 +15,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.Component;
+import org.firstinspires.ftc.teamcode.constants.AutoConst;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.coyote.path.Path;
 import org.firstinspires.ftc.teamcode.robots.Robot;
@@ -48,12 +52,12 @@ public class DriveTrain extends Component {
     private double drive_y = 0; // Y-pos intent
     private double drive_a = 0; // Angle intent
 
-    private double target_x = 0;
-    private double target_y = 0;
-    private double target_a = 0;
+    public double target_x = 0;
+    public double target_y = 0;
+    public double target_a = 0;
 
     private double speed;
-    private boolean moving = false;
+    public boolean moving = false;
     public boolean auto = false;
 
 
@@ -102,11 +106,11 @@ public class DriveTrain extends Component {
             double distance = Math.hypot(target_x - lcs.x, target_y - lcs.y);
             double drive_angle = Math.atan2(target_y - lcs.y, target_x - lcs.x);
 
-            double mvmt_x = -Math.cos(drive_angle - lcs.a) * (Range.clip(distance, 0, (5 * speed)) / (5 * speed)) * speed;
+            double mvmt_x = -cos(drive_angle - lcs.a) * (Range.clip(distance, 0, (5 * speed)) / (5 * speed)) * speed;
             double mvmt_y = Math.sin(drive_angle - lcs.a) * (Range.clip(distance, 0, (5 * speed)) / (5 * speed)) * speed;
             double mvmt_a = -Range.clip((angle_difference(lcs.a, a)) * 3, -1, 1) * speed;
 
-            if (distance < 1 && drive_angle < 0.02) {
+            if (distance < 1 && drive_angle < 0.2) {
                 moving = false;
             } else {
                 mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
@@ -433,7 +437,7 @@ public class DriveTrain extends Component {
                 double distance_a = Math.abs(a - lcs.a);
 
                 double drive_angle = Math.atan2(y-lcs.y, x-lcs.x);
-                double mvmt_x = -Math.cos(drive_angle - lcs.a) * ((Range.clip(distance, 0, (5*speed)))/(5*speed)) * speed;
+                double mvmt_x = -cos(drive_angle - lcs.a) * ((Range.clip(distance, 0, (5*speed)))/(5*speed)) * speed;
                 double mvmt_y = Math.sin(drive_angle - lcs.a) * ((Range.clip(distance, 0, (5*speed)))/(5*speed)) * speed;
                 double mvmt_a = -Range.clip((angle_difference(lcs.a, a))*3, -1, 1) * speed;
 
@@ -476,6 +480,41 @@ public class DriveTrain extends Component {
         this.moving = true;
     }
 
+    /**
+     * Set drive variables to drive in a direction
+     * @param direction direction to creep in radians
+     * @param dist distance to travel
+     * @param a robot heading (negative if no heading desired)
+     * @param speed speed to creep
+     */
+    public void odo_creep(double direction, double dist, double a, double speed) {
+        odo_creep_wiggle(direction, dist, a, 0, speed);
+    }
+
+    /**
+     * Wiggle the robot while moving
+     * @param wiggle wiggle amount (-0.2 - 0.2)
+     */
+    public void odo_wiggle(double wiggle) {
+        target_a += wiggle;
+    }
+
+    /**
+     * Set drive variables to creep and wiggle
+     * @param direction direction to creep in radians
+     * @param dist distance to travel
+     * @param a robot heading (negative if no heading desired)
+     * @param wiggle wiggle amount (-0.2 - 0.2)
+     * @param speed speed to creep
+     */
+    public  void odo_creep_wiggle(double direction, double dist, double a, double wiggle, double speed) {
+        Pose start = new Pose();
+        double x_creep = cos(direction + AutoConst.gridMod) * dist;
+        double y_creep = sin(direction + AutoConst.gridMod) * dist;
+        double angle = (a < 0 ? direction : a) + wiggle;
+
+        odo_drive(start.x + x_creep, start.y + y_creep, angle, speed);
+    }
 
     /**
      * Set drive variables to drive towards a pose
@@ -501,7 +540,7 @@ public class DriveTrain extends Component {
         double distance = Math.hypot(x - lcs.x, y - lcs.y);
 
         double drive_angle = Math.atan2(y-lcs.y, x-lcs.x);
-        double mvmt_x = -Math.cos(drive_angle - lcs.a) * ((Range.clip(distance, 0, (5*speed)))/(5*speed)) * speed;
+        double mvmt_x = -cos(drive_angle - lcs.a) * ((Range.clip(distance, 0, (5*speed)))/(5*speed)) * speed;
         double mvmt_y = Math.sin(drive_angle - lcs.a) * ((Range.clip(distance, 0, (5*speed)))/(5*speed)) * speed;
         double mvmt_a = -Range.clip((angle_difference(lcs.a, a))*3, -1, 1) * speed;
 
@@ -567,7 +606,7 @@ public class DriveTrain extends Component {
         double drive_angle = Math.atan2(pose.y-lcs.y, pose.x-lcs.x);
 
         // Find movement vector to drive towards that point
-        double mvmt_x = Math.cos(drive_angle - lcs.a) * drive_speed;
+        double mvmt_x = cos(drive_angle - lcs.a) * drive_speed;
         double mvmt_y = -Math.sin(drive_angle - lcs.a) * drive_speed;
         // Find angle speed to turn towards the desired angle
         double mvmt_a = -((angle_difference(lcs.a, pose.a -(Math.PI/2) /* robot treats forward as 0deg*/) > 0 ? 1.0 : -1.0) * turn_speed);

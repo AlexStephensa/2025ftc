@@ -8,4 +8,5 @@ public class IntakeConst {
 
     public static final int TRANS = 0;
     public static final int INTAKE = 1;
+    public static final int TWEAKED = 2;
 }
