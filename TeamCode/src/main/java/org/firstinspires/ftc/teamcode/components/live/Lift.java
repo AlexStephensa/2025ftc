@@ -35,7 +35,7 @@ class LiftConfig {
 
     public static int MAX_EXTENSION = 72000; // highest safe extension of physical robot
 
-    public static int MIN_LIFT_OVERSHOOT = 2000;
+    public static int MIN_LIFT_OVERSHOOT = 8000;
 
     public static int THRESHOLD = 200;
     public static boolean AT_THRESH = true;
@@ -124,11 +124,6 @@ public class Lift extends Component {
                 current_target = (lift_offset - LiftConfig.MIN_LIFT_OVERSHOOT);
             }
 
-            if (lift_target == -1) {
-                if (!cur_limit_switch) {
-                    current_target = (cur_position - LiftConfig.MIN_LIFT_OVERSHOOT);
-                }
-            }
         } else {
             current_target = (lift_offset + lift_target);
 

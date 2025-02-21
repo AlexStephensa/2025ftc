@@ -20,8 +20,8 @@ public class AutoConst {
 
     //// Sample Locations ////
     public static int SAMPLE_RIGHT              = 1;
-    public static Pose rightSamplePose          = new Pose(22.5, 30,  Math.PI * 3/2 + gridMod);
-    public static Pose rightSamplePoseOffset    = new Pose(22.5, 20,  Math.PI * 3/2 + gridMod);
+    public static Pose rightSamplePose          = new Pose(24, 30,  Math.PI * 3/2 + gridMod);
+    public static Pose rightSamplePoseOffset    = new Pose(24, 20,  Math.PI * 3/2 + gridMod);
 
     public static int SAMPLE_MID                = 2;
     public static Pose midSamplePose            = new Pose(12.5, 30,  Math.PI * 3/2 + gridMod);

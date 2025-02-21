@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.constants.IntakeConst;
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 
 @Autonomous(name = "testComponents", group = "autonomous")
@@ -13,15 +14,15 @@ public class testComponents extends LiveAutoBase {
 
     @Override
     public void on_start() {
-        robot.intake.setAuto_run(false);
+        robot.intake.intake_pitch(IntakeConst.INTAKE);
 
         halt(0.1);
 
-        robot.intake.setAuto_run(true);
+        robot.intake.auto_run = true;
 
         halt(5);
 
-        robot.intake.setAuto_run(false);
+        robot.intake.auto_run = false;
 
         halt(5);
     }

@@ -47,11 +47,11 @@ public class LiveTeleop extends LiveTeleopBase {
         // Reach
         if(gamepad2.dpad_right) {
             robot.reach.max_reach();
-            run_in(() -> { robot.intake.intake_intake(); }, 500);
+            run_in(() -> { robot.intake.intake_pitch(IntakeConst.INTAKE); }, 500);
         }
         else if (gamepad2.dpad_left){
             robot.reach.min_reach();
-            robot.intake.intake_transfer();
+            robot.intake.intake_pitch(IntakeConst.TRANS);
         }
 
         // Claw Open
@@ -69,7 +69,7 @@ public class LiveTeleop extends LiveTeleopBase {
 
             // Sets intake to intake
             if(gamepad2.right_bumper) {
-                robot.intake.intake_intake();
+                robot.intake.intake_pitch(IntakeConst.INTAKE);
                 intake = true;
             }
         }

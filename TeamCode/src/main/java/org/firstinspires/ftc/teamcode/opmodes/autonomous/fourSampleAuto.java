@@ -41,6 +41,7 @@ public class fourSampleAuto extends LiveAutoBase {
 
     }
 
+    // working
     public void highBasket() {
         int sample = sampleCount;
 
@@ -55,10 +56,11 @@ public class fourSampleAuto extends LiveAutoBase {
 
         boolean haveSample = (robot.intake.current_color != IntakeConst.SAMPLE_NONE);
 
-        robot.intake.auto_run = false;
         robot.arm.transfer_position(); // grab sample and raise lift to high basket
 
         halt(0.2);
+
+        robot.intake.auto_run = false;
 
         while (haveSample) {
             robot.arm.close_claw();
@@ -105,7 +107,7 @@ public class fourSampleAuto extends LiveAutoBase {
         robot.intake.intake_pitch(IntakeConst.INTAKE);
         robot.intake.auto_run = true;
 
-        while (!robot.drive_train.moving) {
+        while (robot.drive_train.moving) {
             halt(0.1);
         }
 
@@ -113,7 +115,7 @@ public class fourSampleAuto extends LiveAutoBase {
         double cur_a = robot.drive_train.target_a;
         while (robot.intake.current_color == IntakeConst.SAMPLE_NONE) {
             if (robot.cycle % 20 == 0) {
-                robot.drive_train.odo_creep_wiggle(cur_a, 1, -1, (wiggle ? 0.2 : -0.2), slow);
+                robot.drive_train.odo_creep_wiggle(cur_a, 1, -1, (wiggle ? 0.1 : -0.1), slow);
                 wiggle = !wiggle;
             }
         }

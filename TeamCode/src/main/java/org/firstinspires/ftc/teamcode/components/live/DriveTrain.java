@@ -100,7 +100,7 @@ public class DriveTrain extends Component {
 
         // Test Code for running components while drive train in auto
 
-        if (moving && auto) {
+        if (moving && auto && robot.opmode.opModeIsActive()) {
             double a = -target_a;
 
             double distance = Math.hypot(target_x - lcs.x, target_y - lcs.y);
@@ -110,7 +110,7 @@ public class DriveTrain extends Component {
             double mvmt_y = Math.sin(drive_angle - lcs.a) * (Range.clip(distance, 0, (5 * speed)) / (5 * speed)) * speed;
             double mvmt_a = -Range.clip((angle_difference(lcs.a, a)) * 3, -1, 1) * speed;
 
-            if (distance < 1 && drive_angle < 0.2) {
+            if (distance < 1 && drive_angle < 0.02) {
                 moving = false;
             } else {
                 mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
@@ -508,7 +508,7 @@ public class DriveTrain extends Component {
      * @param speed speed to creep
      */
     public  void odo_creep_wiggle(double direction, double dist, double a, double wiggle, double speed) {
-        Pose start = new Pose();
+        Pose start = lcs.get_pose();
         double x_creep = cos(direction + AutoConst.gridMod) * dist;
         double y_creep = sin(direction + AutoConst.gridMod) * dist;
         double angle = (a < 0 ? direction : a) + wiggle;

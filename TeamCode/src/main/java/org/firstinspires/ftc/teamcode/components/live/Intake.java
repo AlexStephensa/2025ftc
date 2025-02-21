@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.Component;
-import org.firstinspires.ftc.teamcode.constants.AutoConst;
 import org.firstinspires.ftc.teamcode.constants.IntakeConst;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.util.qus.CRServoQUS;
@@ -50,6 +49,7 @@ public class Intake extends Component {
     private long spitting_since = -1;
 
     public boolean auto_run = false;
+    public boolean hop = false;
     private boolean last_auto_run = auto_run;
 
     //// SERVOS ////
@@ -89,7 +89,8 @@ public class Intake extends Component {
 
         if (auto_run) {
             if (current_color == IntakeConst.SAMPLE_NONE) {
-                intake_pitch(IntakeConst.TWEAKED);
+                intake_pitch(hop ? IntakeConst.TWEAKED : IntakeConst.INTAKE);
+                hop = !hop;
             } else {
                 intake_pitch(IntakeConst.TRANS);
             }
@@ -114,6 +115,7 @@ public class Intake extends Component {
     public void startup() {
         super.startup();
         intake_pitch(IntakeConst.TRANS);
+        intake_run(0);
     }
 
     @Override
@@ -122,6 +124,33 @@ public class Intake extends Component {
         telemetry.addData("SPINNER",TELEMETRY_DECIMAL.format(intake.servo.getPower()));
         telemetry.addData("INTAKE ANGLE", intake_angle());
         telemetry.addData("COLOR", current_color);
+    }
+
+    public void intake_run(double speed) {
+        if (speed > 0) {
+            if (intake_angle == IntakeConst.INTAKE) {
+                intake_pitch(IntakeConst.TWEAKED);
+            }
+
+            if (!(current_color == IntakeConst.SAMPLE_NONE) && !(current_color == intake_color_wanted) && !(current_color == IntakeConst.SAMPLE_YELLOW)) {
+                if (spitting_since == -1) {
+                    spitting_since = System.nanoTime();
+                } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
+                    intake.queue_power(-1);
+                }
+            } else {
+                if ((current_color == intake_color_wanted) || (current_color == IntakeConst.SAMPLE_YELLOW)) {
+                    intake_pitch(IntakeConst.TRANS);
+                }
+                intake.queue_power(speed);
+                spitting_since = -1;
+            }
+        } else {
+            intake.queue_power(speed);
+            if (intake_angle == IntakeConst.INTAKE) {
+                intake_pitch(IntakeConst.INTAKE);
+            }
+        }
     }
 
     public void intake_run(double speed, Gamepad gamepad1, Gamepad gamepad2) {
@@ -177,16 +206,17 @@ public class Intake extends Component {
     }
 
     public void intake_pitch(int pos) {
-        boolean tweaked = pos == IntakeConst.TWEAKED;
         intake_angle = pos == IntakeConst.TRANS ? IntakeConst.TRANS : IntakeConst.INTAKE;
         intake_pitch(
-            pos == IntakeConst.INTAKE ?
-                (tweaked ? IntakeConfig.PITCH_L_INTAKE_POSITION  + IntakeConfig.PITCH_INTAKE_TWEAK :
+            pos >= IntakeConst.INTAKE ?
+                (pos == IntakeConst.TWEAKED ?
+                    IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK :
                     IntakeConfig.PITCH_L_INTAKE_POSITION) :
                 IntakeConfig.PITCH_L_TRANSFER_POSITION,
-            pos == IntakeConst.INTAKE ?
-                (tweaked ? IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK :
-                    IntakeConfig.PITCH_L_INTAKE_POSITION) :
+            pos >= IntakeConst.INTAKE ?
+                (pos == IntakeConst.TWEAKED ?
+                    IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK :
+                    IntakeConfig.PITCH_R_INTAKE_POSITION) :
                 IntakeConfig.PITCH_R_TRANSFER_POSITION);
     }
 
