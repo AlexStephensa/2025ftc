@@ -48,6 +48,8 @@ public class Intake extends Component {
 
     private long spitting_since = -1;
 
+    public boolean auto_run = false;
+
     //// SERVOS ////
     private ServoQUS pitch_l;
     private ServoQUS pitch_r;
@@ -82,6 +84,8 @@ public class Intake extends Component {
     @Override
     public void update(OpMode opmode) {
         super.update(opmode);
+
+        if (auto_run) intake_run_auto(1);
 
         pitch_l.update();
         pitch_r.update();
@@ -147,8 +151,12 @@ public class Intake extends Component {
     }
 
     public void intake_run_auto(double speed) {
-        pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
-        pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
+        if (current_color == IntakeConst.SAMPLE_NONE) {
+            pitch_l.queue_position(IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
+            pitch_r.queue_position(IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
+        } else {
+            intake_transfer();
+        }
         intake.queue_power(speed);
     }
 
@@ -178,6 +186,10 @@ public class Intake extends Component {
 
     public void toggle_wanted_color() {
         intake_color_wanted = (intake_color_wanted == IntakeConst.SAMPLE_BLUE) ? IntakeConst.SAMPLE_RED : IntakeConst.SAMPLE_BLUE;
+    }
+
+    public void setAuto_run(boolean run) {
+        auto_run = run;
     }
 
     private String intake_angle() {

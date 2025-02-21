@@ -49,9 +49,8 @@ public class fourSampleAuto extends LiveAutoBase {
             robot.arm.waiting_position();
             robot.lift.min_lift();
             robot.reach.min_reach();
+            halt(0.1);
         }
-
-        halt(0.5);
 
         boolean haveSample = (robot.intake.current_color != IntakeConst.SAMPLE_NONE);
 
@@ -91,7 +90,7 @@ public class fourSampleAuto extends LiveAutoBase {
     }
 
     public void sampleIntake(int position) {
-        robot.drive_train.odo_drive(samplePose(position, true), 1); // quickly driving to pose
+        robot.drive_train.odo_drive(samplePose(position, true), fast); // quickly driving to pose
 
         halt(0.2);
 
@@ -100,20 +99,26 @@ public class fourSampleAuto extends LiveAutoBase {
 
         halt(0.2);
 
-        robot.drive_train.odo_drive(samplePose(position, false), 0.5); // move slower to pose
+        robot.drive_train.odo_drive(samplePose(position, false), slow); // move slower to pose
         robot.intake.intake_intake();
 
+        halt(0.5);
+
+        robot.intake.setAuto_run(true);
+        boolean jiggle = true;
         while (robot.intake.current_color == IntakeConst.SAMPLE_NONE) {
-            robot.intake.intake_run_auto(1);
             if (robot.cycle % 20 == 0) {
                 Pose start = robot.drive_train.lcs.get_pose();
-                robot.drive_train.odo_drive(start.x, start.y + 1, start.a, slow);
+                jiggle = jiggle ? false : true;
+                robot.drive_train.odo_drive(start.x, start.y + 1, start.a + (jiggle ? -0.2 : 0.2), slow);
             }
         }
 
         robot.intake.intake_transfer();
         halt(0.1);
         robot.reach.min_reach();
+        halt(0.3);
+        robot.intake.setAuto_run(false);
     }
 
     public Pose samplePose(int position, boolean offset) {

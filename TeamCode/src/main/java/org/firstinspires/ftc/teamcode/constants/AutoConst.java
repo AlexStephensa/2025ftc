@@ -13,7 +13,7 @@ public class AutoConst {
     public static Pose subPark              = new Pose(45,   60,  Math.PI + gridMod);
     public static Pose humanPark            = new Pose(110,  10,  Math.PI * 3/2 + gridMod);
 
-    public static Pose highBasketPose       = new Pose(12,   12,  Math.PI * 7/4 + gridMod);
+    public static Pose highBasketPose       = new Pose(13,   13,  Math.PI * 7/4 + gridMod);
     public static Pose highBasketPoseOffset = new Pose(18,   18,  Math.PI * 7/4 + gridMod);
 
     public static Pose lowBasketPose        = new Pose(15,   15,  Math.PI * 7/4 + gridMod);

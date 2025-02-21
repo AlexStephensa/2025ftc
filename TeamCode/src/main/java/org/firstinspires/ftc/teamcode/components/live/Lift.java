@@ -79,6 +79,7 @@ public class Lift extends Component {
     static double tweak_cache = 0;
 
     static double pid_speed = 0;
+    static boolean starting_move = false;
 
     {
         name = "Lift";
@@ -112,25 +113,39 @@ public class Lift extends Component {
         cur_limit_switch = !limit_switchL.getState();
         int cur_position = lift_f.getCurrentPosition();
 
+        int current_target = 0;
+
         if (lift_target <= 0) {
             if (cur_limit_switch && !last_limit_switch) {
                 lift_offset = cur_position;
             }
 
             if (!cur_limit_switch) {
-                pid_control.setTargetPosition(lift_offset - LiftConfig.MIN_LIFT_OVERSHOOT);
+                current_target = (lift_offset - LiftConfig.MIN_LIFT_OVERSHOOT);
+            }
+
+            if (lift_target == -1) {
+                if (!cur_limit_switch) {
+                    current_target = (cur_position - LiftConfig.MIN_LIFT_OVERSHOOT);
+                }
             }
         } else {
-            pid_control.setTargetPosition(lift_offset + lift_target);
+            current_target = (lift_offset + lift_target);
+
+            if (tweak != tweak_cache) {
+                tweak_cache = tweak;
+                current_target = (Range.clip(
+                        lift_target + lift_offset + (int) (tweak * TWEAK_MAX_ADD),
+                        lift_offset,
+                        MAX_EXTENSION
+                ));
+                starting_move = true;
+            }
         }
 
-        if (tweak != tweak_cache) {
-            tweak_cache = tweak;
-            pid_control.setTargetPosition(Range.clip(
-                    lift_target + lift_offset + (int) (tweak * TWEAK_MAX_ADD),
-                    lift_offset,
-                    MAX_EXTENSION
-            ));
+        if (starting_move) {
+            pid_control.setTargetPosition(current_target);
+            starting_move = false;
         }
 
         pid_speed = pid_control.update(cur_position) / 1000;
@@ -226,6 +241,7 @@ public class Lift extends Component {
     public void elevate_to(int target_level) {
         level = Math.max(Math.min(target_level, MAX_LEVEL), MIN_LEVEL);
         set_target_position((LIFT_LEVELS[level]) + LIFT_OFFSET);
+        starting_move = true;
     }
 
     /**
