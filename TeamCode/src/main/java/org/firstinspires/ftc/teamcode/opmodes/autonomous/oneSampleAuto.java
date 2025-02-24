@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 
-@Autonomous(name = "fourSampleAuto", group = "autonomous")
-public class fourSampleAuto extends LiveAutoBase {
+@Autonomous(name = "oneSampleAuto", group = "autonomous")
+public class oneSampleAuto extends LiveAutoBase {
 
     double fast = 0.66;
     double slow = 0.25;
@@ -25,12 +25,6 @@ public class fourSampleAuto extends LiveAutoBase {
     @Override
     public void on_start() {
 
-        highBasket();
-        sampleIntake(AutoConst.SAMPLE_RIGHT);
-        highBasket();
-        sampleIntake(AutoConst.SAMPLE_MID);
-        highBasket();
-        sampleIntake(AutoConst.SAMPLE_LEFT);
         highBasket();
         subPark();
 

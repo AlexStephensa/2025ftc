@@ -16,15 +16,18 @@ class ArmConfig {
     static public double ELBOW_L_WAITING_POSITION = 0.52;
     static public double ELBOW_L_SPECIMEN_POSITION = 0.88;
     static public double ELBOW_L_BASKET_POSITION = 0.15;
+    static public double ELBOW_L_PARK_POSITION = 0.18;
 
     static public double ELBOW_R_TRANSFER_POSITION = 0.56;
     static public double ELBOW_R_WAITING_POSITION = 0.52;
     static public double ELBOW_R_SPECIMEN_POSITION = 0.88;
     static public double ELBOW_R_BASKET_POSITION = 0.15;
+    static public double ELBOW_R_PARK_POSITION = 0.18;
 
     static public double WRIST_TRANSFER_POSITION = 0.67;
     static public double WRIST_SPECIMEN_POSITION = 0.75;
     static public double WRIST_BASKET_POSITION = 0.15;
+    static public double WRIST_PARK_POSITION = 0.4;
 
     static public double CLAW_CLOSE_POSITION = 0.72;
     static public double CLAW_OPEN_POSITION = 0.4;
@@ -112,6 +115,13 @@ public class Arm extends Component {
         elbow_r.queue_position(ArmConfig.ELBOW_R_SPECIMEN_POSITION);
         wrist.queue_position(ArmConfig.WRIST_SPECIMEN_POSITION);
         arm_current = "SPEC";
+    }
+
+    public void park_position() {
+        elbow_l.queue_position(ArmConfig.ELBOW_L_PARK_POSITION);
+        elbow_r.queue_position(ArmConfig.ELBOW_R_PARK_POSITION);
+        wrist.queue_position(ArmConfig.WRIST_PARK_POSITION);
+        arm_current = "PARK";
     }
 
     public void open_claw() {

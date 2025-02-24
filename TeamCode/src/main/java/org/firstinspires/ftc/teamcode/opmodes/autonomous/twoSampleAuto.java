@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 
-@Autonomous(name = "fourSampleAuto", group = "autonomous")
-public class fourSampleAuto extends LiveAutoBase {
+@Autonomous(name = "twoSampleAuto", group = "autonomous")
+public class twoSampleAuto extends LiveAutoBase {
 
     double fast = 0.66;
     double slow = 0.25;
@@ -27,10 +27,6 @@ public class fourSampleAuto extends LiveAutoBase {
 
         highBasket();
         sampleIntake(AutoConst.SAMPLE_RIGHT);
-        highBasket();
-        sampleIntake(AutoConst.SAMPLE_MID);
-        highBasket();
-        sampleIntake(AutoConst.SAMPLE_LEFT);
         highBasket();
         subPark();
 
@@ -113,7 +109,7 @@ public class fourSampleAuto extends LiveAutoBase {
 
         boolean wiggle = true;
         double cur_a = robot.drive_train.target_a;
-        while (robot.intake.current_color == IntakeConst.SAMPLE_NONE) {
+        while (robot.intake.current_color == IntakeConst.SAMPLE_NONE && robot.drive_train.lcs.y < 60) {
             if (robot.cycle % 20 == 0) {
                 robot.drive_train.odo_creep_wiggle(cur_a, 1, -1, (wiggle ? 0.1 : -0.1), slow);
                 wiggle = !wiggle;
@@ -157,5 +153,10 @@ public class fourSampleAuto extends LiveAutoBase {
         robot.arm.close_claw();
 
         halt(4);
+    }
+
+    public void humanPark() {
+        robot.lift.min_lift();
+        robot.drive_train.odo_drive(AutoConst.humanPark, fast);
     }
 }
