@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+/*package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -31,4 +31,4 @@ public class testComponents extends LiveAutoBase {
     public void on_stop() {
     }
 
-}
+}*/

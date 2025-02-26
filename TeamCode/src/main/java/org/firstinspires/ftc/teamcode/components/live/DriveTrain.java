@@ -112,6 +112,7 @@ public class DriveTrain extends Component {
 
             if (distance < 1 && drive_angle < 0.02) {
                 moving = false;
+                stop();
             } else {
                 mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
             }
@@ -202,8 +203,8 @@ public class DriveTrain extends Component {
 
     @Override
     public void shutdown() {
-        super.shutdown();
         stop();
+        super.shutdown();
     }
 
 

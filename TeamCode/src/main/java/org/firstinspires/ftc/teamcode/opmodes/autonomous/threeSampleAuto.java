@@ -2,10 +2,11 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.constants.AutoConst;
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 
-@Autonomous(name = "0+1+sub", group = "autonomous", preselectTeleOp = "Teleop Live")
-public class oneSampleAuto extends LiveAutoBase {
+@Autonomous(name = "0+3+sub", group = "autonomous", preselectTeleOp = "Teleop Live")
+public class threeSampleAuto extends LiveAutoBase {
 
     AutoSample auto;
     @Override
@@ -16,6 +17,10 @@ public class oneSampleAuto extends LiveAutoBase {
 
     @Override
     public void on_start() {
+        auto.highBasket();
+        auto.sampleIntake(AutoConst.SAMPLE_RIGHT);
+        auto.highBasket();
+        auto.sampleIntake(AutoConst.SAMPLE_MID);
         auto.highBasket();
         auto.subPark();
     }

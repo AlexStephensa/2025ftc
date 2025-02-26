@@ -15,14 +15,14 @@ class ArmConfig {
     static public double ELBOW_L_TRANSFER_POSITION = 0.56;
     static public double ELBOW_L_WAITING_POSITION = 0.52;
     static public double ELBOW_L_SPECIMEN_POSITION = 0.88;
-    static public double ELBOW_L_BASKET_POSITION = 0.15;
-    static public double ELBOW_L_PARK_POSITION = 0.18;
+    static public double ELBOW_L_BASKET_POSITION = 0.12;
+    static public double ELBOW_L_PARK_POSITION = 0.12;
 
     static public double ELBOW_R_TRANSFER_POSITION = 0.56;
     static public double ELBOW_R_WAITING_POSITION = 0.52;
     static public double ELBOW_R_SPECIMEN_POSITION = 0.88;
     static public double ELBOW_R_BASKET_POSITION = 0.15;
-    static public double ELBOW_R_PARK_POSITION = 0.18;
+    static public double ELBOW_R_PARK_POSITION = 0.15;
 
     static public double WRIST_TRANSFER_POSITION = 0.67;
     static public double WRIST_SPECIMEN_POSITION = 0.75;
