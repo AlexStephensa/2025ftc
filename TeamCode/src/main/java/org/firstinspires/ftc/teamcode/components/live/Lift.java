@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.Component;
+import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 
 @Config
@@ -35,7 +36,7 @@ class LiftConfig {
 
     public static int MAX_EXTENSION = 72000; // highest safe extension of physical robot
 
-    public static int MIN_LIFT_OVERSHOOT = 2000;
+    public static int MIN_LIFT_OVERSHOOT = 4000;
 
     public static int THRESHOLD = 200;
     public static boolean AT_THRESH = true;
@@ -113,23 +114,36 @@ public class Lift extends Component {
         cur_limit_switch = !limit_switchL.getState();
         int cur_position = lift_f.getCurrentPosition();
 
-        int current_target = 0;
+        int new_target = 0;
 
-        if (lift_target <= 0) {
+        if (level == LiftConst.INIT) {
+
             if (cur_limit_switch && !last_limit_switch) {
+
                 lift_offset = cur_position;
             }
-
             if (!cur_limit_switch) {
-                current_target = (lift_offset - LiftConfig.MIN_LIFT_OVERSHOOT);
-            }
 
+                new_target = (lift_offset - LiftConfig.MIN_LIFT_OVERSHOOT);
+            }
+            starting_move = true;
+
+        } else if (level == -1) {
+            if (cur_limit_switch) {
+                level = LiftConst.INIT;
+                lift_offset = cur_position;
+
+            } else {
+
+                new_target -= MAX_EXTENSION;
+                starting_move = true;
+            }
         } else {
-            current_target = (lift_offset + lift_target);
+            new_target = (lift_offset + lift_target);
 
             if (tweak != tweak_cache) {
                 tweak_cache = tweak;
-                current_target = (Range.clip(
+                new_target = (Range.clip(
                         lift_target + lift_offset + (int) (tweak * TWEAK_MAX_ADD),
                         lift_offset,
                         MAX_EXTENSION
@@ -139,7 +153,7 @@ public class Lift extends Component {
         }
 
         if (starting_move) {
-            pid_control.setTargetPosition(current_target);
+            pid_control.setTargetPosition(new_target);
             starting_move = false;
         }
 
@@ -244,6 +258,10 @@ public class Lift extends Component {
      */
     public void min_lift() {
         elevate_to(MIN_LEVEL);
+    }
+
+    public void zero_lift() {
+        level = LiftConst.RE_ZERO;
     }
 
     /**

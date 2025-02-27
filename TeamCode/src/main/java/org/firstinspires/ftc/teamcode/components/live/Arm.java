@@ -35,7 +35,7 @@ class ArmConfig {
 
 public class Arm extends Component {
     private String arm_current;
-    private boolean claw_state;
+    public boolean claw_state;
 
     //// SERVOS ////
     public ServoQUS elbow_l;

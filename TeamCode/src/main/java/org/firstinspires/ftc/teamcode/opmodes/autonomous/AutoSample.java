@@ -133,6 +133,31 @@ public class AutoSample {
         robot.reach.min_reach();
     }
 
+    public void sampleReachIntake(int position) {
+        robot.drive_train.odo_drive(samplePose(position, true), fast); // quickly driving to pose
+
+        halt(0.4);
+
+        robot.drive_train.odo_drive(samplePose(position, false), slow); // move slower to pose
+
+        robot.lift.elevate_to(LiftConst.INIT);
+        robot.arm.waiting_position();
+        robot.arm.open_claw();
+
+        robot.intake.intake_pitch(IntakeConst.INTAKE);
+        robot.intake.auto_run = true;
+
+        while (robot.drive_train.moving) {
+            halt(0.1);
+        }
+
+        robot.reach.extend_to(200);
+
+        robot.intake.intake_pitch(IntakeConst.TRANS);
+        halt(0.1);
+        robot.reach.min_reach();
+    }
+
     public Pose samplePose(int position, boolean offset) {
         if (position == AutoConst.SAMPLE_RIGHT) {
             return offset ? AutoConst.rightSamplePoseOffset : AutoConst.rightSamplePose;

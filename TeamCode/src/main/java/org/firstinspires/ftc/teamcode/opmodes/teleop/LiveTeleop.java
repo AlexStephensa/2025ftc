@@ -12,10 +12,10 @@ import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 @TeleOp(name="Teleop Live", group="driver control")
 //@Disabled
 public class LiveTeleop extends LiveTeleopBase {
-
-    boolean dpad1_up_pressed = false;
-    boolean dpad1_down_pressed = false;
-    boolean gp1_back_pressed = false;
+    boolean back1_pressed = false;
+    boolean dpad2_up_pressed = false;
+    boolean dpad2_down_pressed = false;
+    boolean lbump2_pressed = false;
 
     boolean intake = false;
 
@@ -31,17 +31,19 @@ public class LiveTeleop extends LiveTeleopBase {
         this.getRuntime();
 
         robot.arm.open_claw();
+        robot.arm.waiting_position();
+        robot.lift.min_lift();
     }
 
     @Override
     public void on_loop() {
 
-        if(gamepad1.back && !gp1_back_pressed) {
+        if(gamepad1.back && !back1_pressed) {
             robot.intake.toggle_wanted_color();
             gamepad1.setLedColor(robot.intake.intake_color_wanted == IntakeConst.SAMPLE_RED ? 1 : 0, 0, robot.intake.intake_color_wanted == IntakeConst.SAMPLE_BLUE ? 1 : 0, LED_DURATION_CONTINUOUS);
-            gp1_back_pressed = true;
+            back1_pressed = true;
         } else if (!gamepad1.back) {
-            gp1_back_pressed = false;
+            back1_pressed = false;
         }
 
         // Reach
@@ -55,8 +57,19 @@ public class LiveTeleop extends LiveTeleopBase {
         }
 
         // Claw Open
-        if (gamepad2.left_bumper) {
-            robot.arm.open_claw();
+        if (gamepad2.left_bumper && !lbump2_pressed) {
+            if (robot.lift.level == LiftConst.SPECIMEN || robot.lift.level == LiftConst.HIGH_BAR) {
+                if (robot.arm.claw_state) {
+                    robot.arm.open_claw();
+                } else {
+                    robot.arm.close_claw();
+                }
+            } else {
+                robot.arm.open_claw();
+            }
+            lbump2_pressed = true;
+        } else if (!gamepad2.left_bumper) {
+            lbump2_pressed = false;
         }
 
         if(robot.lift.level != LiftConst.INIT) {
@@ -95,6 +108,10 @@ public class LiveTeleop extends LiveTeleopBase {
                 }
             }
 
+            if(gamepad2.y){
+                robot.lift.zero_lift();
+            }
+
             if(gamepad2.x){
                 if (prepared_level == LiftConst.LOW_BASKET || prepared_level == LiftConst.HIGH_BASKET) {
                     run_in(() -> {
@@ -102,11 +119,13 @@ public class LiveTeleop extends LiveTeleopBase {
                     }, 100);
                     run_in(() -> {
                         robot.arm.close_claw();
-                    }, 250);
+                    }, 300);
                     run_in(() -> {
                         robot.lift.elevate_to(prepared_level);
+                    }, 400);
+                    run_in(() -> {
                         robot.arm.basket_position();
-                    }, 350);
+                    }, 600);
                 }
                 else {
                     robot.lift.elevate_to(prepared_level);
@@ -123,17 +142,17 @@ public class LiveTeleop extends LiveTeleopBase {
         }
 
         // Lift level selection
-        if(gamepad2.dpad_up && !dpad1_up_pressed) {
-            prepared_level = Range.clip(prepared_level + 1, 0, robot.lift.max_level);
-            dpad1_up_pressed = true;
+        if(gamepad2.dpad_up && !dpad2_up_pressed) {
+            prepared_level = Range.clip(prepared_level + 1, 1, robot.lift.max_level);
+            dpad2_up_pressed = true;
         } else if (!gamepad2.dpad_up) {
-            dpad1_up_pressed = false;
+            dpad2_up_pressed = false;
         }
-        if(gamepad2.dpad_down && !dpad1_down_pressed) {
-            prepared_level = Range.clip(prepared_level - 1, 0, robot.lift.max_level);
-            dpad1_down_pressed = true;
+        if(gamepad2.dpad_down && !dpad2_down_pressed) {
+            prepared_level = Range.clip(prepared_level - 1, 1, robot.lift.max_level);
+            dpad2_down_pressed = true;
         } else if (!gamepad2.dpad_down) {
-            dpad1_down_pressed = false;
+            dpad2_down_pressed = false;
         }
 
         /// Driver 1 ///
