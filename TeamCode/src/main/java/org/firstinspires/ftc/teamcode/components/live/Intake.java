@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.Component;
 import org.firstinspires.ftc.teamcode.constants.IntakeConst;
+import org.firstinspires.ftc.teamcode.robots.LiveRobot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.util.qus.CRServoQUS;
 import org.firstinspires.ftc.teamcode.util.qus.ServoQUS;
@@ -153,7 +154,7 @@ public class Intake extends Component {
         }
     }
 
-    public void intake_run(double speed, Gamepad gamepad1, Gamepad gamepad2) {
+    public void intake_run(double speed, Gamepad gamepad1, Gamepad gamepad2, LiveRobot robot) {
         if (speed > 0) {
             if (intake_angle == IntakeConst.INTAKE) {
                 intake_pitch(IntakeConst.TWEAKED);
@@ -177,6 +178,7 @@ public class Intake extends Component {
                     gamepad1.rumble(100);
                     gamepad2.rumble(100);
                     intake_pitch(IntakeConst.TRANS);
+                    robot.reach.min_reach();
                 }
                 intake.queue_power(speed);
                 spitting_since = -1;

@@ -128,15 +128,16 @@ public class Lift extends Component {
             }
             starting_move = true;
 
-        } else if (level == -1) {
+        } else if (level == LiftConst.RE_ZERO) {
             if (cur_limit_switch) {
                 level = LiftConst.INIT;
-                lift_offset = cur_position;
+                lift_f.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                lift_f.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             } else {
 
-                new_target -= MAX_EXTENSION;
-                starting_move = true;
+                set_power(-1);
+                starting_move = false;
             }
         } else {
             new_target = (lift_offset + lift_target);
@@ -164,7 +165,9 @@ public class Lift extends Component {
             set_power(0);
         } else {
             setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            set_power(pid_speed);
+            if (level != LiftConst.RE_ZERO) {
+                set_power(pid_speed);
+            }
         }
 
         last_limit_switch = cur_limit_switch;

@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 //@Disabled
 public class LiveTeleop extends LiveTeleopBase {
     boolean back1_pressed = false;
+    boolean y2_Pressed = false;
     boolean dpad2_up_pressed = false;
     boolean dpad2_down_pressed = false;
     boolean lbump2_pressed = false;
@@ -87,32 +88,42 @@ public class LiveTeleop extends LiveTeleopBase {
             }
         }
         // Runs intake spinners
-        robot.intake.intake_run(gamepad2.a ? 1 : (gamepad2.b ? -1 : 0), gamepad1, gamepad2);
-
-        if(gamepad2.back || gamepad2.x) {
-            if (gamepad2.back && robot.lift.level != LiftConst.SPECIMEN) {
-                if (robot.lift.level == LiftConst.HIGH_BASKET || robot.lift.level == LiftConst.LOW_BASKET) {
-                    robot.arm.open_claw();
-
-                    run_in(() -> {
-                        robot.lift.min_lift();
-                        robot.arm.waiting_position();
-                    }, 100);
-                }
-                else if (robot.lift.level == LiftConst.HANG) {
-                    robot.lift.elevate_to(LiftConst.LOW_BASKET);
-                    robot.arm.waiting_position();
-                }
-                else {
-                    robot.lift.min_lift();
-                }
-            }
-
+        if (!gamepad2.start) {
+            robot.intake.intake_run(gamepad2.a ? 1 : (gamepad2.b ? -1 : 0), gamepad1, gamepad2, robot);
+        }
+        // Slide retraction
+        if(gamepad2.back || gamepad2.x || gamepad2.a) {
             if(gamepad2.y){
                 robot.lift.zero_lift();
+                y2_Pressed = true;
+            } else {
+                y2_Pressed = false;
+                if (gamepad2.back && robot.lift.level != LiftConst.RE_ZERO) {
+                    if (robot.lift.level == LiftConst.HIGH_BASKET || robot.lift.level == LiftConst.LOW_BASKET) {
+                        robot.arm.open_claw();
+                        run_in(() -> {
+                            robot.arm.waiting_position();
+                        }, 100);
+                        run_in(() -> {
+                            robot.lift.min_lift();
+                        }, 200);
+                    } else if (robot.lift.level == LiftConst.HANG) {
+                        robot.lift.elevate_to(LiftConst.LOW_BASKET);
+                        robot.arm.waiting_position();
+                    } else if (robot.lift.level == LiftConst.HIGH_BAR) {
+                        robot.lift.elevate_to(LiftConst.SPECIMEN);
+                    } else if (robot.lift.level == LiftConst.SPECIMEN) {
+                        robot.arm.waiting_position();
+                        run_in(() -> {
+                            robot.lift.elevate_to(LiftConst.INIT);
+                        }, 500);
+                    } else {
+                        robot.lift.min_lift();
+                    }
+                }
             }
 
-            if(gamepad2.x){
+            if(gamepad2.x) {
                 if (prepared_level == LiftConst.LOW_BASKET || prepared_level == LiftConst.HIGH_BASKET) {
                     run_in(() -> {
                         robot.arm.transfer_position();
@@ -127,13 +138,29 @@ public class LiveTeleop extends LiveTeleopBase {
                         robot.arm.basket_position();
                     }, 600);
                 }
+                /*else if (gamepad2.a && robot.reach.cur_limit_switch && robot.intake.current_color != IntakeConst.SAMPLE_NONE) {
+                    if (prepared_level == LiftConst.LOW_BASKET || prepared_level == LiftConst.HIGH_BASKET) {
+                        run_in(() -> {
+                            robot.arm.transfer_position();
+                        }, 100);
+                        run_in(() -> {
+                            robot.arm.close_claw();
+                        }, 300);
+                        run_in(() -> {
+                            robot.lift.elevate_to(prepared_level);
+                        }, 400);
+                        run_in(() -> {
+                            robot.arm.basket_position();
+                        }, 600);
+                    }
+                }*/
                 else {
                     robot.lift.elevate_to(prepared_level);
                 }
+            }
 
-                if (robot.lift.level == LiftConst.INIT) {
-                    robot.arm.waiting_position();
-                }
+            if (robot.lift.level == LiftConst.INIT) {
+                robot.arm.waiting_position();
             }
 
             if (robot.lift.level == LiftConst.SPECIMEN) {
