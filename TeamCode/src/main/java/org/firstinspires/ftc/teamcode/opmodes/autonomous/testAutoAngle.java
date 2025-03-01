@@ -1,11 +1,11 @@
-/*package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 
-@Autonomous(name = "testAutoAngle", group = "autonomous")
+@Autonomous(name = "test", group = "autonomous")
 public class testAutoAngle extends LiveAutoBase {
 
     double drive_speed = 0.5;
@@ -17,32 +17,7 @@ public class testAutoAngle extends LiveAutoBase {
     @Override
     public void on_start() {
 
-        Pose angleTest = new Pose(0, 0, 0);
-        robot.drive_train.odo_move(angleTest, 0.5, 2);
-        halt(2);
-        angleTest.set_a(angleTest.a + Math.PI / 4);
-        robot.drive_train.odo_move(angleTest, 0.5, 2);
-        halt(2);
-        angleTest.set_a(angleTest.a + Math.PI / 4);
-        robot.drive_train.odo_move(angleTest, 0.5, 2);
-        halt(2);
-        angleTest.set_a(angleTest.a + Math.PI / 4);
-        robot.drive_train.odo_move(angleTest, 0.5, 2);
-        halt(2);
-        angleTest.set_a(angleTest.a + Math.PI / 4);
-        robot.drive_train.odo_move(angleTest, 0.5, 2);
-        halt(2);
-        angleTest.set_a(angleTest.a - Math.PI / 4);
-        robot.drive_train.odo_move(angleTest, 0.5, 2);
-        halt(2);
-        angleTest.set_a(angleTest.a - Math.PI / 4);
-        robot.drive_train.odo_move(angleTest, 0.5, 2);
-        halt(2);
-        angleTest.set_a(angleTest.a - Math.PI / 4);
-        robot.drive_train.odo_move(angleTest, 0.5, 2);
-        halt(2);
-        angleTest.set_a(angleTest.a - Math.PI / 4);
-        robot.drive_train.odo_move(angleTest, 0.5, 2);
+        halt(35);
 
     }
 
@@ -50,4 +25,4 @@ public class testAutoAngle extends LiveAutoBase {
     public void on_stop() {
     }
 
-}*/
+}

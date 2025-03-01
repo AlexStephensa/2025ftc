@@ -498,6 +498,7 @@ public class DriveTrain extends Component {
      */
     public void odo_wiggle(double wiggle) {
         target_a += wiggle;
+        moving = true;
     }
 
     /**

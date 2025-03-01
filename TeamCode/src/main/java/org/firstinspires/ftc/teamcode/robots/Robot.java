@@ -173,6 +173,7 @@ public class Robot {
 
         telemetry.addData("[RBT "+name+"]", components.size()+" components");
         telemetry.addData("FREQ", update_freq);
+        telemetry.addData("RUNTIME", opmode.getRuntime());
     }
 
     /**

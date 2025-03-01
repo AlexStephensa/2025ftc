@@ -47,12 +47,13 @@ public class AutoSample {
         robot.drive_train.odo_drive(AutoConst.highBasketPoseOffset, fast); // quickly drive to pose
 
         if (sampleCount != 0) {
-            while (!(robot.reach.cur_limit_switch && robot.lift.cur_limit_switch)) { // Attempt to retract all slides
+            while (!robot.reach.cur_limit_switch || !robot.lift.cur_limit_switch) { // Attempt to retract all slides
                 robot.arm.waiting_position();
                 robot.lift.min_lift();
                 robot.reach.min_reach();
-                halt(0.1);
             }
+
+            halt(1);
 
             boolean haveSample = (robot.intake.current_color != IntakeConst.SAMPLE_NONE);
 
@@ -67,12 +68,12 @@ public class AutoSample {
 
                 robot.lift.elevate_to(LiftConst.HIGH_BASKET);
 
-                halt(0.2);
+                halt(0.3);
 
                 if (robot.intake.current_color != IntakeConst.SAMPLE_NONE) {
                     robot.arm.open_claw();
                     robot.lift.min_lift();
-                    halt(1);
+                    halt(0.5);
                 } else {
                     haveSample = false;
                     sampleCount++;
@@ -82,12 +83,6 @@ public class AutoSample {
             }
 
             halt(1);
-
-        } else {
-
-            robot.lift.elevate_to(LiftConst.HIGH_BASKET);
-            sampleCount++;
-            halt(2);
 
         }
 
@@ -99,6 +94,31 @@ public class AutoSample {
 
             robot.arm.open_claw(); // deposit sample in basket
         }
+    }
+
+    public void highBasketFirst() {
+        sampleCount++;
+
+        robot.drive_train.odo_drive(AutoConst.highBasketPoseOffset, fast); // quickly drive to pose
+
+        robot.arm.transfer_position(); // grab sample and raise lift to high basket
+
+        halt(0.2);
+
+        robot.arm.close_claw();
+
+        halt(0.1);
+
+        robot.lift.elevate_to(LiftConst.HIGH_BASKET);
+
+        halt(1.5);
+
+        robot.drive_train.odo_drive(AutoConst.highBasketPose, 0.5); // move slower to pose
+        robot.arm.basket_position();
+
+        halt(1);
+
+        robot.arm.open_claw(); // deposit sample in basket
     }
 
     public void sampleIntake(int position) {
@@ -151,10 +171,21 @@ public class AutoSample {
             halt(0.1);
         }
 
-        robot.reach.extend_to(200);
+        robot.reach.extend_to(400);
+
+        boolean wiggle = true;
+        robot.opmode.resetRuntime();
+        while (robot.intake.current_color == IntakeConst.SAMPLE_NONE && robot.opmode.getRuntime() < 2.0) {
+            if (robot.cycle % 20 == 0) {
+                robot.drive_train.odo_wiggle(wiggle ? 0.2 : -0.2);
+                wiggle = !wiggle;
+            }
+        }
 
         robot.intake.intake_pitch(IntakeConst.TRANS);
+
         halt(0.1);
+
         robot.reach.min_reach();
     }
 
@@ -184,7 +215,7 @@ public class AutoSample {
 
         halt(1.5);
 
-        robot.drive_train.odo_drive(AutoConst.subPark, slow);
+        robot.drive_train.odo_drive(AutoConst.subPark, 0.3);
 
         robot.arm.park_position();
         robot.arm.close_claw();

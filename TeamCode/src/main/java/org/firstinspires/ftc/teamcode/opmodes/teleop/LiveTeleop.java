@@ -19,6 +19,7 @@ public class LiveTeleop extends LiveTeleopBase {
     boolean lbump2_pressed = false;
 
     boolean intake = false;
+    boolean SKIP = false;
 
     int prepared_level = 1;
 
@@ -125,9 +126,8 @@ public class LiveTeleop extends LiveTeleopBase {
 
             if(gamepad2.x) {
                 if (prepared_level == LiftConst.LOW_BASKET || prepared_level == LiftConst.HIGH_BASKET) {
-                    run_in(() -> {
-                        robot.arm.transfer_position();
-                    }, 100);
+                    SKIP = true;
+                    robot.arm.transfer_position();
                     run_in(() -> {
                         robot.arm.close_claw();
                     }, 300);
@@ -157,9 +157,11 @@ public class LiveTeleop extends LiveTeleopBase {
                 else {
                     robot.lift.elevate_to(prepared_level);
                 }
+            } else {
+                SKIP = false;
             }
 
-            if (robot.lift.level == LiftConst.INIT) {
+            if (robot.lift.level == LiftConst.INIT && !SKIP) {
                 robot.arm.waiting_position();
             }
 

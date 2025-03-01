@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+/*package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -27,4 +27,4 @@ public class twoSampleAuto extends LiveAutoBase {
     public void on_stop() {
         auto.sampleStop();
     }
-}
+}*/

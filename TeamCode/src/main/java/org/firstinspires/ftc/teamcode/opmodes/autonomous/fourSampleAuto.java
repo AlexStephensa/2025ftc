@@ -17,12 +17,12 @@ public class fourSampleAuto extends LiveAutoBase {
 
     @Override
     public void on_start() {
+        auto.highBasketFirst();
+        auto.sampleReachIntake(AutoConst.SAMPLE_RIGHT);
         auto.highBasket();
-        auto.sampleIntake(AutoConst.SAMPLE_RIGHT);
+        auto.sampleReachIntake(AutoConst.SAMPLE_MID);
         auto.highBasket();
-        auto.sampleIntake(AutoConst.SAMPLE_MID);
-        auto.highBasket();
-        auto.sampleIntake(AutoConst.SAMPLE_LEFT);
+        auto.sampleReachIntake(AutoConst.SAMPLE_LEFT);
         auto.highBasket();
         auto.subPark();
     }

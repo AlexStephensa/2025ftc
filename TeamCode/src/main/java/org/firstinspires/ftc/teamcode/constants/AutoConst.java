@@ -28,8 +28,8 @@ public class AutoConst {
     public static Pose midSamplePoseOffset      = new Pose(12.5, 20,  Math.PI * 3/2 + gridMod);
 
     public static int SAMPLE_LEFT               = 3;
-    public static Pose leftSamplePose           = new Pose(14,   44,  Math.PI + gridMod);
-    public static Pose leftSamplePoseOffset     = new Pose(19,   44,  Math.PI + gridMod);
+    public static Pose leftSamplePose           = new Pose(19,   44,  Math.PI + gridMod);
+    public static Pose leftSamplePoseOffset     = new Pose(24,   44,  Math.PI + gridMod);
 
     public static int SAMPLE_PARTNER            = 4;
     public static Pose partnerSamplePose        = new Pose(55,   15,  0 + gridMod);
