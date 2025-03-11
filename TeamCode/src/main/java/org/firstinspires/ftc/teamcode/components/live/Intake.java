@@ -90,8 +90,10 @@ public class Intake extends Component {
 
         if (auto_run) {
             if (current_color == IntakeConst.SAMPLE_NONE) {
-                intake_pitch(hop ? IntakeConst.TWEAKED : IntakeConst.INTAKE);
-                hop = !hop;
+                if (robot.cycle % 20 == 0) {
+                    intake_pitch(hop ? IntakeConst.TWEAKED : IntakeConst.INTAKE);
+                    hop = !hop;
+                }
             } else {
                 intake_pitch(IntakeConst.TRANS);
             }

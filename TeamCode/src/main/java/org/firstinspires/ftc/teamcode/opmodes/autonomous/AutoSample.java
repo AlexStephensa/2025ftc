@@ -78,22 +78,23 @@ public class AutoSample {
                     haveSample = false;
                     sampleCount++;
                 }
-
-                robot.intake.auto_run = false;
             }
 
-            halt(1);
-
-        }
-
-        if (sample != sampleCount) {
-            robot.drive_train.odo_drive(AutoConst.highBasketPose, 0.5); // move slower to pose
-            robot.arm.basket_position();
+            robot.intake.auto_run = false;
 
             halt(1);
 
-            robot.arm.open_claw(); // deposit sample in basket
+            if (sample != sampleCount) {
+                robot.drive_train.odo_drive(AutoConst.highBasketPose, 0.5); // move slower to pose
+                robot.arm.basket_position();
+
+                halt(1);
+
+                robot.arm.open_claw(); //deposit sample in basket
+            }
         }
+
+
     }
 
     public void highBasketFirst() {

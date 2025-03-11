@@ -186,7 +186,8 @@ public class Lift extends Component {
     }
 
     public void shutdown() {
-        set_power(0);
+        stop();
+        super.shutdown();
     }
 
     @Override
@@ -220,6 +221,11 @@ public class Lift extends Component {
     public void set_power(double speed) {
         lift_f.setPower(speed);
         lift_b.setPower(speed);
+    }
+
+    public void stop() {
+        lift_f.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        set_power(0);
     }
 
     /**
