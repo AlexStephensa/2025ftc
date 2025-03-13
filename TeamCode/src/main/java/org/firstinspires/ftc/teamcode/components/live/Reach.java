@@ -100,7 +100,7 @@ public class Reach extends Component {
     }
 
     public void shutdown() {
-
+        super.shutdown();
     }
 
     @Override

@@ -30,14 +30,8 @@ public class AutoSample {
         robot.arm.close_claw();
     }
 
-    public void sampleStart() {
-    }
-
     public void sampleStop() {
-        robot.intake.auto_run = false;
-        robot.lift.shutdown();
-        robot.drive_train.shutdown();
-
+        robot.shutdown();
     }
 
 
@@ -225,7 +219,7 @@ public class AutoSample {
     }
 
     public void halt(double seconds) {
-        robot.opmode.resetRuntime();
-        while (robot.opmode.getRuntime() < seconds && robot.opmode.opModeIsActive());
+        double start = robot.opmode.getRuntime();
+        while ((robot.opmode.getRuntime() - start) < seconds && robot.opmode.opModeIsActive());
     }
 }

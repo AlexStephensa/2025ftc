@@ -122,6 +122,12 @@ public class Intake extends Component {
     }
 
     @Override
+    public void shutdown() {
+        super.shutdown();
+        auto_run = false;
+    }
+
+    @Override
     public void updateTelemetry(Telemetry telemetry) {
         super.updateTelemetry(telemetry);
         telemetry.addData("SPINNER",TELEMETRY_DECIMAL.format(intake.servo.getPower()));

@@ -23,7 +23,7 @@ public abstract class LiveAutoBase extends LinearOpMode {
         on_stop();
         // Shut the robot down as soon as the program is finished
         robot.shutdown();
-        stop();
+        //stop();
     }
 
     /**
@@ -46,8 +46,8 @@ public abstract class LiveAutoBase extends LinearOpMode {
      * @param seconds seconds to wait
      */
     protected void halt(double seconds) {
-        resetRuntime();
-        while (getRuntime() < seconds && opModeIsActive()) {}
+        double start = robot.opmode.getRuntime();
+        while ((robot.opmode.getRuntime() - start) < seconds && robot.opmode.opModeIsActive());
     }
 
     /**

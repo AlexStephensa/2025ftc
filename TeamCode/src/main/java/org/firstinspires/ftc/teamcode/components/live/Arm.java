@@ -80,7 +80,9 @@ public class Arm extends Component {
     }
 
     @Override
-    public void shutdown() {}
+    public void shutdown() {
+        super.shutdown();
+    }
 
     @Override
     public void updateTelemetry(Telemetry telemetry) {
