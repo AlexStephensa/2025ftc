@@ -21,7 +21,7 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     signingConfigs {
         release {
@@ -83,7 +83,6 @@ android {
         versionName vName
     }
 
-    // Advanced user code might just want to use Vuforia directly, so we set up the libs as needed
     // http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.BuildType.html
     buildTypes {
         release {
@@ -107,16 +106,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    sourceSets.main {
-        jni.srcDirs = []
-        jniLibs.srcDir rootProject.file('libs')
+    packagingOptions {
+        pickFirst '**/*.so'
     }
     ndkVersion '21.3.6528147'
 }
 
 repositories {
-    flatDir {
-        dirs rootProject.file('libs')
-    }
 }
 
