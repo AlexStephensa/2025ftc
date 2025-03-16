@@ -58,6 +58,7 @@ public abstract class Component {
         /**
          * Called on every update. Used for outputting information about the component to the phone for debug purposes
          */
+        telemetry.addLine();
         telemetry.addData("[CMP "+name+"]", status == STATUS_ONLINE ? "ONLINE": "OFFLINE");
     }
 }

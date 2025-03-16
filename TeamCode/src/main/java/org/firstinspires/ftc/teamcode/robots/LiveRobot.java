@@ -26,8 +26,8 @@ public class LiveRobot extends Robot {
         super(opmode);
 
         drive_train     = new DriveTrain(this);
-        reach           = new Reach(this);
         lift            = new Lift(this);
+        reach           = new Reach(this);
         intake          = new Intake(this);
         arm             = new Arm(this);
 

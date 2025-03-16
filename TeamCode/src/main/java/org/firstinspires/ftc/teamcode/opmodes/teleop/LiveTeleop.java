@@ -13,15 +13,21 @@ import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
 //@Disabled
 public class LiveTeleop extends LiveTeleopBase {
     boolean back1_pressed = false;
-    boolean y2_Pressed = false;
-    boolean dpad2_up_pressed = false;
-    boolean dpad2_down_pressed = false;
+    boolean a1_pressed = false;
+    boolean b1_pressed = false;
+
+    boolean y2_pressed = false;
+    boolean dpad_up2_pressed = false;
+    boolean dpad_down2_pressed = false;
     boolean lbump2_pressed = false;
+
+
 
     boolean intake = false;
     boolean SKIP = false;
 
     int prepared_level = 1;
+    double drive_a;
 
 
     @Override
@@ -96,9 +102,9 @@ public class LiveTeleop extends LiveTeleopBase {
         if(gamepad2.back || gamepad2.x || gamepad2.a) {
             if(gamepad2.y){
                 robot.lift.zero_lift();
-                y2_Pressed = true;
+                y2_pressed = true;
             } else {
-                y2_Pressed = false;
+                y2_pressed = false;
                 if (gamepad2.back && robot.lift.level != LiftConst.RE_ZERO) {
                     if (robot.lift.level == LiftConst.HIGH_BASKET || robot.lift.level == LiftConst.LOW_BASKET) {
                         robot.arm.open_claw();
@@ -171,35 +177,53 @@ public class LiveTeleop extends LiveTeleopBase {
         }
 
         // Lift level selection
-        if(gamepad2.dpad_up && !dpad2_up_pressed) {
+        if (gamepad2.dpad_up && !dpad_up2_pressed) {
             prepared_level = Range.clip(prepared_level + 1, 1, robot.lift.max_level);
-            dpad2_up_pressed = true;
+            dpad_up2_pressed = true;
         } else if (!gamepad2.dpad_up) {
-            dpad2_up_pressed = false;
+            dpad_up2_pressed = false;
         }
-        if(gamepad2.dpad_down && !dpad2_down_pressed) {
+        if (gamepad2.dpad_down && !dpad_down2_pressed) {
             prepared_level = Range.clip(prepared_level - 1, 1, robot.lift.max_level);
-            dpad2_down_pressed = true;
+            dpad_down2_pressed = true;
         } else if (!gamepad2.dpad_down) {
-            dpad2_down_pressed = false;
+            dpad_down2_pressed = false;
         }
 
         /// Driver 1 ///
+        double TURN_MOD = 0.85;
         double speed_mod = 1;
-        if(gamepad1.left_bumper) {
+        if (gamepad1.left_bumper) {
             speed_mod = 0.5;
-        } else if(gamepad1.right_bumper) {
+        } else if (gamepad1.right_bumper) {
             speed_mod = 0.25;
         }
-        robot.drive_train.mecanum_drive(
-            (gamepad1.left_stick_x) * speed_mod,
-            (gamepad1.left_stick_y) * speed_mod,
-            (gamepad1.right_stick_x) * speed_mod * 0.85
-        );
+        double x = gamepad1.left_stick_x;
+        double y = gamepad1.left_stick_y;
+        double a = gamepad1.right_stick_x;
+        if (gamepad1.a || gamepad1.b) {
+            if (!a1_pressed) {
+                drive_a = robot.drive_train.lcs.a;
+                a1_pressed = true;
+            } else if (!b1_pressed) {
+                drive_a = (robot.drive_train.lcs.a * 100000 - robot.drive_train.lcs.a * 100000 % Math.PI * 100000) / 100000;
+                b1_pressed = true;
+            }
+            robot.drive_train.odo_slide(x * 10, y * 10, drive_a, speed_mod);
+
+        } else {
+            robot.drive_train.moving = false;
+            a1_pressed = false;
+            robot.drive_train.mecanum_drive(
+                    x * speed_mod,
+                    y * speed_mod,
+                    a * speed_mod * TURN_MOD
+            );
+        }
     }
 
     @Override
-    public void on_stop(){
+    public void on_stop() {
 
     }
 }

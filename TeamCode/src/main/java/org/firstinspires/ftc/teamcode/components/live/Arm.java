@@ -44,7 +44,7 @@ public class Arm extends Component {
     public ServoQUS claw;
 
     {
-        name = "Claw";
+        name = "Arm";
     }
 
     public Arm(Robot robot) { super(robot); }

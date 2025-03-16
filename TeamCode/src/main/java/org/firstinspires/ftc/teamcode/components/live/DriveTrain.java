@@ -1,19 +1,26 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
 import static org.firstinspires.ftc.teamcode.util.MathUtil.angle_difference;
-
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 import androidx.annotation.NonNull;
 
+import com.qualcomm.hardware.bosch.BHI260IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.components.Component;
 import org.firstinspires.ftc.teamcode.constants.AutoConst;
 import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
@@ -24,7 +31,10 @@ import org.firstinspires.ftc.teamcode.util.qus.DcMotorQUS;
 
 //@Config
 class DriveTrainConfig {
-    //public static int GYRO_READ_INTERVAL = 200;
+    public static int GYRO_READ_INTERVAL = 2000;
+    public static RevHubOrientationOnRobot.LogoFacingDirection LOGO_DIRECTION = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+    public static RevHubOrientationOnRobot.UsbFacingDirection USB_DIRECTION = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+
 }
 
 public class DriveTrain extends Component {
@@ -39,10 +49,10 @@ public class DriveTrain extends Component {
     private DcMotorQUS drive_rb; // Right-Back drive motor
 
     //// SENSORS ////
-    //private BNO055IMU imu; // For recalibrating odometry angle periodically
+    private BHI260IMU imu; // For recalibrating odometry angle periodically
 
     // The cached last read IMU orientation
-    //private Orientation last_imu_orientation = new Orientation();
+    private Orientation last_imu_orientation = new Orientation();
 
     // The odometry math system used for calculating position from encoder count updates from the odometers
     public LocalCoordinateSystem lcs = new LocalCoordinateSystem();
@@ -83,7 +93,7 @@ public class DriveTrain extends Component {
         drive_rb = new DcMotorQUS(hwmap.get(DcMotorEx.class, "drive_rb"));
 
         //// SENSORS ////
-        //imu = hwmap.get(BNO055IMU.class, "imu");
+        imu = hwmap.get(BHI260IMU.class, "imu"); // Expansion Hub
     }
 
     @Override
@@ -99,8 +109,7 @@ public class DriveTrain extends Component {
 
 
         // Test Code for running components while drive train in auto
-
-        if (moving && auto && robot.opmode.opModeIsActive()) {
+        if (moving && robot.opmode.opModeIsActive()) {
             double a = -target_a;
 
             double distance = Math.hypot(target_x - lcs.x, target_y - lcs.y);
@@ -110,7 +119,7 @@ public class DriveTrain extends Component {
             double mvmt_y = Math.sin(drive_angle - lcs.a) * (Range.clip(distance, 0, (5 * speed)) / (5 * speed)) * speed;
             double mvmt_a = -Range.clip((angle_difference(lcs.a, a)) * 3, -1, 1) * speed;
 
-            if (distance < 1 && drive_angle < 0.02) {
+            if (distance < 1 && drive_angle < 0.02 && auto) {
                 moving = false;
                 stop();
             } else {
@@ -144,9 +153,9 @@ public class DriveTrain extends Component {
 
         // Periodically read from the IMU in order to realign the angle to counteract drift
         // IMU angle is generally more accurate than odometry angle near the end of the match
-        /*if (robot.cycle % DriveTrainConfig.GYRO_READ_INTERVAL == 0) {
+        if (robot.cycle % DriveTrainConfig.GYRO_READ_INTERVAL == 0) {
             read_from_imu();
-        }*/
+        }
     }
 
     @Override
@@ -167,7 +176,7 @@ public class DriveTrain extends Component {
 
         telemetry.addData("PID", drive_lf.motor.getPIDCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
 
-        //telemetry.addData("IMU", last_imu_orientation.firstAngle+" "+last_imu_orientation.secondAngle+" "+last_imu_orientation.thirdAngle);
+        telemetry.addData("IMU", last_imu_orientation.firstAngle+" "+last_imu_orientation.secondAngle+" "+last_imu_orientation.thirdAngle);
 
         if (current_path != null) {
             Pose cfp = current_path.getFollowPose();
@@ -180,12 +189,10 @@ public class DriveTrain extends Component {
         super.startup();
 
         // IMU setup and parameters
-        /*BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.mode                = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit           = BNO055IMU.AngleUnit.RADIANS;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = false;
-        imu.initialize(parameters);*/
+        ImuOrientationOnRobot orientation = new RevHubOrientationOnRobot(DriveTrainConfig.LOGO_DIRECTION, DriveTrainConfig.USB_DIRECTION);
+        IMU.Parameters parameters = new IMU.Parameters(orientation);
+        imu.initialize(parameters);
+        imu.resetYaw();
 
         // Set all the zero power behaviors to brake on startup, to prevent slippage as much as possible
         setZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -217,8 +224,8 @@ public class DriveTrain extends Component {
      * Read the angular orientation from the IMU, takes about 6ms
      */
     public void read_from_imu() {
-        /*last_imu_orientation = imu.getAngularOrientation();
-        lcs.a = last_imu_orientation.firstAngle;*/
+        last_imu_orientation = imu.getRobotOrientation(AxesReference.EXTRINSIC, AxesOrder.ZXY, AngleUnit.RADIANS);
+        lcs.a = last_imu_orientation.firstAngle;
     }
 
     /**
@@ -477,6 +484,21 @@ public class DriveTrain extends Component {
      */
     public void odo_drive(double x, double y, double a, double speed) {
         target(x, y, a);
+        this.speed = speed;
+        this.moving = true;
+    }
+
+    /**
+     * Set drive variables to slide
+     * @param x
+     * @param y
+     * @param a
+     * @param speed speed to creep
+     */
+    public void odo_slide(double x, double y, double a, double speed) {
+        this.target_x = this.lcs.x + x;
+        this.target_y = this.lcs.y + y;
+        this.target_a = -a;
         this.speed = speed;
         this.moving = true;
     }
