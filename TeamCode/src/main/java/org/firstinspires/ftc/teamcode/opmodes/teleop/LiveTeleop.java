@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.constants.IntakeConst;
 import org.firstinspires.ftc.teamcode.constants.LiftConst;
 import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
+import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 @TeleOp(name="Teleop Live", group="driver control")
 //@Disabled
@@ -201,19 +202,24 @@ public class LiveTeleop extends LiveTeleopBase {
         double x = gamepad1.left_stick_x;
         double y = gamepad1.left_stick_y;
         double a = gamepad1.right_stick_x;
-        if (gamepad1.a || gamepad1.b) {
+        if (gamepad1.a) {
             if (!a1_pressed) {
-                drive_a = robot.drive_train.lcs.a;
+                drive_a = (double) robot.drive_train.lcs.a;
                 a1_pressed = true;
-            } else if (!b1_pressed) {
-                drive_a = (robot.drive_train.lcs.a * 100000 - robot.drive_train.lcs.a * 100000 % Math.PI * 100000) / 100000;
-                b1_pressed = true;
+            }
+            robot.drive_train.odo_slide(x * 10, y * 10, drive_a, speed_mod);
+
+        } else if (gamepad1.b) {
+            if (!b1_pressed) {
+                // drive_a = (double) (Math.round(robot.drive_train.lcs.a * 4000000.0) / 4000000.0);
+                drive_a = MathUtil.round_quarter(robot.drive_train.lcs.a);
             }
             robot.drive_train.odo_slide(x * 10, y * 10, drive_a, speed_mod);
 
         } else {
             robot.drive_train.moving = false;
             a1_pressed = false;
+            b1_pressed = false;
             robot.drive_train.mecanum_drive(
                     x * speed_mod,
                     y * speed_mod,

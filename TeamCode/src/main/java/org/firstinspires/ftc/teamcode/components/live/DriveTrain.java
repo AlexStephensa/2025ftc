@@ -493,14 +493,13 @@ public class DriveTrain extends Component {
      * @param x
      * @param y
      * @param a
-     * @param speed speed to creep
+     * @param speed speed to slide
      */
     public void odo_slide(double x, double y, double a, double speed) {
-        this.target_x = this.lcs.x + x;
-        this.target_y = this.lcs.y + y;
-        this.target_a = -a;
-        this.speed = speed;
-        this.moving = true;
+        x = -(x * cos(a) - y * sin(a));
+        y = (y * cos(a) + x * sin(a));
+        a = -a;
+        odo_drive(lcs.x + x, lcs.y + y, a, speed);
     }
 
     /**

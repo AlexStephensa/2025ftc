@@ -6,6 +6,13 @@ public class MathUtil {
         return Math.atan2(Math.sin(angle), Math.cos(angle));
     }
 
+    // rounds to the nearest quarter radian
+    public static double round_quarter(double radians) {
+        double quarterTurns = radians / (0.5 * Math.PI);
+        double roundedQuarterTurns = Math.round(quarterTurns);
+        return roundedQuarterTurns * (0.5 * Math.PI);
+    }
+
     // Returns -1 if negative, 1 if 0 or positive
     public static double signum(double n) {
         if (n == 0) return 1.0;
