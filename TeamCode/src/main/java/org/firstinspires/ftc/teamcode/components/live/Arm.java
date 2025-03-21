@@ -74,9 +74,10 @@ public class Arm extends Component {
 
     @Override
     public void startup() {
+        super.startup();
+
         waiting_position();
         open_claw();
-
     }
 
     @Override

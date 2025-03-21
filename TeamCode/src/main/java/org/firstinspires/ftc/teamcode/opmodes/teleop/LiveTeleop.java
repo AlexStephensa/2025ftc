@@ -48,7 +48,7 @@ public class LiveTeleop extends LiveTeleopBase {
     public void on_loop() {
 
         if(gamepad1.back && !back1_pressed) {
-            robot.intake.toggle_wanted_color();
+            robot.intake.toggle_wanted_color(robot);
             gamepad1.setLedColor(robot.intake.intake_color_wanted == IntakeConst.SAMPLE_RED ? 1 : 0, 0, robot.intake.intake_color_wanted == IntakeConst.SAMPLE_BLUE ? 1 : 0, LED_DURATION_CONTINUOUS);
             back1_pressed = true;
         } else if (!gamepad1.back) {

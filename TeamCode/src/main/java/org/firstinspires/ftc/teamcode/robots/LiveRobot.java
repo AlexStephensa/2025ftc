@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.components.live.Arm;
+import org.firstinspires.ftc.teamcode.components.live.LEDController;
 import org.firstinspires.ftc.teamcode.components.live.DriveTrain;
 import org.firstinspires.ftc.teamcode.components.live.Intake;
 import org.firstinspires.ftc.teamcode.components.live.Lift;
@@ -15,6 +16,8 @@ public class LiveRobot extends Robot {
     public Reach            reach;
     public Intake           intake;
     public Arm              arm;
+
+    public LEDController    led_control;
 
     FtcDashboard            dashboard;
 
@@ -31,7 +34,9 @@ public class LiveRobot extends Robot {
         intake          = new Intake(this);
         arm             = new Arm(this);
 
-        dashboard = FtcDashboard.getInstance();
+        led_control     = new LEDController(this);
+
+        dashboard       = FtcDashboard.getInstance();
     }
 
     @Override

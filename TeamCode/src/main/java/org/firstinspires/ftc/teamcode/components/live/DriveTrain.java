@@ -70,7 +70,6 @@ public class DriveTrain extends Component {
     public boolean moving = false;
     public boolean auto = false;
 
-
     // The current coyote path the drive train is running
     public Path current_path;
 
@@ -436,7 +435,7 @@ public class DriveTrain extends Component {
         double original_distance = Math.hypot(x - lcs.x, y - lcs.y);
         double original_distance_a = Math.abs(a - lcs.a);
 
-        robot.opmode.resetRuntime();
+        double start_time = robot.opmode.getRuntime();
         double time_at_goal = 0;
 
         if (original_distance > 0 || original_distance_a > 0) {
@@ -451,7 +450,7 @@ public class DriveTrain extends Component {
 
                 mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
 
-                if ((distance < pos_acc && distance_a < angle_acc) || (timeout > 0 && robot.opmode.getRuntime() > timeout)) {
+                if ((distance < pos_acc && distance_a < angle_acc) || (timeout > 0 && (robot.opmode.getRuntime() - start_time) > timeout)) {
                     if (robot.opmode.getRuntime()-time_at_goal >= time_at_target) {
                         stop();
                         break;
