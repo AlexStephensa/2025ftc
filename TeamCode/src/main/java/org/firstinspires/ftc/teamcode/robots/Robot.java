@@ -10,8 +10,10 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.components.Component;
 
 import java.util.ArrayList;
@@ -75,10 +77,14 @@ public class Robot {
     }
 
     public Robot(LinearOpMode opmode) { // FIRST THIS IS *YOUR* FAULT IT HAS TO BE THIS WAY AND I HATE IT AND YOU SHOULD BE ASHAMED
+        RobotLog.dd("-----", "opmode");
         this.opmode = opmode;
+        RobotLog.dd("-----", "telemetry");
         this.telemetry = this.opmode.telemetry;
 
+        RobotLog.dd("-----", "hwmap");
         this.hwmap  = opmode.hardwareMap;
+        RobotLog.dd("-----", "registerHardware");
         registerHardware(this.hwmap);
 
         this.telemetry.setDisplayFormat(Telemetry.DisplayFormat.MONOSPACE); // Begone jumpy telemetry
@@ -113,11 +119,12 @@ public class Robot {
      */
     public void update() {
 
+        // Bulk read from control hub
         if(cycle % BULK_READ_1_CYCLE == 0) {
             expansion_hubs.get(0).clearBulkCache();
         }
 
-        // Bulk read from rev hub 2
+        // Bulk read from expansion hub
         if(cycle % BULK_READ_2_CYCLE == 0) {
             expansion_hubs.get(1).clearBulkCache();
         }
@@ -170,9 +177,9 @@ public class Robot {
         telemetry.addData("RUNTIME", opmode.getRuntime());
 
         // Check for good battery Voltage
-        /*if (expansion_hubs.get(0).getInputVoltage(VoltageUnit.VOLTS) <= 12.25 || expansion_hubs.get(1).getInputVoltage(VoltageUnit.VOLTS) <= 12.25) {
+        if (expansion_hubs.get(0).getInputVoltage(VoltageUnit.VOLTS) <= 12.25 || expansion_hubs.get(1).getInputVoltage(VoltageUnit.VOLTS) <= 12.25) {
             telemetry.addData("BATTERY VOLTAGE", "LOW");
-        }*/
+        }
     }
 
     /**

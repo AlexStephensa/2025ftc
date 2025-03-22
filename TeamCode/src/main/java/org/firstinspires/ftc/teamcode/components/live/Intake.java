@@ -4,7 +4,6 @@ package org.firstinspires.ftc.teamcode.components.live;
 import static com.qualcomm.robotcore.hardware.Gamepad.LED_DURATION_CONTINUOUS;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -17,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.components.Component;
 import org.firstinspires.ftc.teamcode.constants.IntakeConst;
+import org.firstinspires.ftc.teamcode.constants.LEDConst;
 import org.firstinspires.ftc.teamcode.robots.LiveRobot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.util.qus.CRServoQUS;
@@ -176,30 +176,29 @@ public class Intake extends Component {
                     LED_DURATION_CONTINUOUS
             );
 
-            if (!(current_color == IntakeConst.SAMPLE_NONE) && !(current_color == intake_color_wanted) && !(current_color == IntakeConst.SAMPLE_YELLOW)) {
-                if (spitting_since == -1) {
-                    spitting_since = System.nanoTime();
-                } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
-                    intake.queue_power(-1);
-                }
-            } else {
+            if (current_color == IntakeConst.SAMPLE_NONE || current_color == intake_color_wanted || current_color == IntakeConst.SAMPLE_YELLOW) {
                 if ((current_color == intake_color_wanted) || (current_color == IntakeConst.SAMPLE_YELLOW)) {
                     gamepad1.rumble(100);
                     gamepad2.rumble(100);
                     intake_pitch(IntakeConst.TRANS);
                     robot.reach.min_reach();
                     if (current_color == IntakeConst.SAMPLE_YELLOW) {
-                        robot.led_control.pattern_flash(RevBlinkinLedDriver.BlinkinPattern.YELLOW, 2, 0.2);
+                        robot.led_control.pattern_flash(LEDConst.YELLOW, 2, 200);
                     } else {
                         robot.led_control.pattern_flash(intake_color_wanted == IntakeConst.SAMPLE_BLUE ?
-                                RevBlinkinLedDriver.BlinkinPattern.BLUE :
-                                RevBlinkinLedDriver.BlinkinPattern.RED, 2, 0.2);
+                                LEDConst.BLUE : LEDConst.RED, 2, 200);
                     }
 
 
                 }
                 intake.queue_power(speed);
                 spitting_since = -1;
+            } else {
+                if (spitting_since == -1) {
+                    spitting_since = System.nanoTime();
+                } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
+                    intake.queue_power(-1);
+                }
             }
         } else {
             intake.queue_power(speed);
@@ -221,14 +220,8 @@ public class Intake extends Component {
         }
     }
 
-    public void toggle_wanted_color(LiveRobot robot) {
-        if (intake_color_wanted == IntakeConst.SAMPLE_BLUE) {
-            intake_color_wanted = IntakeConst.SAMPLE_RED;
-            robot.led_control.red_alliance();
-        } else {
-            intake_color_wanted = IntakeConst.SAMPLE_BLUE;
-            robot.led_control.blue_alliance();
-        }
+    public void toggle_wanted_color() {
+        intake_color_wanted = intake_color_wanted == IntakeConst.SAMPLE_BLUE ? IntakeConst.SAMPLE_RED : IntakeConst.SAMPLE_BLUE;
     }
 
     public void intake_pitch(int pos) {

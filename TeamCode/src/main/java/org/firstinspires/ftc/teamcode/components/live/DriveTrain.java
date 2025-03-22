@@ -495,8 +495,8 @@ public class DriveTrain extends Component {
      * @param speed speed to slide
      */
     public void odo_slide(double x, double y, double a, double speed) {
-        x = -(x * cos(a) - y * sin(a));
-        y = (y * cos(a) + x * sin(a));
+        x = -(x * cos(a) - y * sin(a)); // cos(a) * Math.hypot(x, y);
+        y = (y * cos(a) + x * sin(a));  // sin(a) * Math.hypot(x, y);
         a = -a;
         odo_drive(lcs.x + x, lcs.y + y, a, speed);
     }

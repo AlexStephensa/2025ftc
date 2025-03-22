@@ -35,7 +35,6 @@ class LiftConfig {
     public static int MIN_LEVEL = 0;
 
     public static int MAX_EXTENSION = 72000; // highest safe extension of physical robot
-
     public static int MIN_LIFT_OVERSHOOT = 4000;
 
     public static int THRESHOLD = 200;
@@ -186,8 +185,9 @@ public class Lift extends Component {
     }
 
     public void shutdown() {
-        stop();
         super.shutdown();
+
+        stop();
     }
 
     @Override
@@ -195,17 +195,11 @@ public class Lift extends Component {
         super.updateTelemetry(telemetry);
 
         telemetry.addData("TURNS",TELEMETRY_DECIMAL.format(lift_f.getCurrentPosition()));
-
         telemetry.addData("TARGET",TELEMETRY_DECIMAL.format(lift_target));
-
         telemetry.addData("OFFSET", TELEMETRY_DECIMAL.format(lift_offset));
-
         telemetry.addData("LEVEL", level);
-
         telemetry.addData("TWEAK", tweak);
-
         telemetry.addData("LIFT LIM", !limit_switchL.getState());
-
         telemetry.addData("PID VEL", pid_speed);
     }
 
@@ -225,6 +219,7 @@ public class Lift extends Component {
 
     public void stop() {
         lift_f.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         set_power(0);
     }
 
