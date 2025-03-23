@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+package org.firstinspires.ftc.teamcode.opmodes.live.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.constants.AutoConst;
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 
 @Autonomous(name = "specimenLoader", group = "autonomous", preselectTeleOp = "Teleop Live")

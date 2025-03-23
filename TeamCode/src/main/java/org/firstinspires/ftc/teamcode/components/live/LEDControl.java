@@ -14,18 +14,15 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 
 @Config
 class LEDConfig {
-    public static BlinkinPattern ALLIANCE_COLOR = LEDConst.BLUE;
-    public static double FLASH_RATE = 500; // MS
-    public static int FLASH_COUNT = 6;
+    public static double FLASH_RATE = 100; // MS
+    public static int FLASH_COUNT = 2;
     public static int NANO_PER_MILLI = 1000000;
-    public static BlinkinPattern setAllianceColor(BlinkinPattern pattern) {
-        ALLIANCE_COLOR = pattern;
-        return ALLIANCE_COLOR;
-    }
 }
 
 public class LEDControl extends Component {
-    BlinkinPattern current_pattern = LEDConfig.ALLIANCE_COLOR;
+
+    BlinkinPattern alliance = LEDConst.BLUE;
+    BlinkinPattern current_pattern = alliance;
     BlinkinPattern last_pattern = LEDConst.DEFAULT;
 
     // Flash Control
@@ -33,7 +30,7 @@ public class LEDControl extends Component {
     boolean blink = false;
     int count = 0;
     int flash_count = 0;
-    double flash_rate = LEDConfig.FLASH_RATE;
+    double flash_rate = 0;
     long flash_start = 0;
 
     private RevBlinkinLedDriver led_control;
@@ -64,18 +61,18 @@ public class LEDControl extends Component {
             }
         } else {
             blink = false;
-            set_pattern(LEDConfig.ALLIANCE_COLOR);
+            set_pattern(alliance);
         }
-        if (this.current_pattern != this.last_pattern) {
-            update_pattern(this.current_pattern);
+        if (current_pattern != last_pattern) {
+            update_pattern(current_pattern);
         }
-        this.last_pattern = this.current_pattern;
+        last_pattern = current_pattern;
     }
 
     @Override
     public void startup() {
         super.startup();
-        led_control.setPattern(LEDConst.BLUE);
+        led_control.setPattern(alliance);
     }
 
     @Override
@@ -109,17 +106,12 @@ public class LEDControl extends Component {
     }
 
     public void toggle_alliance_color() {
-        if (LEDConfig.ALLIANCE_COLOR == LEDConst.BLUE) {
-            red_alliance();
+        if (alliance == LEDConst.BLUE) {
+            this.alliance = LEDConst.RED;
         } else {
-            blue_alliance();
+            this.alliance = LEDConst.BLUE;
         }
-    }
-    public void blue_alliance() {
-        set_pattern(LEDConfig.setAllianceColor(LEDConst.BLUE));
-    }
-    public void red_alliance() {
-        set_pattern(LEDConfig.setAllianceColor(LEDConst.RED));
+        set_pattern(this.alliance);
     }
 
     private String pattern_name(BlinkinPattern pattern) {

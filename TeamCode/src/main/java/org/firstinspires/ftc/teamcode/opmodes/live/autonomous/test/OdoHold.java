@@ -1,20 +1,20 @@
-package org.firstinspires.ftc.teamcode.opmodes.debug;
+package org.firstinspires.ftc.teamcode.opmodes.live.autonomous.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robots.DebugRobot;
+import org.firstinspires.ftc.teamcode.robots.LiveRobot;
 
-@Autonomous(name="Debug Odo Hold", group="autonomous")
-public class DebugOdoHold extends LinearOpMode {
+@Autonomous(name="Odo Hold", group="autonomous")
+public class OdoHold extends LinearOpMode {
 
-    DebugRobot robot;
+    LiveRobot robot;
 
     int pattern;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new DebugRobot(this);
+        robot = new LiveRobot(this);
         robot.startup();
 
         waitForStart();

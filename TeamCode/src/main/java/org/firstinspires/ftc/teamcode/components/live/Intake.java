@@ -37,7 +37,7 @@ class IntakeConfig {
     public static int COLOR_UPDATE_RATE = 5; // Color Sensor update interval
     public static double COLOR_CUTOFF = 0.5; // Cut off value of color sensor
 
-    public static int SPIT_DURATION = 300_000_000; // nanoseconds, 0.3s
+    public static int SPIT_DURATION = 500_000_000; // nanoseconds, 0.5s
 }
 
 public class Intake extends Component {
@@ -164,9 +164,10 @@ public class Intake extends Component {
     }
 
     public void intake_run(double speed, Gamepad gamepad1, Gamepad gamepad2, LiveRobot robot) {
+        int cued_pitch = IntakeConst.TRANS;
         if (speed > 0) {
             if (intake_angle == IntakeConst.INTAKE) {
-                intake_pitch(IntakeConst.TWEAKED);
+                cued_pitch = IntakeConst.TWEAKED;
             }
 
             gamepad2.setLedColor(
@@ -180,7 +181,7 @@ public class Intake extends Component {
                 if ((current_color == intake_color_wanted) || (current_color == IntakeConst.SAMPLE_YELLOW)) {
                     gamepad1.rumble(100);
                     gamepad2.rumble(100);
-                    intake_pitch(IntakeConst.TRANS);
+                    cued_pitch = IntakeConst.TRANS;
                     robot.reach.min_reach();
                     if (current_color == IntakeConst.SAMPLE_YELLOW) {
                         robot.led_control.pattern_flash(LEDConst.YELLOW, 2, 200);
@@ -188,24 +189,25 @@ public class Intake extends Component {
                         robot.led_control.pattern_flash(intake_color_wanted == IntakeConst.SAMPLE_BLUE ?
                                 LEDConst.BLUE : LEDConst.RED, 2, 200);
                     }
-
-
                 }
                 intake.queue_power(speed);
                 spitting_since = -1;
             } else {
                 if (spitting_since == -1) {
                     spitting_since = System.nanoTime();
-                } else if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
+                }
+                if ((System.nanoTime() - spitting_since) < IntakeConfig.SPIT_DURATION) {
                     intake.queue_power(-1);
+                    if (intake_angle == IntakeConst.INTAKE) cued_pitch = IntakeConst.THROW;
                 }
             }
         } else {
             intake.queue_power(speed);
             if (intake_angle == IntakeConst.INTAKE) {
-                intake_pitch(IntakeConst.INTAKE);
+                cued_pitch = IntakeConst.THROW;
             }
         }
+        intake_pitch(cued_pitch);
     }
 
     public void intake_color_check() {
@@ -226,17 +228,17 @@ public class Intake extends Component {
 
     public void intake_pitch(int pos) {
         intake_angle = pos == IntakeConst.TRANS ? IntakeConst.TRANS : IntakeConst.INTAKE;
-        intake_pitch(
-            pos >= IntakeConst.INTAKE ?
-                (pos == IntakeConst.TWEAKED ?
-                    IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK :
-                    IntakeConfig.PITCH_L_INTAKE_POSITION) :
-                IntakeConfig.PITCH_L_TRANSFER_POSITION,
-            pos >= IntakeConst.INTAKE ?
-                (pos == IntakeConst.TWEAKED ?
-                    IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK :
-                    IntakeConfig.PITCH_R_INTAKE_POSITION) :
-                IntakeConfig.PITCH_R_TRANSFER_POSITION);
+        if (pos >= IntakeConst.INTAKE) {
+            if (pos == IntakeConst.TWEAKED) {
+                intake_pitch(IntakeConfig.PITCH_L_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK, IntakeConfig.PITCH_R_INTAKE_POSITION + IntakeConfig.PITCH_INTAKE_TWEAK);
+            } else if (pos == IntakeConst.THROW) {
+                intake_pitch(IntakeConfig.PITCH_L_INTAKE_POSITION - IntakeConfig.PITCH_INTAKE_TWEAK, IntakeConfig.PITCH_R_INTAKE_POSITION - IntakeConfig.PITCH_INTAKE_TWEAK);
+            } else {
+                intake_pitch(IntakeConfig.PITCH_L_INTAKE_POSITION, IntakeConfig.PITCH_R_INTAKE_POSITION);
+            }
+        } else {
+            intake_pitch(IntakeConfig.PITCH_L_TRANSFER_POSITION, IntakeConfig.PITCH_R_TRANSFER_POSITION);
+        }
     }
 
     public void intake_pitch(double pitch_l, double pitch_r) {

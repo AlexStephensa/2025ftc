@@ -1,9 +1,6 @@
-package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+package org.firstinspires.ftc.teamcode.opmodes.live.autonomous;
 
 import org.firstinspires.ftc.teamcode.constants.AutoConst;
-import org.firstinspires.ftc.teamcode.constants.IntakeConst;
-import org.firstinspires.ftc.teamcode.constants.LiftConst;
-import org.firstinspires.ftc.teamcode.coyote.geometry.Pose;
 import org.firstinspires.ftc.teamcode.robots.LiveRobot;
 
 public class AutoSpecimen {

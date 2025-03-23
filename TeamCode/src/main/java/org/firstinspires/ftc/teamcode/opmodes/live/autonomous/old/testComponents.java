@@ -1,11 +1,13 @@
-/*package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+package org.firstinspires.ftc.teamcode.opmodes.live.autonomous.old;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.constants.IntakeConst;
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
 
 @Autonomous(name = "testComponents", group = "autonomous")
+@Disabled
 public class testComponents extends LiveAutoBase {
 
     @Override
@@ -31,4 +33,4 @@ public class testComponents extends LiveAutoBase {
     public void on_stop() {
     }
 
-}*/
+}

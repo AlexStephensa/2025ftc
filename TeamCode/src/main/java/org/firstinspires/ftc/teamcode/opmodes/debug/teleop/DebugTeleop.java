@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.opmodes.debug;
+package org.firstinspires.ftc.teamcode.opmodes.debug.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.opmodes.DebugTeleopBase;
+import org.firstinspires.ftc.teamcode.opmodes.debug.DebugTeleopBase;
 
 @TeleOp(name="Teleop Debug", group="driver control")
 public class DebugTeleop extends DebugTeleopBase {

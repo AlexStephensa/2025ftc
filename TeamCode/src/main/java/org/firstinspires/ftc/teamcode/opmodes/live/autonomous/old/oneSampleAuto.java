@@ -1,10 +1,13 @@
-/*package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+package org.firstinspires.ftc.teamcode.opmodes.live.autonomous.old;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
+import org.firstinspires.ftc.teamcode.opmodes.live.autonomous.AutoSample;
 
 @Autonomous(name = "0+1+sub", group = "autonomous", preselectTeleOp = "Teleop Live")
+@Disabled
 public class oneSampleAuto extends LiveAutoBase {
 
     AutoSample auto;
@@ -24,4 +27,4 @@ public class oneSampleAuto extends LiveAutoBase {
     public void on_stop() {
         auto.sampleStop();
     }
-}*/
+}
