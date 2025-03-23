@@ -1,37 +1,43 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.test;
 
 import android.util.ArrayMap;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.robots.LiveRobot;
+import org.firstinspires.ftc.teamcode.robots.TestRobot;
 
-public abstract class LiveAutoBase extends LinearOpMode {
+public abstract class TestAutoBase extends LinearOpMode {
 
-    protected LiveRobot robot;
+    protected TestRobot robot;
 
     private ArrayMap<Double, Runnable> todo_tasks = new ArrayMap<>();
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new LiveRobot(this);
+        robot = new TestRobot(this);
+
         // Start up the robot as soon as the program is initialized
         RobotLog.dd("---", "robot.startup");
         robot.startup();
+
         RobotLog.dd("---", "on_init");
         on_init();
         RobotLog.dd("---", "waitForStart");
         waitForStart();
         RobotLog.dd("---", "on_start");
         on_start();
+
         RobotLog.dd("---", "on_stop");
         on_stop();
-        RobotLog.dd("---", "robot.shutdown");
+
         // Shut the robot down as soon as the program is finished
+        RobotLog.dd("---", "robot.shutdown");
         robot.shutdown();
-        RobotLog.dd("---", "stop");
-        stop();
+
+        //RobotLog.dd("---", "stop");
+        //stop();
+
         RobotLog.dd("---", "end");
     }
 

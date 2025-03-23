@@ -89,7 +89,7 @@ public class Intake extends Component {
     public void update(OpMode opmode) {
         super.update(opmode);
 
-        if (auto_run) {
+        if (auto_run && robot.opmode.opModeIsActive()) {
             if (current_color == IntakeConst.SAMPLE_NONE) {
                 if (robot.cycle % 20 == 0) {
                     intake_pitch(hop ? IntakeConst.TWEAKED : IntakeConst.INTAKE);
@@ -102,10 +102,7 @@ public class Intake extends Component {
         } else if (auto_run != last_auto_run) {
             intake.queue_power(0);
         }
-
-        pitch_l.update();
-        pitch_r.update();
-        intake.update();
+        update();
 
         if (robot.cycle % IntakeConfig.COLOR_UPDATE_RATE == 0) {
             current_color_RGBA = color_sensor.getNormalizedColors();
@@ -118,8 +115,11 @@ public class Intake extends Component {
     @Override
     public void startup() {
         super.startup();
+
         intake_pitch(IntakeConst.TRANS);
         intake_run(0);
+
+        update();
     }
 
     @Override
@@ -134,6 +134,12 @@ public class Intake extends Component {
         telemetry.addData("SPINNER",TELEMETRY_DECIMAL.format(intake.servo.getPower()));
         telemetry.addData("INTAKE ANGLE", intake_angle());
         telemetry.addData("COLOR", current_color);
+    }
+
+    public void update() {
+        pitch_l.update();
+        pitch_r.update();
+        intake.update();
     }
 
     public void intake_run(double speed) {

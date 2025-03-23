@@ -57,6 +57,8 @@ public class DriveTrain extends Component {
     // The odometry math system used for calculating position from encoder count updates from the odometers
     public LocalCoordinateSystem lcs = new LocalCoordinateSystem();
 
+    //// VARIABLES ////
+
     // Drive train moves according to these. Update them, it moves
     private double drive_x = 0; // X-pos intent
     private double drive_y = 0; // Y-pos intent
@@ -68,7 +70,6 @@ public class DriveTrain extends Component {
 
     private double speed;
     public boolean moving = false;
-    public boolean auto = false;
 
     // The current coyote path the drive train is running
     public Path current_path;
@@ -103,11 +104,9 @@ public class DriveTrain extends Component {
         lcs.update(
                 drive_lf.motor.getCurrentPosition(),
                 drive_rf.motor.getCurrentPosition(),
-                drive_lb.motor.getCurrentPosition()
-        );
+                drive_lb.motor.getCurrentPosition());
 
-
-        // Test Code for running components while drive train in auto
+        // Allows the robot to move during auto
         if (moving && robot.opmode.opModeIsActive()) {
             double a = -target_a;
 
@@ -118,9 +117,8 @@ public class DriveTrain extends Component {
             double mvmt_y = Math.sin(drive_angle - lcs.a) * (Range.clip(distance, 0, (5 * speed)) / (5 * speed)) * speed;
             double mvmt_a = -Range.clip((angle_difference(lcs.a, a)) * 3, -1, 1) * speed;
 
-            if (distance < 1 && drive_angle < 0.02 && auto) {
+            if (distance < 1 && drive_angle < 0.02) {
                 moving = false;
-                stop();
             } else {
                 mecanum_drive(mvmt_x, mvmt_y, mvmt_a);
             }
@@ -128,8 +126,6 @@ public class DriveTrain extends Component {
 
         // Finding new motors powers from the drive variables
         double[] motor_powers = mecanum_math(drive_x, drive_y, drive_a);
-
-
         // Set one motor power per cycle. We do this to maintain a good odometry update speed
         // We should be doing a full drive train update at about 40hz with this configuration, which is more than enough
         drive_lf.queue_power(motor_powers[0]);
@@ -139,14 +135,11 @@ public class DriveTrain extends Component {
 
         if (robot.cycle % 4 == 0) {
             drive_lf.update();
-        }
-        else if (robot.cycle % 4 == 1) {
+        } else if (robot.cycle % 4 == 1) {
             drive_rf.update();
-        }
-        else if (robot.cycle % 4 == 2) {
+        } else if (robot.cycle % 4 == 2) {
             drive_lb.update();
-        }
-        else if (robot.cycle % 4 == 3) {
+        } else if (robot.cycle % 4 == 3) {
             drive_rb.update();
         }
 
@@ -209,8 +202,9 @@ public class DriveTrain extends Component {
 
     @Override
     public void shutdown() {
-        stop();
         super.shutdown();
+
+        stop();
     }
 
 
@@ -332,10 +326,14 @@ public class DriveTrain extends Component {
      */
     public void stop() {
         mecanum_drive(0, 0, 0);
+
+        setZeroPower(DcMotor.ZeroPowerBehavior.BRAKE);
         drive_lf.motor.setPower(0);
         drive_rf.motor.setPower(0);
         drive_lb.motor.setPower(0);
         drive_rb.motor.setPower(0);
+
+        moving = false;
     }
 
 

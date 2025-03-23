@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.opmodes.live.autonomous.old;
+package org.firstinspires.ftc.teamcode.opmodes.live.autonomous.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.constants.IntakeConst;
-import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
+import org.firstinspires.ftc.teamcode.opmodes.live.LiveAutoBase;
 
 @Autonomous(name = "testComponents", group = "autonomous")
 @Disabled

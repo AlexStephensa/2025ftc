@@ -1,17 +1,5 @@
 package org.firstinspires.ftc.teamcode.components.live;
 
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.AT_THRESH;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.LIFT_LEVELS;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.LIFT_OFFSET;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MAX_EXTENSION;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MAX_LEVEL;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.MIN_LEVEL;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_D;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_I;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.PID_P;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.THRESHOLD;
-import static org.firstinspires.ftc.teamcode.components.live.LiftConfig.TWEAK_MAX_ADD;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
@@ -38,7 +26,6 @@ class LiftConfig {
     public static int MIN_LIFT_OVERSHOOT = 4000;
 
     public static int THRESHOLD = 200;
-    public static boolean AT_THRESH = true;
 
     public static int TWEAK_MAX_ADD = 8000;
 
@@ -57,8 +44,7 @@ class LiftConfig {
 }
 
 public class Lift extends Component {
-    private PIDFController pid_control;
-    public int max_level = LiftConfig.MAX_LEVEL;
+
 
     //// MOTORS ////
     public DcMotorEx lift_f;
@@ -67,19 +53,24 @@ public class Lift extends Component {
     //// SENSORS ////
     public DigitalChannel limit_switchL;
 
+    private PIDFController pid_control;
 
     public int level;
+    public int max_level = LiftConfig.MAX_LEVEL;
     public int lift_target = 0;
     public int lift_offset = 0;
 
     public boolean cur_limit_switch = true;
     private boolean last_limit_switch = true;
 
-    static double tweak = 0;
-    static double tweak_cache = 0;
+    public boolean at_thresh = false;
 
-    static double pid_speed = 0;
-    static boolean starting_move = false;
+    private double tweak = 0;
+    private double tweak_cache = 0;
+
+
+    private double pid_speed = 0;
+    public boolean starting_move = false;
 
     {
         name = "Lift";
@@ -88,9 +79,6 @@ public class Lift extends Component {
     public Lift(Robot robot)
     {
         super(robot);
-
-        pid_control = new PIDFController(new PIDCoefficients(PID_P, PID_I, PID_D));
-        pid_control.setOutputBounds(-1000, 1000);
     }
 
     @Override
@@ -104,6 +92,9 @@ public class Lift extends Component {
         lift_b.setDirection(DcMotorSimple.Direction.REVERSE);
 
         limit_switchL = hwmap.get(DigitalChannel.class, "vLimSwitch");
+
+        pid_control = new PIDFController(new PIDCoefficients(LiftConfig.PID_P, LiftConfig.PID_I, LiftConfig.PID_D));
+        pid_control.setOutputBounds(-1000, 1000);
     }
 
     @Override
@@ -116,46 +107,37 @@ public class Lift extends Component {
         int new_target = 0;
 
         if (level == LiftConst.INIT) {
-
             if (cur_limit_switch && !last_limit_switch) {
-
                 lift_offset = cur_position;
             }
             if (!cur_limit_switch) {
-
                 new_target = (lift_offset - LiftConfig.MIN_LIFT_OVERSHOOT);
             }
             starting_move = true;
-
         } else if (level == LiftConst.RE_ZERO) {
             if (cur_limit_switch) {
                 level = LiftConst.INIT;
                 lift_f.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 lift_f.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
             } else {
-
                 set_power(-1);
                 starting_move = false;
             }
         } else {
             new_target = (lift_offset + lift_target);
-
             if (tweak != tweak_cache) {
                 tweak_cache = tweak;
                 new_target = (Range.clip(
-                        lift_target + lift_offset + (int) (tweak * TWEAK_MAX_ADD),
+                        lift_target + lift_offset + (int) (tweak * LiftConfig.TWEAK_MAX_ADD),
                         lift_offset,
-                        MAX_EXTENSION
+                        LiftConfig.MAX_EXTENSION
                 ));
                 starting_move = true;
             }
         }
 
-        if (starting_move) {
-            pid_control.setTargetPosition(new_target);
-            starting_move = false;
-        }
+        pid_control.setTargetPosition(new_target);
+        starting_move = false;
 
         pid_speed = pid_control.update(cur_position) / 1000;
 
@@ -218,8 +200,8 @@ public class Lift extends Component {
     }
 
     public void stop() {
-        lift_f.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         set_power(0);
     }
 
@@ -230,13 +212,12 @@ public class Lift extends Component {
      * @return speed if current position is outside of the threshold
      */
     public double hold_threshold(double speed){
-        if (Math.abs(lift_target - lift_f.getCurrentPosition()) <= THRESHOLD) {
-            AT_THRESH = true;
+        if (Math.abs(lift_target - lift_f.getCurrentPosition()) <= LiftConfig.THRESHOLD) {
+            at_thresh = true;
             return 0;
-        } else {
-            AT_THRESH = false;
-            return speed;
         }
+        at_thresh = false;
+        return speed;
     }
 
     /**
@@ -252,8 +233,8 @@ public class Lift extends Component {
      * @param target_level int
      */
     public void elevate_to(int target_level) {
-        level = Math.max(Math.min(target_level, MAX_LEVEL), MIN_LEVEL);
-        set_target_position((LIFT_LEVELS[level]) + LIFT_OFFSET);
+        level = Math.max(Math.min(target_level, LiftConfig.MAX_LEVEL), LiftConfig.MIN_LEVEL);
+        set_target_position((LiftConfig.LIFT_LEVELS[level]) + LiftConfig.LIFT_OFFSET);
         starting_move = true;
     }
 
@@ -261,7 +242,7 @@ public class Lift extends Component {
      * elevates left to LIFT_LEVELS[MIN_LEVEL]
      */
     public void min_lift() {
-        elevate_to(MIN_LEVEL);
+        elevate_to(LiftConfig.MIN_LEVEL);
     }
 
     public void zero_lift() {
@@ -272,7 +253,7 @@ public class Lift extends Component {
      * elevates lift to LIFT_LEVELS[MAX_LEVEL]
      */
     public void max_lift() {
-        elevate_to(MAX_LEVEL);
+        elevate_to(LiftConfig.MAX_LEVEL);
     }
 
     /**
@@ -280,6 +261,6 @@ public class Lift extends Component {
      * @param tweak analog input
      */
     public void tweak(double tweak) {
-        Lift.tweak = tweak;
+        this.tweak = tweak;
     }
 }

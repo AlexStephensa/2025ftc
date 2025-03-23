@@ -20,7 +20,6 @@ public class AutoSpecimen {
 
     public void specimenInit() {
         robot.drive_train.odo_reset(AutoConst.rightInitPose);
-        robot.drive_train.auto = true;
 
         robot.intake.auto_run = false;
         robot.arm.waiting_position();

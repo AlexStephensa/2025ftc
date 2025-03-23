@@ -21,9 +21,9 @@ class LEDConfig {
 
 public class LEDControl extends Component {
 
-    BlinkinPattern alliance = LEDConst.BLUE;
-    BlinkinPattern current_pattern = alliance;
-    BlinkinPattern last_pattern = LEDConst.DEFAULT;
+    public BlinkinPattern alliance = LEDConst.BLUE;
+    public BlinkinPattern current_pattern = alliance;
+    private BlinkinPattern last_pattern = LEDConst.DEFAULT;
 
     // Flash Control
     BlinkinPattern flash_pattern;
@@ -51,28 +51,33 @@ public class LEDControl extends Component {
     public void update(OpMode opmode) {
         super.update(opmode);
 
-        if (count < flash_count) {
-            if (0 < ((double) (System.nanoTime() - flash_start) / LEDConfig.NANO_PER_MILLI - LEDConfig.FLASH_RATE)) {
-                flash_start = System.nanoTime();
-                set_pattern(blink ? flash_pattern : LEDConst.OFF);
+        if (robot.opmode.opModeIsActive()) {
+            if (count < flash_count) {
+                if (0 < ((double) (System.nanoTime() - flash_start) / LEDConfig.NANO_PER_MILLI - LEDConfig.FLASH_RATE)) {
+                    flash_start = System.nanoTime();
+                    set_pattern(blink ? flash_pattern : LEDConst.OFF);
 
-                count += blink ? 0 : 1;
-                blink = !blink;
+                    count += blink ? 0 : 1;
+                    blink = !blink;
+                }
+            } else {
+                blink = false;
+                set_pattern(alliance);
             }
-        } else {
-            blink = false;
-            set_pattern(alliance);
         }
+
         if (current_pattern != last_pattern) {
             update_pattern(current_pattern);
         }
+
         last_pattern = current_pattern;
     }
 
     @Override
     public void startup() {
         super.startup();
-        led_control.setPattern(alliance);
+
+        update_pattern(current_pattern);
     }
 
     @Override

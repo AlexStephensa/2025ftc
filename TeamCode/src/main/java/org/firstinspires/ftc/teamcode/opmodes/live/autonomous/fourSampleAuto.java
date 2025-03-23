@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.live.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.constants.AutoConst;
-import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
+import org.firstinspires.ftc.teamcode.opmodes.live.LiveAutoBase;
 
 @Autonomous(name = "0+4+sub", group = "autonomous", preselectTeleOp = "Teleop Live")
 public class fourSampleAuto extends LiveAutoBase {
@@ -12,16 +11,12 @@ public class fourSampleAuto extends LiveAutoBase {
     AutoSample auto;
     @Override
     public void on_init() {
-        RobotLog.dd("---", "auto-on_init");
-
         auto = new AutoSample(robot, 0.66, 0.5);
         auto.sampleInit();
     }
 
     @Override
     public void on_start() {
-        RobotLog.dd("---", "auto-on_start");
-
         auto.highBasketFirst();
         auto.sampleReachIntake(AutoConst.SAMPLE_RIGHT);
         auto.highBasket();
@@ -34,8 +29,6 @@ public class fourSampleAuto extends LiveAutoBase {
 
     @Override
     public void on_stop() {
-        RobotLog.dd("---", "auto-on_stop");
-
         auto.sampleStop();
     }
 }

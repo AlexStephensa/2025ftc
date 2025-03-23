@@ -65,11 +65,7 @@ public class Arm extends Component {
     public void update(OpMode opmode) {
         super.update(opmode);
 
-        elbow_l.update();
-        elbow_r.update();
-        wrist.update();
-        claw.update();
-
+        update();
     }
 
     @Override
@@ -78,6 +74,8 @@ public class Arm extends Component {
 
         waiting_position();
         open_claw();
+
+        update();
     }
 
     @Override
@@ -90,6 +88,13 @@ public class Arm extends Component {
         super.updateTelemetry(telemetry);
         telemetry.addData("ARM CURRENT", arm_current);
         telemetry.addData("CLAW CLOSED", claw_state);
+    }
+
+    public void update() {
+        elbow_l.update();
+        elbow_r.update();
+        wrist.update();
+        claw.update();
     }
 
     public void transfer_position() {

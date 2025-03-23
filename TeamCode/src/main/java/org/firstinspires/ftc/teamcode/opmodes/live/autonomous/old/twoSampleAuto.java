@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.constants.AutoConst;
-import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
+import org.firstinspires.ftc.teamcode.opmodes.live.LiveAutoBase;
 import org.firstinspires.ftc.teamcode.opmodes.live.autonomous.AutoSample;
 
-@Autonomous(name = "0+2+sub", group = "autonomous", preselectTeleOp = "Teleop Live")
+@Autonomous(name = "0+2+sub", group = "autonomous")
 @Disabled
 public class twoSampleAuto extends LiveAutoBase {
 

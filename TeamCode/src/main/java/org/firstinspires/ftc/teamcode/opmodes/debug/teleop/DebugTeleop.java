@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes.debug.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.opmodes.debug.DebugTeleopBase;
 
 @TeleOp(name="Teleop Debug", group="driver control")
+@Disabled
 public class DebugTeleop extends DebugTeleopBase {
 
     @Override

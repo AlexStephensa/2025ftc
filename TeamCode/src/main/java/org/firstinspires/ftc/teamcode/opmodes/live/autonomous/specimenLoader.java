@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.live.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.opmodes.LiveAutoBase;
+import org.firstinspires.ftc.teamcode.opmodes.live.LiveAutoBase;
 
 @Autonomous(name = "specimenLoader", group = "autonomous", preselectTeleOp = "Teleop Live")
 public class specimenLoader extends LiveAutoBase {

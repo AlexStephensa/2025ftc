@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.constants.IntakeConst;
 import org.firstinspires.ftc.teamcode.constants.LiftConst;
-import org.firstinspires.ftc.teamcode.opmodes.LiveTeleopBase;
+import org.firstinspires.ftc.teamcode.opmodes.live.LiveTeleopBase;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 @TeleOp(name="Teleop Live", group="driver control")
@@ -212,7 +212,6 @@ public class LiveTeleop extends LiveTeleopBase {
 
         } else if (gamepad1.b) {
             if (!b1_pressed) {
-                // drive_a = (double) (Math.round(robot.drive_train.lcs.a * 4000000.0) / 4000000.0);
                 drive_a = MathUtil.round_quarter(robot.drive_train.lcs.a);
             }
             robot.drive_train.odo_slide(x * 10, y * 10, drive_a, speed_mod);

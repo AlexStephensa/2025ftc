@@ -88,8 +88,7 @@ public class Reach extends Component {
             );
         }
 
-        reach_l.update();
-        reach_r.update();
+        update();
     }
 
     @Override
@@ -97,6 +96,8 @@ public class Reach extends Component {
         super.startup();
 
         min_reach();
+
+        update();
     }
 
     public void shutdown() {
@@ -112,6 +113,11 @@ public class Reach extends Component {
         telemetry.addData("REACH ANGLE", TELEMETRY_DECIMAL.format(Math.toDegrees(reach_l_angle) / ReachConfig.SERVO_RANGE));
 
         telemetry.addData("REACH LIM", !limit_switchR.getState());
+    }
+
+    public void update() {
+        reach_l.update();
+        reach_r.update();
     }
 
     private double reach_angle(double dis) {

@@ -10,7 +10,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
@@ -77,14 +76,10 @@ public class Robot {
     }
 
     public Robot(LinearOpMode opmode) { // FIRST THIS IS *YOUR* FAULT IT HAS TO BE THIS WAY AND I HATE IT AND YOU SHOULD BE ASHAMED
-        RobotLog.dd("-----", "opmode");
         this.opmode = opmode;
-        RobotLog.dd("-----", "telemetry");
         this.telemetry = this.opmode.telemetry;
 
-        RobotLog.dd("-----", "hwmap");
         this.hwmap  = opmode.hardwareMap;
-        RobotLog.dd("-----", "registerHardware");
         registerHardware(this.hwmap);
 
         this.telemetry.setDisplayFormat(Telemetry.DisplayFormat.MONOSPACE); // Begone jumpy telemetry
@@ -125,12 +120,12 @@ public class Robot {
         }
 
         // Bulk read from expansion hub
-        if(cycle % BULK_READ_2_CYCLE == 0) {
+        if (cycle % BULK_READ_2_CYCLE == 0) {
             expansion_hubs.get(1).clearBulkCache();
         }
 
         // Call update on every single component
-        if(cycle % COMPONENT_UPDATE_CYCLE == 0) {
+        if (cycle % COMPONENT_UPDATE_CYCLE == 0) {
             for (Component component : components) {
                 component.update(opmode);
             }
@@ -138,7 +133,6 @@ public class Robot {
 
         // Update telemetry on the dashboard and on the phones
         if (cycle % TELEMETRY_CYCLE == 0) {
-
             updateTelemetry();
 
             for (Component component : components) {
@@ -150,8 +144,8 @@ public class Robot {
 
         // Recalculate our update thread frequency
         if (cycle % FREQ_CHECK_CYCLE == 0) {
-            long update_duration = System.nanoTime()-last_update;
-            update_freq = ((update_duration/(double)1000000000) * FREQ_CHECK_CYCLE) != 0 ? (int)((1/(update_duration/(double)1000000000)) * FREQ_CHECK_CYCLE) : Integer.MAX_VALUE;
+            long update_duration = System.nanoTime() - last_update;
+            update_freq = ((update_duration / (double) 1000000000) * FREQ_CHECK_CYCLE) != 0 ? (int) ((1 / (update_duration / (double) 1000000000)) * FREQ_CHECK_CYCLE) : Integer.MAX_VALUE;
 
             last_update = System.nanoTime();
         }
@@ -177,7 +171,7 @@ public class Robot {
         telemetry.addData("RUNTIME", opmode.getRuntime());
 
         // Check for good battery Voltage
-        if (expansion_hubs.get(0).getInputVoltage(VoltageUnit.VOLTS) <= 12.25 || expansion_hubs.get(1).getInputVoltage(VoltageUnit.VOLTS) <= 12.25) {
+        if (expansion_hubs.get(0).getInputVoltage(VoltageUnit.VOLTS) <= 12.25) {
             telemetry.addData("BATTERY VOLTAGE", "LOW");
         }
     }
